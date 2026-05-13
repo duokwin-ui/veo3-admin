@@ -305,9 +305,10 @@ main,
         .hero {
             position: relative;
             width: 100%;
-            overflow: visible;
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
             padding: 90px 0 40px;
-            min-height: calc(100vh - 92px);
+            min-height: auto;
         }
 
         /* Hero: layout thật nằm ở .hero-layout (tránh 2 lớp grid chồng + % + gap tràn ngang) */
@@ -317,7 +318,7 @@ main,
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
-            overflow: visible;
+            overflow: visible !important;
         }
 
         .hero-badge {
@@ -939,9 +940,9 @@ main,
         }
 
         .hero {
-            overflow-x: hidden;
-            overflow-y: visible;
+            overflow: visible !important;
             max-width: 100vw;
+            min-height: auto;
         }
 
         .hero,
@@ -951,6 +952,7 @@ main,
         .hero-image-wrapper img {
             max-width: 100%;
             min-width: 0;
+            overflow: visible !important;
         }
 
         .hero .container {
