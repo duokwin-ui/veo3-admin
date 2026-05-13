@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - VEO 3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-base: #030303;
+            --bg-surface: #0a0a0a;
+            --teal: #14b8a6;
+            --purple: #8b5cf6;
+            --gradient-primary: linear-gradient(135deg, var(--teal) 0%, var(--purple) 100%);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--text-secondary);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: var(--bg-surface);
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .tab.active {
+            color: var(--teal);
+            border-bottom: 2px solid var(--teal);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .add-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-surface);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--text-secondary);
+        }
+
+        th {
+            background: var(--bg-base);
+            font-weight: 600;
+        }
+
+        .action-btn {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-surface);
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            background: var(--bg-base);
+            border: 1px solid var(--text-secondary);
+            border-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .cancel-btn {
+            background: var(--text-secondary);
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel - VEO 3</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('products')">Sản phẩm</button>
+            <button class="tab" onclick="showTab('customers')">Khách hàng</button>
+            <button class="tab" onclick="showTab('orders')">Đơn hàng</button>
+        </div>
+
+        <div id="products" class="tab-content active">
+            <button class="add-btn" onclick="openModal('products')">Thêm sản phẩm</button>
+            <table id="products-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Giá</th>
+                        <th>Mô tả</th>
+                        <th>Stock</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="customers" class="tab-content">
+            <button class="add-btn" onclick="openModal('customers')">Thêm khách hàng</button>
+            <table id="customers-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Phone</th>
+                        <th>Zalo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="orders" class="tab-content">
+            <button class="add-btn" onclick="openModal('orders')">Thêm đơn hàng</button>
+            <table id="orders-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer ID</th>
+                        <th>Product ID</th>
+                        <th>Số tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Payment Code</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Thêm mới</h2>
+            <form id="modal-form">
+                <div id="form-fields"></div>
+                <div class="modal-actions">
+                    <button type="button" class="action-btn cancel-btn" onclick="closeModal()">Hủy</button>
+                    <button type="submit" class="action-btn">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'products';
+        let currentItem = null;
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+            document.getElementById(tab).classList.add('active');
+            currentTab = tab;
+            loadData(tab);
+        }
+
+        function loadData(tab) {
+            fetch(`/api/${tab}`)
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector(`#${tab}-table tbody`);
+                    tbody.innerHTML = '';
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        if (tab === 'products') {
+                            row.innerHTML = `
+                                <td>${item.id}</td>
+                                <td>${item.name}</td>
+                                <td>${item.price}</td>
+                                <td>${item.description}</td>
+                                <td>${item.stock}</td>
+                                <td>
+                                    <button class="action-btn" onclick="editItem('${tab}', ${item.id})">Sửa</button>
+                                    <button class="action-btn delete-btn" onclick="deleteItem('${tab}', ${item.id})">Xóa</button>
+                                </td>
+                            `;
+                        } else if (tab === 'customers') {
+                            row.innerHTML = `
+                                <td>${item.id}</td>
+                                <td>${item.name}</td>
+                                <td>${item.phone}</td>
+                                <td>${item.zalo}</td>
+                                <td>
+                                    <button class="action-btn" onclick="editItem('${tab}', ${item.id})">Sửa</button>
+                                    <button class="action-btn delete-btn" onclick="deleteItem('${tab}', ${item.id})">Xóa</button>
+                                </td>
+                            `;
+                        } else if (tab === 'orders') {
+                            row.innerHTML = `
+                                <td>${item.id}</td>
+                                <td>${item.customer_id}</td>
+                                <td>${item.product_id}</td>
+                                <td>${item.amount}</td>
+                                <td>${item.status}</td>
+                                <td>${item.payment_code}</td>
+                                <td>
+                                    <button class="action-btn" onclick="editItem('${tab}', ${item.id})">Sửa</button>
+                                    <button class="action-btn delete-btn" onclick="deleteItem('${tab}', ${item.id})">Xóa</button>
+                                </td>
+                            `;
+                        }
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        function openModal(tab, id = null) {
+            currentItem = id;
+            document.getElementById('modal-title').textContent = id ? 'Chỉnh sửa' : 'Thêm mới';
+            const formFields = document.getElementById('form-fields');
+            formFields.innerHTML = '';
+
+            if (tab === 'products') {
+                formFields.innerHTML = `
+                    <div class="form-group">
+                        <label>Tên:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Giá:</label>
+                        <input type="number" id="price" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả:</label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock:</label>
+                        <input type="number" id="stock" name="stock" required>
+                    </div>
+                `;
+            } else if (tab === 'customers') {
+                formFields.innerHTML = `
+                    <div class="form-group">
+                        <label>Tên:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone:</label>
+                        <input type="text" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Zalo:</label>
+                        <input type="text" id="zalo" name="zalo">
+                    </div>
+                `;
+            } else if (tab === 'orders') {
+                formFields.innerHTML = `
+                    <div class="form-group">
+                        <label>Customer ID:</label>
+                        <input type="number" id="customer_id" name="customer_id" required ${id ? 'disabled' : ''}>
+                    </div>
+                    <div class="form-group">
+                        <label>Product ID:</label>
+                        <input type="number" id="product_id" name="product_id" required ${id ? 'disabled' : ''}>
+                    </div>
+                    <div class="form-group">
+                        <label>Số tiền:</label>
+                        <input type="number" id="amount" name="amount" required ${id ? 'disabled' : ''}>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái:</label>
+                        <select id="status" name="status">
+                            <option value="pending">Pending</option>
+                            <option value="success">Success</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Code:</label>
+                        <input type="text" id="payment_code" name="payment_code" ${id ? 'disabled' : ''}>
+                    </div>
+                `;
+            }
+
+            if (id) {
+                fetch(`/api/${tab}/${id}`)
+                    .then(res => res.json())
+                    .then(item => {
+                        Object.keys(item).forEach(key => {
+                            const input = document.getElementById(key);
+                            if (input) input.value = item[key];
+                        });
+                    });
+            }
+
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('modal-form').reset();
+            currentItem = null;
+        }
+
+        document.getElementById('modal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            // For editing orders, only send status
+            if (currentTab === 'orders' && currentItem) {
+                const status = document.getElementById('status').value;
+                fetch(`/api/${currentTab}/${currentItem}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to save');
+                    return res.json();
+                })
+                .then(() => {
+                    closeModal();
+                    loadData(currentTab);
+                })
+                .catch(err => {
+                    alert('Lỗi: ' + err.message);
+                });
+                return;
+            }
+
+            const method = currentItem ? 'PUT' : 'POST';
+            const url = currentItem ? `/api/${currentTab}/${currentItem}` : `/api/${currentTab}`;
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to save');
+                return res.json();
+            })
+            .then(() => {
+                closeModal();
+                loadData(currentTab);
+            })
+            .catch(err => {
+                alert('Lỗi: ' + err.message);
+            });
+        });
+
+        function editItem(tab, id) {
+            openModal(tab, id);
+        }
+
+        function deleteItem(tab, id) {
+            if (confirm('Bạn có chắc muốn xóa?')) {
+                fetch(`/api/${tab}/${id}`, { method: 'DELETE' })
+                    .then(() => loadData(tab));
+            }
+        }
+
+        // Load initial data
+        loadData('products');
+    </script>
+</body>
+</html>

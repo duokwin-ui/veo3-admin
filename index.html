@@ -1,0 +1,3016 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEO 3 - Tạo Video Nhanh Chóng</title>
+    <!-- Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>/* ===== FIX OVERFLOW / DOUBLE SCROLL ===== */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+main,
+.hero,
+.hero-container,
+.hero-layout,
+.chatbot-widget {
+  max-width: 100%;
+}
+
+.chatbot-widget {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+}
+        :root {
+            /* Deep dark theme */
+            --bg-base: #030303;
+            --bg-surface: #0a0a0a;
+            
+            /* Gradients & Accents */
+            --teal: #14b8a6;
+            --purple: #8b5cf6;
+            --gradient-primary: linear-gradient(135deg, var(--teal) 0%, var(--purple) 100%);
+            
+            /* Text */
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            
+            /* Glass */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.06);
+            
+            /* Spacing */
+            --section-spacing: 120px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Global document scroll only on body/html, no nested scroll containers */
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-y: auto;
+            min-height: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient Backgrounds — inset thay vì 100vw tránh scrollbar ngang + khoảng đen */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(120px);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: moveBlobs 20s infinite alternate ease-in-out;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: 0;
+            transform: translateX(-5%);
+            width: min(35vw, 600px);
+            height: min(35vw, 600px);
+            background: rgba(20, 184, 166, 0.15); /* Teal */
+        }
+
+        .blob-2 {
+            top: 20%;
+            right: 0;
+            transform: translateX(5%);
+            width: min(30vw, 500px);
+            height: min(30vw, 500px);
+            background: rgba(139, 92, 246, 0.15); /* Purple */
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            top: 15%;
+            left: 85%;
+            width: min(25vw, 400px);
+            height: min(25vw, 400px);
+            background: rgba(255, 255, 255, 0.08);
+            opacity: 0.18;
+        }
+
+        @keyframes moveBlobs {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 100px) scale(1.1); }
+            100% { transform: translate(-50px, -50px) scale(0.9); }
+        }
+
+        .container {
+            width: min(100%, 1200px);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            min-width: 0;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 100;
+            background: rgba(3, 3, 3, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo i {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Language Switcher */
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 4px;
+            border-radius: 30px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* --- Buttons --- */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:active, .btn-zalo:active {
+            transform: scale(0.95) !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal), var(--purple), var(--teal));
+            background-size: 200% auto;
+            color: #ffffff;
+            border: none;
+            position: relative;
+            box-shadow: 0 6px 25px rgba(20, 184, 166, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+            animation: gradientMove 3s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.8), inset 0 1px 0 rgba(255,255,255,0.25);
+            filter: brightness(1.15);
+        }
+
+        .btn-secondary {
+            background: rgba(20, 20, 22, 0.6);
+            color: var(--text-primary);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.05);
+            border-color: var(--purple);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-fomo {
+            padding: 24px 58px !important;
+            font-size: 1.56rem !important;
+            background: linear-gradient(135deg, #ff5f56, #8b5cf6) !important;
+            box-shadow: 0 12px 45px rgba(255, 95, 86, 0.8), inset 0 2px 2px rgba(255,255,255,0.2) !important;
+            animation: fomoGlow 2s infinite alternate;
+        }
+
+        .btn-fomo:hover {
+            transform: scale(1.08) !important;
+            box-shadow: 0 20px 60px rgba(255, 95, 86, 1), inset 0 2px 2px rgba(255,255,255,0.4) !important;
+            filter: brightness(1.3) !important;
+        }
+
+        @keyframes fomoGlow {
+            0% { box-shadow: 0 10px 30px rgba(255, 95, 86, 0.5), inset 0 2px 2px rgba(255,255,255,0.1); }
+            100% { box-shadow: 0 15px 50px rgba(255, 95, 86, 0.9), inset 0 2px 2px rgba(255,255,255,0.3); }
+        }
+
+        .countdown-glow {
+            animation: textPulse 1.5s infinite alternate;
+        }
+
+        @keyframes textPulse {
+            0% { text-shadow: 0 0 10px rgba(255, 95, 86, 0.4); opacity: 0.85; }
+            100% { text-shadow: 0 0 35px rgba(255, 95, 86, 1); opacity: 1; }
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            width: 100%;
+            overflow: visible;
+            padding: 90px 0 40px;
+            min-height: calc(100vh - 92px);
+        }
+
+        /* Hero: layout thật nằm ở .hero-layout (tránh 2 lớp grid chồng + % + gap tràn ngang) */
+        .hero .container {
+            display: block;
+            width: min(100%, 1200px);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            overflow: visible;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--teal);
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 3.5vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            margin-bottom: 32px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* Tránh cắt chữ khi cột hẹp / clip text */
+            padding-bottom: 0.08em;
+            overflow: visible;
+        }
+
+        .hero-desc {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* --- Hero Image --- */
+        .hero-image-wrapper {
+            position: relative;
+            z-index: 2;
+            transition: all 0.4s ease;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 15px rgba(20, 184, 166, 0.1);
+            overflow: hidden;
+            max-width: 100%;
+        }
+        
+        .hero-image-wrapper:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 25px rgba(20, 184, 166, 0.15);
+        }
+
+        .hero-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(90%, 820px);
+            height: min(90%, 820px);
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.15), transparent 70%);
+            filter: blur(50px);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .hero-image-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+        }
+
+
+
+
+        /* --- Sections Common --- */
+        .section-padding {
+            padding: 100px 0;
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.6), 0 0 10px rgba(20, 184, 166, 0.4);
+        }
+
+        .section-desc {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- Glass Cards & Grids --- */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 32px;
+            backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 60%);
+            pointer-events: none;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 50px rgba(139, 92, 246, 0.15), inset 0 1px 1px rgba(255,255,255,0.2);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .glass-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .glass-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Steps */
+        .step-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.1);
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            line-height: 1;
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .faq-q {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 12px;
+        }
+        .faq-q i { color: var(--purple); margin-top: 4px;}
+        .faq-a {
+            color: var(--text-secondary);
+            padding-left: 28px;
+        }
+
+
+        /* --- Bottom CTA --- */
+        .cta-bottom {
+            padding: 80px 0 120px;
+        }
+
+        .cta-box {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; height: 400px;
+            background: var(--gradient-primary);
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .cta-box > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-tertiary);
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.875rem;
+        }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-layout {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-title {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-desc {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .btn-group {
+                justify-content: center;
+            }
+            .hero-image-wrapper {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 60px 0;
+                overflow: visible;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+            .cta-box {
+                padding: 60px 20px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-2 > * {
+                min-width: 0;
+            }
+            .premium-card {
+                min-height: auto;
+                height: auto;
+                overflow: visible;
+            }
+            .premium-card-text,
+            .section-desc {
+                word-break: break-word;
+            }
+        }
+    </style>
+
+    <!-- VEO 3 — widget chat: toàn bộ scope dưới .chatbot-widget (không ảnh hưởng layout hero/body) -->
+    <style>
+        .chatbot-widget {
+            position: fixed;
+            bottom: max(20px, env(safe-area-inset-bottom, 0px));
+            right: max(20px, env(safe-area-inset-right, 0px));
+            z-index: 10000;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            pointer-events: none;
+            /* fixed + % tính theo viewport — không dùng 100vw; đủ rộng để panel width:100% đúng */
+            width: min(380px, calc(100% - 32px));
+            min-width: 0;
+            min-height: 58px;
+            overflow: visible;
+        }
+        .chatbot-widget * {
+            box-sizing: border-box;
+            pointer-events: auto;
+        }
+        .chatbot-widget {
+            overflow: visible !important;
+            max-height: none !important;
+            height: auto !important;
+        }
+        .chatbot-widget .veo3-chat-toggle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(135deg, #14b8a6, #8b5cf6);
+            color: #fff;
+            font-size: 1.35rem;
+            cursor: pointer;
+            box-shadow: 0 8px 28px rgba(20, 184, 166, 0.45), 0 0 0 1px rgba(139, 92, 246, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.25s;
+        }
+        .chatbot-widget .veo3-chat-toggle:hover {
+            transform: scale(1.06);
+            box-shadow: 0 12px 36px rgba(139, 92, 246, 0.55);
+        }
+        .chatbot-widget.open .veo3-chat-toggle {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.85);
+        }
+        .chatbot-widget .veo3-chat-panel {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            max-height: none;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            background: rgba(10, 10, 10, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: visible;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(20, 184, 166, 0.12);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(16px) scale(0.96);
+            transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s;
+        }
+        .chatbot-widget.open .veo3-chat-panel {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .chatbot-widget .veo3-chat-head {
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(139, 92, 246, 0.15));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .chatbot-widget .veo3-chat-head h3 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.02em;
+        }
+        .chatbot-widget .veo3-chat-head span {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-secondary, #a1a1aa);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .chatbot-widget .veo3-chat-close {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .chatbot-widget .veo3-chat-close:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        /* Chỉ vùng tin nhắn trong widget cuộn (không nằm trong hero) */
+        .chatbot-widget .veo3-chat-messages {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: calc(60vh);
+            height: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chatbot-widget .veo3-chat-msg {
+            max-width: 92%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 0.875rem;
+            line-height: 1.55;
+            color: #e4e4e7;
+        }
+        .chatbot-widget .veo3-chat-msg.bot {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            white-space: pre-line;
+        }
+        .chatbot-widget .veo3-chat-msg.typing {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 68%;
+            min-width: 70px;
+            padding: 10px 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .chatbot-widget .typing-dots {
+            display: inline-flex;
+            gap: 5px;
+            align-items: center;
+        }
+        .chatbot-widget .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            opacity: 0.3;
+            animation: typingDot 1s infinite ease-in-out;
+        }
+        .chatbot-widget .typing-dots span:nth-child(1) { animation-delay: 0s; }
+        .chatbot-widget .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .chatbot-widget .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes typingDot {
+            0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+            40% { opacity: 1; transform: translateY(-3px); }
+        }
+        .chatbot-widget .veo3-chat-msg.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.35), rgba(139, 92, 246, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .chatbot-widget .veo3-chat-cta-wrap {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .chatbot-widget .veo3-chat-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: #fff !important;
+            background: linear-gradient(135deg, #14b8a6, #8b5cf6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 6px 20px rgba(20, 184, 166, 0.35);
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .chatbot-widget .veo3-chat-cta:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.08);
+        }
+        .chatbot-widget .veo3-chat-cta.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: none;
+            font-weight: 600;
+        }
+        .chatbot-widget .veo3-chat-quick {
+            padding: 0 14px 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.25);
+        }
+        .chatbot-widget .veo3-chat-chip {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #e4e4e7;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .chatbot-widget .veo3-chat-chip:hover {
+            background: rgba(20, 184, 166, 0.15);
+            border-color: rgba(20, 184, 166, 0.35);
+        }
+        .chatbot-widget .veo3-chat-faq-grid {
+            display: none;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 0 14px 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .chatbot-widget .veo3-chat-faq-grid.visible {
+            display: flex;
+        }
+        .chatbot-widget .veo3-chat-form {
+            display: flex;
+            gap: 8px;
+            padding: 10px 14px 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(3, 3, 3, 0.6);
+        }
+        .chatbot-widget .veo3-chat-form input {
+            flex: 1;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .chatbot-widget .veo3-chat-form input::placeholder {
+            color: #71717a;
+        }
+        .chatbot-widget .veo3-chat-form input:focus {
+            border-color: rgba(20, 184, 166, 0.5);
+        }
+        .chatbot-widget .veo3-chat-form button[type="submit"] {
+            border: none;
+            border-radius: 12px;
+            padding: 0 16px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #14b8a6, #8b5cf6);
+        }
+        @media (max-width: 480px) {
+            .chatbot-widget {
+                right: 12px;
+                bottom: 12px;
+                width: calc(100% - 24px);
+            }
+            .chatbot-widget .veo3-chat-panel {
+                max-height: none;
+                height: auto;
+                overflow: visible;
+            }
+        }
+    </style>
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden !important;
+            min-width: 0;
+        }
+
+        .hero {
+            overflow-x: hidden;
+            overflow-y: visible;
+            max-width: 100vw;
+        }
+
+        .hero,
+        .hero > .container,
+        .hero-layout,
+        .hero-image-wrapper,
+        .hero-image-wrapper img {
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .hero .container {
+            overflow: visible;
+            width: 100%;
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+
+        .hero-image-wrapper {
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .hero-image-wrapper img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .section-padding,
+        .truth-box,
+        .cta-box,
+        .premium-card,
+        .hero-layout,
+        .hero-content {
+            min-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            .hero .hero-title,
+            .hero .hero-desc,
+            .premium-card-text,
+            .section-desc {
+                word-break: break-word;
+            }
+            .hero-image-wrapper img {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-widget {
+                right: 12px;
+                bottom: 12px;
+                left: auto;
+                width: calc(100% - 24px);
+                max-width: calc(100vw - 24px);
+                min-width: 0;
+            }
+            .chatbot-widget .veo3-chat-panel {
+                width: 100%;
+                max-width: 100%;
+                right: 0;
+                left: 0;
+            }
+            .chatbot-widget .veo3-chat-toggle {
+                right: 0;
+                bottom: 0;
+            }
+            .chatbot-widget .veo3-chat-panel,
+            .chatbot-widget .veo3-chat-form,
+            .chatbot-widget .veo3-chat-messages {
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- Ambient Background -->
+    <div class="ambient-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fa-solid fa-shapes"></i>
+                VEO 3
+            </div>
+            <div class="lang-switch">
+                <button class="lang-btn active" data-lang="vi">VI</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <style>
+        /* minmax(0,…) + min-width:0: item grid co lại được, không đẩy scroll ngang / vùng cuộn lồng */
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 64px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .hero-layout > * {
+            min-width: 0;
+        }
+        /* Headline đủ hiển thị trên desktop — không nowrap + không clip */
+        .hero .hero-title {
+            white-space: normal;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        @media (max-width: 992px) {
+            .hero-layout {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+            .hero-content {
+                text-align: center !important;
+                padding-right: 0 !important;
+                max-width: 100% !important;
+            }
+            .hero-content .btn-premium-animated {
+                margin: 0 auto;
+            }
+            .hero-title, .hero-desc {
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .title-nowrap {
+                white-space: normal !important;
+            }
+            .hero-image-wrapper {
+                transform: scale(1) !important;
+                margin-top: 20px;
+            }
+        }
+        
+        /* Premium CTA Button */
+        .btn-premium-animated {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 36px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 14px;
+            background: linear-gradient(270deg, #06b6d4, #3b82f6, #8b5cf6, #06b6d4);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1;
+            max-width: fit-content;
+        }
+        .btn-premium-animated::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 16px;
+            background: inherit;
+            filter: blur(15px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: pulseIdle 2s infinite alternate;
+        }
+        .btn-premium-animated:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(6, 182, 212, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes pulseIdle {
+            0% { opacity: 0.4; transform: scale(0.98); }
+            100% { opacity: 0.8; transform: scale(1.02); }
+        }
+    </style>
+    <section class="hero" style="position: relative;">
+        <div style="position: absolute; top: -20%; right: -10%; width: min(60vw, 900px); height: min(60vw, 900px); max-width: 100%; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 60%); z-index: 0; pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -20%; left: -10%; width: min(50vw, 800px); height: min(50vw, 800px); max-width: 100%; background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 60%); z-index: 0; pointer-events: none;"></div>
+        
+        <div class="container" style="position: relative; z-index: 1;">
+            <div class="hero-layout">
+                
+                <div class="hero-content fade-up" style="text-align: left; padding-right: 10px; position: relative; z-index: 10; width: 100%; max-width: 100%;">
+                    <h1 class="hero-title title-nowrap" data-i18n="heroTitle" style="font-size: clamp(1.6rem, 3vw, 2.45rem); line-height: 1.18; margin-bottom: 24px; text-shadow: 0 0 40px rgba(139, 92, 246, 0.4); font-weight: 900;">
+                        Từ 0 Subscriber Đến<br>Triệu View Trong 30 Ngày
+                    </h1>
+                    <p class="hero-desc" data-i18n="heroDesc" style="font-size: 1.15rem; margin-bottom: 40px; color: var(--text-secondary); line-height: 1.6; margin-left: 0;">
+                        Không cần học edit. Không cần team. Không cần thiết bị đắt tiền.<br><br>
+                        <span style="color: #fff; font-weight: 600; font-size: 1.25rem; display: inline-block; padding-left: 16px; border-left: 3px solid #06b6d4; margin-top: 8px;">VEO3 biến ý tưởng thô thành video viral chỉ trong vài phút.</span>
+                    </p>
+                    
+                    <div class="btn-group" style="justify-content: flex-start;">
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyH8pO661V_XXQMo1CTwBh65BPQTGCNLuwojPMz6mopntQA/viewform?usp=sharing&ouid=115157287162651414700" target="_blank" class="btn-premium-animated" data-i18n="btnFree">Tôi muốn sở hữu VEO 3 ngay</a>
+                    </div>
+                </div>
+
+                <div class="hero-image-wrapper fade-up" style="transition-delay: 0.2s; position: relative; max-width: 820px; width: 100%; margin: 0 0 0 auto; display: flex; justify-content: flex-end;">
+                    <div style="position: absolute; top: -10%; left: -10%; right: -10%; bottom: -10%; background: radial-gradient(circle at center, rgba(6, 182, 212, 0.15) 0%, transparent 60%); z-index: -1; filter: blur(50px);"></div>
+                    <img src="assets/veo3-dashboard.png" alt="" style="width: 100%; height: auto; max-height: 600px; object-fit: contain; border-radius: 12px; border: 1px solid rgba(6, 182, 212, 0.4); box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(139, 92, 246, 0.2); position: relative; z-index: 0; display: block;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <section class="section-padding" style="background: rgba(255,255,255,0.02); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); padding-top: 40px; padding-bottom: 60px;">
+        <div class="container">
+            <div class="grid-4" style="text-align: center;">
+                <div class="glass-card fade-up" style="padding: 24px;">
+                    <div style="font-size: 3.5rem; font-weight: 900; color: var(--teal); text-shadow: 0 0 25px rgba(20, 184, 166, 0.4); line-height: 1;">90%</div>
+                    <div style="font-size: 1.1rem; color: var(--text-secondary); font-weight: 600; margin-top: 10px;" data-i18n="metric1">Tiết kiệm thời gian edit</div>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.1s; padding: 24px;">
+                    <div style="font-size: 3.5rem; font-weight: 900; color: var(--purple); text-shadow: 0 0 25px rgba(139, 92, 246, 0.4); line-height: 1;">500+</div>
+                    <div style="font-size: 1.1rem; color: var(--text-secondary); font-weight: 600; margin-top: 10px;" data-i18n="metric2">Creator đã sử dụng</div>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.2s; padding: 24px;">
+                    <div style="font-size: 3.5rem; font-weight: 900; color: #ffbd2e; text-shadow: 0 0 25px rgba(255, 189, 46, 0.4); line-height: 1;">3.2M</div>
+                    <div style="font-size: 1.1rem; color: var(--text-secondary); font-weight: 600; margin-top: 10px;" data-i18n="metric3">View cao nhất từ 1 video</div>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.3s; padding: 24px;">
+                    <div style="font-size: 3.5rem; font-weight: 900; color: #ff5f56; text-shadow: 0 0 25px rgba(255, 95, 86, 0.4); line-height: 1;">&lt;10p</div>
+                    <div style="font-size: 1.1rem; color: var(--text-secondary); font-weight: 600; margin-top: 10px;" data-i18n="metric4">Tạo video đầu tiên</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cinematic Divider -->
+    <div style="height: 2px; width: 100%; background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.5), transparent); position: relative; z-index: 10;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 100px; background: radial-gradient(ellipse, rgba(6, 182, 212, 0.4) 0%, rgba(139, 92, 246, 0.2) 50%, transparent 70%); filter: blur(25px); pointer-events: none;"></div>
+    </div>
+
+    <!-- New Pain Section: Grid 2x2 -->
+    <style>
+        .premium-card {
+            background: rgba(10, 15, 25, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(6, 182, 212, 0.15);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1;
+        }
+        .premium-card::after {
+            content: attr(data-index);
+            position: absolute;
+            top: 20px; right: 30px;
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.02);
+            z-index: -1;
+            line-height: 1;
+        }
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #06b6d4, #8b5cf6, transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .premium-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 25px 60px rgba(6, 182, 212, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            background: rgba(15, 20, 35, 0.8);
+        }
+        .premium-card:hover::before {
+            opacity: 1;
+        }
+        .premium-card-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00f2fe, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.4));
+        }
+        .premium-card-title {
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: 800;
+            line-height: 1.4;
+            letter-spacing: -0.5px;
+        }
+        .premium-card-text {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .truth-box {
+            background: linear-gradient(145deg, rgba(10, 15, 30, 0.9) 0%, rgba(5, 5, 15, 0.95) 100%);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 32px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 80px rgba(6, 182, 212, 0.15), inset 0 0 80px rgba(59, 130, 246, 0.05);
+            position: relative;
+            overflow: hidden;
+            max-width: 100%;
+        }
+        .truth-box::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220%;
+            height: 220%;
+            max-width: 1000px;
+            max-height: 1000px;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulse-glow-premium 8s infinite alternate;
+        }
+        @keyframes pulse-glow-premium {
+            0% { opacity: 0.5; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+        .truth-box-text {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: #fff;
+            font-weight: 700;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .highlight-premium {
+            background: linear-gradient(135deg, #00f2fe, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+            font-weight: 800;
+        }
+        .highlight-cyan {
+            color: #06b6d4;
+            text-shadow: 0 0 15px rgba(6, 182, 212, 0.5), 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .animated-bg-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: -1;
+            pointer-events: none;
+            animation: float-glow 15s ease-in-out infinite alternate;
+            max-width: 100%;
+            max-height: 100%;
+        }
+        @keyframes float-glow {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 5%) scale(1.1); }
+            100% { transform: translate(-5%, -5%) scale(0.95); }
+        }
+    </style>
+
+    <!-- Pain Section -->
+    <section class="section-padding" style="position: relative; overflow: hidden;">
+        <div class="animated-bg-glow" style="top: 10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 60%);"></div>
+        <div class="animated-bg-glow" style="bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, transparent 60%); animation-delay: -5s;"></div>
+        
+        <div class="container">
+            <div class="section-header fade-up" style="max-width: 800px; margin-left: auto; margin-right: auto; text-align: center;">
+                <h2 class="section-title" data-i18n="probTitle" style="font-size: clamp(2.5rem, 5vw, 3.5rem); letter-spacing: -1px;">
+                    Bạn Đang Trả Cái Giá <span class="highlight-premium">Quá Đắt</span>
+                </h2>
+                <p class="section-desc" data-i18n="probDesc" style="font-size: 1.3rem; line-height: 1.7; color: var(--text-secondary); margin-top: 24px;">
+                    Không phải bằng tiền.<br>Mà bằng thứ không thể mua lại được:<br><span style="color:#fff; font-weight:700;">thời gian và năng lượng của bạn.</span>
+                </p>
+            </div>
+            
+            <div class="grid-2 fade-up" style="gap: 40px; margin-top: 60px;">
+                <div class="premium-card" data-index="01">
+                    <div class="premium-card-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="premium-card-title" data-i18n="prob1Title">3 giờ chỉ để edit 1 video 60 giây</div>
+                    <div class="premium-card-text" data-i18n="prob1Desc">Bạn ngồi hàng tiếng đồng hồ cắt ghép,<br>thêm phụ đề, chỉnh màu, chọn nhạc.<br><br>Rồi upload.<br>Rồi 200 views.<br>Rồi muốn đập bàn phím.</div>
+                </div>
+                <div class="premium-card" data-index="02" style="transition-delay: 0.1s;">
+                    <div class="premium-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <div class="premium-card-title" data-i18n="prob2Title">Ý tưởng hay mà không biết cách làm ra video đẹp</div>
+                    <div class="premium-card-text" data-i18n="prob2Desc">Bạn biết mình có nội dung tốt.<br><br>Nhưng kỹ năng kỹ thuật không có —<br>Adobe Premiere, CapCut, DaVinci...<br><br>mỗi tool là một cuộc chiến mới.</div>
+                </div>
+                <div class="premium-card" data-index="03" style="transition-delay: 0.2s;">
+                    <div class="premium-card-icon"><i class="fa-solid fa-user-xmark"></i></div>
+                    <div class="premium-card-title" data-i18n="prob3Title">Thuê người thì tốn tiền, lại phụ thuộc lịch của họ</div>
+                    <div class="premium-card-text" data-i18n="prob3Desc">Freelancer editor giá 300–500K/video.<br><br>Bạn cần 10 video/tháng = 3–5 triệu.<br><br>Chưa kể họ trễ deadline và không hiểu style của bạn.</div>
+                </div>
+                <div class="premium-card" data-index="04" style="transition-delay: 0.3s;">
+                    <div class="premium-card-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    <div class="premium-card-title" data-i18n="prob4Title">Đăng đều đặn 3 tháng — vẫn dưới 1.000 follows</div>
+                    <div class="premium-card-text" data-i18n="prob4Desc">Bạn không thiếu cần cù.<br>Bạn thiếu hệ thống.<br><br>Thuật toán không quan tâm bạn chăm chỉ đến đâu —<br>nó chỉ thưởng cho người biết cách chơi.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cinematic Divider -->
+    <div style="height: 2px; width: 100%; background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent); position: relative; z-index: 10;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 100px; background: radial-gradient(ellipse, rgba(59, 130, 246, 0.4) 0%, rgba(139, 92, 246, 0.2) 50%, transparent 70%); filter: blur(25px); pointer-events: none;"></div>
+    </div>
+
+    <!-- Truth Section -->
+    <section class="section-padding" style="background: rgba(5, 5, 10, 0.6); position: relative; overflow: hidden;">
+        <div class="animated-bg-glow" style="top: -20%; left: 50%; transform: translateX(-50%); width: 80vw; height: 80vh; background: radial-gradient(ellipse at top center, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 70%); animation-duration: 20s;"></div>
+        <div class="container relative" style="z-index: 1;">
+            <div class="section-header fade-up" style="text-align: center; margin-bottom: 60px;">
+                <div data-i18n="agitateBadge" style="display: inline-block; padding: 8px 24px; background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 30px; color: #06b6d4; font-size: 0.9rem; font-weight: 800; margin-bottom: 24px; letter-spacing: 2px; box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);">
+                    <i class="fa-solid fa-sparkles" style="margin-right: 8px;"></i>SỰ THẬT MÀ ÍT AI DÁM NÓI VỚI BẠN
+                </div>
+                <h2 class="section-title" data-i18n="agitateTitle" style="font-size: clamp(3rem, 6vw, 4rem); text-shadow: 0 0 40px rgba(59, 130, 246, 0.3); line-height: 1.1;">
+                    Trong Lúc Bạn<br>Vẫn Đang Loay Hoay...
+                </h2>
+            </div>
+            
+            <div class="truth-box fade-up">
+                <div class="truth-box-text" data-i18n="agitateQuote">
+                    “Đối thủ của bạn đang dùng AI để sản xuất <span class="highlight-cyan">10 video mỗi tuần</span><br>trong khi bạn vẫn đang ngồi cắt từng clip một.”
+                </div>
+            </div>
+            
+            <div class="grid-3 fade-up" style="transition-delay: 0.1s; gap: 30px;">
+                <div class="premium-card" data-index="!" style="display: flex; flex-direction: column; height: 100%; box-shadow: 0 10px 40px rgba(6, 182, 212, 0.05);">
+                    <div class="premium-card-title" data-i18n="agitateCard1Title" style="color: #06b6d4; font-size: 1.6rem; font-weight: 800; line-height: 1.4; margin-bottom: 20px;">
+                        Năm 2025, khoảng cách giữa creator dùng AI và creator làm thủ công đang nới rộng ra mỗi ngày.
+                    </div>
+                    <div class="premium-card-text" data-i18n="agitateCard1Desc" style="font-size: 1.15rem; line-height: 1.8; color: var(--text-secondary); flex-grow: 1;">
+                        Ai nắm công nghệ sẽ có người xem. Người còn lại sẽ chỉ là một kênh nữa trong hàng triệu kênh không ai nhớ tên.
+                    </div>
+                </div>
+                
+                <div class="premium-card" data-index="!" style="transition-delay: 0.1s; display: flex; flex-direction: column; height: 100%; box-shadow: 0 10px 40px rgba(139, 92, 246, 0.05);">
+                    <div class="premium-card-title" data-i18n="agitateCard2Title" style="color: #a78bfa; font-size: 1.6rem; font-weight: 800; line-height: 1.4; margin-bottom: 20px;">
+                        TikTok và YouTube đang ưu tiên những kênh vừa đăng đều, vừa ra video chất lượng.
+                    </div>
+                    <div class="premium-card-text" data-i18n="agitateCard2Desc" style="font-size: 1.15rem; line-height: 1.8; color: var(--text-secondary); flex-grow: 1;">
+                        Làm thủ công thì chỉ chọn được một trong hai. VEO 3 cho bạn cả hai cùng lúc.
+                    </div>
+                </div>
+                
+                <div class="premium-card" data-index="!" style="transition-delay: 0.2s; display: flex; flex-direction: column; height: 100%; box-shadow: 0 10px 40px rgba(6, 182, 212, 0.05);">
+                    <div class="premium-card-title" data-i18n="agitateCard3Title" style="color: #06b6d4; font-size: 1.6rem; font-weight: 800; line-height: 1.4; margin-bottom: 20px;">
+                        6 tháng nữa, kênh của đối thủ đã có lượng người theo dõi ổn định.
+                    </div>
+                    <div class="premium-card-text" data-i18n="agitateCard3Desc" style="font-size: 1.15rem; line-height: 1.8; color: var(--text-secondary); flex-grow: 1;">
+                        Thuật toán đã quen đẩy họ, còn kênh của bạn vẫn đang chạy từ đầu. Khoảng cách đó không phải không bù được — nhưng càng để lâu càng khó.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solve Section (6 Benefits) -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-header fade-up" style="max-width: 900px; margin-left: auto; margin-right: auto;">
+                <h2 class="section-title" style="font-size: clamp(2.2rem, 4vw, 3.2rem);">VEO 3 — Không Phải Tool Là <span style="color: #ff5f56; text-shadow: 0 0 20px rgba(255, 95, 86, 0.6);">Vũ Khí</span>.</h2>
+                <p class="section-desc" style="font-size: 1.25rem;">Không phải để bạn làm nhiều hơn.<br>Mà để tạo ra nhiều content hơn trong ít thời gian hơn.</p>
+            </div>
+            
+            <div class="grid-3">
+                <div class="glass-card fade-up">
+                    <div class="card-icon" style="color: var(--teal)"><i class="fa-solid fa-bolt"></i></div>
+                    <h3 data-i18n="solve1Title">8 Phút Hoàn Thành</h3>
+                    <p data-i18n="solve1Desc">Rút ngắn thời gian từ 3 giờ xuống còn 8 phút cho một video hoàn chỉnh. Đăng tải ngay không cần suy nghĩ.</p>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.1s;">
+                    <div class="card-icon" style="color: var(--purple)"><i class="fa-solid fa-stopwatch"></i></div>
+                    <h3 data-i18n="solve2Title">Tiết kiệm 90% Thời Gian</h3>
+                    <p data-i18n="solve2Desc">Dành 90% thời gian rảnh rỗi để sáng tạo kịch bản thay vì mòn mỏi ngồi canh nhịp nhạc hay chèn phụ đề.</p>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.2s;">
+                    <div class="card-icon" style="color: #ffbd2e"><i class="fa-solid fa-share-nodes"></i></div>
+                    <h3 data-i18n="solve3Title">1 Video → 3 Platform</h3>
+                    <p data-i18n="solve3Desc">Sản xuất 1 lần, tự động tối ưu khung hình để phủ sóng toàn bộ TikTok, Reels và YouTube Shorts.</p>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.3s;">
+                    <div class="card-icon" style="color: #ff5f56"><i class="fa-solid fa-user-slash"></i></div>
+                    <h3 data-i18n="solve4Title">Tạm biệt Freelancer</h3>
+                    <p data-i18n="solve4Desc">Làm chủ hoàn toàn quy trình. Không còn phụ thuộc, không còn chờ đợi, không còn mất tiền oan.</p>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.4s;">
+                    <div class="card-icon" style="color: #27c93f"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                    <h3 data-i18n="solve5Title">Giữ Phong Độ 3 Video/Ngày</h3>
+                    <p data-i18n="solve5Desc">Biến việc ra video thành thói quen dễ như ăn kẹo. Đẩy lùi sự lười biếng và duy trì sự hiện diện liên tục.</p>
+                </div>
+                <div class="glass-card fade-up" style="transition-delay: 0.5s;">
+                    <div class="card-icon" style="color: #00A3FF"><i class="fa-solid fa-robot"></i></div>
+                    <h3 data-i18n="solve6Title">Thuật Toán Ưu Ái</h3>
+                    <p data-i18n="solve6Desc">Tần suất đều đặn là chìa khóa. Kênh của bạn sẽ được thuật toán nền tảng độ tự nhiên lên xu hướng.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <style>
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .testimonial-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(20, 184, 166, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .testi-stars {
+            color: #ffbd2e;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+        .testi-quote {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            font-style: italic;
+        }
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 16px;
+        }
+        .testi-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--purple));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        .testi-info h4 {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        .testi-info p {
+            font-size: 0.8rem;
+            color: var(--teal);
+            margin: 0;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .gallery-item {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+        .gallery-caption {
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--teal);
+            background: rgba(20, 184, 166, 0.05);
+            border-top: 1px solid rgba(20, 184, 166, 0.1);
+        }
+        .gallery-item:hover {
+            border-color: rgba(20, 184, 166, 0.4);
+            box-shadow: 0 15px 40px rgba(20, 184, 166, 0.2);
+            transform: translateY(-5px);
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        @media (max-width: 992px) {
+            .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 576px) {
+            .testimonial-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <!-- Real Results Section -->
+    <section class="section-padding" style="background: rgba(255,255,255,0.01); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+        <div class="container">
+            <div class="section-header fade-up" style="max-width: 800px; text-align: center; margin-bottom: 60px; margin-left: auto; margin-right: auto;">
+                <div style="display: inline-block; padding: 6px 16px; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; color: #8b5cf6; font-size: 0.85rem; font-weight: 700; margin-bottom: 20px; letter-spacing: 1px;">
+                    💬 Họ đã làm được — Bạn thì sao?
+                </div>
+                <h2 class="section-title" style="font-size: clamp(2.5rem, 5vw, 3.5rem); text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);">Từ Người Mới Đến Triệu View</h2>
+            </div>
+            
+            <div class="gallery-grid fade-up">
+                <div class="gallery-item">
+                    <img src="assets/feedback-user-1.png" alt="Kênh mới tạo đạt 2.5 Triệu View">
+                    <div class="gallery-caption" data-i18n="resultCaption1">Kênh mới tạo đạt 2.5 Triệu View chỉ sau 7 ngày</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="assets/feedback-user-2.png" alt="Tăng trưởng 15,000 Follower">
+                    <div class="gallery-caption" data-i18n="resultCaption2">Tăng trưởng 15,000 Follower tự nhiên không tốn một đồng Ads</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="assets/feedback-user-3.png" alt="Chốt đơn liên tục">
+                    <div class="gallery-caption" data-i18n="resultCaption3">Chốt đơn liên tục nhờ video viral tiếp cận đúng tệp khách hàng</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bonus GPT Assistants Section -->
+    <style>
+        .bonus-layout {
+            display: grid;
+            grid-template-columns: 45% 55%;
+            gap: 40px;
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            .bonus-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+        .bonus-glass {
+            background: rgba(10, 15, 30, 0.4);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 32px;
+            padding: 16px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(6, 182, 212, 0.1);
+            position: relative;
+        }
+        .bonus-glass img {
+            width: 100%;
+            height: auto;
+            max-height: 600px;
+            object-fit: contain;
+            border-radius: 24px;
+            display: block;
+        }
+        .bonus-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; height: 80%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.25), transparent 70%);
+            filter: blur(50px);
+            z-index: -1;
+        }
+    </style>
+    <section class="section-padding" style="position: relative; overflow: hidden; border-top: 1px solid var(--glass-border);">
+        <div style="position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, transparent 60%); z-index: -1;"></div>
+        <div class="container">
+            <div class="bonus-layout">
+                <div class="fade-up" style="text-align: left;">
+                    <div data-i18n="bonusBadge" style="display: inline-block; padding: 6px 16px; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 20px; color: #06b6d4; font-size: 0.85rem; font-weight: 700; margin-bottom: 20px; letter-spacing: 1px;">
+                        <i class="fa-solid fa-gift"></i> Bonus cho gói PRO
+                    </div>
+                    <h2 class="section-title" data-i18n="bonusTitle" style="font-size: clamp(2.2rem, 4vw, 3rem); text-shadow: 0 0 30px rgba(6, 182, 212, 0.4); text-align: left; margin-bottom: 24px;">Tặng Bộ Trợ Lý ChatGPT Cho Người Dùng PRO</h2>
+                    <p class="section-desc" data-i18n="bonusDesc" style="font-size: 1.15rem; margin-bottom: 30px; margin-left: 0; text-align: left;">Khi đăng ký gói PRO trở lên, bạn nhận thêm bộ trợ lý GPT hỗ trợ viết kịch bản, prompt video, SEO, ý tưởng content và tự động hóa quy trình sáng tạo.</p>
+                    <div style="text-align: left;">
+                        <a href="#pricing" class="btn btn-secondary" style="color: #06b6d4; border-color: rgba(6, 182, 212, 0.3);"><i class="fa-solid fa-arrow-right"></i> <span data-i18n="bonusBtn">Nhận bộ trợ lý khi đăng ký PRO</span></a>
+                    </div>
+                </div>
+                <div class="bonus-glass fade-up" style="transition-delay: 0.2s;">
+                    <div class="bonus-glow"></div>
+                    <img src="assets/gpt-assistants-list-final.png" alt="Bộ trợ lý ChatGPT">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" style="background: rgba(255,255,255,0.01); border-top: 1px solid var(--glass-border);">
+        <div class="container">
+            <div class="section-header fade-up">
+                <h2 class="section-title" data-i18n="testiTitle">Phản hồi từ người dùng VEO 3</h2>
+                <p class="section-desc" data-i18n="testiDesc">Một vài kết quả và chia sẻ từ những người đã sử dụng công cụ để tạo nội dung nhanh hơn.</p>
+            </div>
+            
+            <div class="testimonial-grid">
+                <div class="testimonial-card fade-up">
+                    <div class="testi-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div class="testi-quote" data-i18n="testiQ1">"Trước đây tôi mất cả buổi để làm một video ngắn, giờ quy trình rõ ràng hơn rất nhiều."</div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">H</div>
+                        <div class="testi-info">
+                            <h4 data-i18n="testiA1">Hoàng Anh</h4>
+                            <p data-i18n="testiR1">Content Creator</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card fade-up" style="transition-delay: 0.1s;">
+                    <div class="testi-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div class="testi-quote" data-i18n="testiQ2">"Tôi không rành edit nhưng vẫn có thể tạo nội dung đều đặn cho TikTok và Reels."</div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">M</div>
+                        <div class="testi-info">
+                            <h4 data-i18n="testiA2">Minh Châu</h4>
+                            <p data-i18n="testiR2">Chủ shop Online</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card fade-up" style="transition-delay: 0.2s;">
+                    <div class="testi-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div class="testi-quote" data-i18n="testiQ3">"Tính năng ghép nhiều video ngắn thành nội dung dài giúp tôi tiết kiệm rất nhiều thời gian."</div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">T</div>
+                        <div class="testi-info">
+                            <h4 data-i18n="testiA3">Thành Long</h4>
+                            <p data-i18n="testiR3">YouTuber</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card fade-up" style="transition-delay: 0.3s;">
+                    <div class="testi-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <div class="testi-quote" data-i18n="testiQ4">"Phù hợp cho người mới bắt đầu xây kênh mà chưa biết dùng phần mềm dựng video."</div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">L</div>
+                        <div class="testi-info">
+                            <h4 data-i18n="testiA4">Linh Đan</h4>
+                            <p data-i18n="testiR4">Người mới làm TikTok</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section-padding" style="background: rgba(255,255,255,0.01); border-top: 1px solid var(--glass-border);">
+        <div class="container">
+            <div class="section-header fade-up">
+                <h2 class="section-title" data-i18n="faqTitle">Câu hỏi thường gặp</h2>
+            </div>
+            
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="faq-item fade-up">
+                    <div class="faq-q"><i class="fa-solid fa-circle-question"></i> <span data-i18n="faq1Q">Tôi hoàn toàn không biết edit video, có dùng được không?</span></div>
+                    <div class="faq-a" data-i18n="faq1A">Chắc chắn rồi. VEO 3 được thiết kế với giao diện tối giản nhất. Nếu bạn biết dùng điện thoại cơ bản, bạn có thể dùng công cụ này.</div>
+                </div>
+                <div class="faq-item fade-up">
+                    <div class="faq-q"><i class="fa-solid fa-circle-question"></i> <span data-i18n="faq2Q">Video làm ra có phù hợp với TikTok hay Reels không?</span></div>
+                    <div class="faq-a" data-i18n="faq2A">Có. Công cụ hỗ trợ mặc định tỷ lệ 9:16 (video dọc) chuyên dụng cho nền tảng video ngắn.</div>
+                </div>
+                <div class="faq-item fade-up">
+                    <div class="faq-q"><i class="fa-solid fa-circle-question"></i> <span data-i18n="faq3Q">VEO 3 có thay thế được Editor chuyên nghiệp không?</span></div>
+                    <div class="faq-a" data-i18n="faq3A">Không. Nếu bạn cần những hiệu ứng VFX phức tạp hay kỹ xảo điện ảnh, bạn vẫn cần editor. VEO 3 là công cụ giúp làm video thông tin, vlog, chia sẻ một cách NHANH, RÕ RÀNG và CHUẨN CƠ BẢN.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <style>
+        .pricing-section {
+            padding: 80px 0;
+            background: rgba(255,255,255,0.01);
+            border-top: 1px solid var(--glass-border);
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .pricing-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .pricing-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .pricing-duration {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        .pricing-currency {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            vertical-align: super;
+        }
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 40px;
+            flex-grow: 1;
+        }
+        .pricing-features li {
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .pricing-features li i {
+            color: var(--teal);
+            margin-top: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .pricing-anchor {
+            font-size: 0.9rem;
+            color: var(--teal);
+            font-weight: 600;
+            margin-top: 12px;
+            background: rgba(20, 184, 166, 0.15);
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+        }
+        .pricing-card.advanced .pricing-anchor {
+            color: var(--purple);
+            background: rgba(139, 92, 246, 0.15);
+        }
+        
+        /* Highlight specific cards */
+        .pricing-card.popular {
+            background: linear-gradient(180deg, rgba(20, 184, 166, 0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border-color: rgba(20, 184, 166, 0.5);
+            box-shadow: 0 0 60px rgba(20, 184, 166, 0.3), inset 0 0 20px rgba(20, 184, 166, 0.1);
+            transform: scale(1.05);
+            z-index: 2;
+        }
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 80px rgba(20, 184, 166, 0.4);
+        }
+        .pricing-card.popular .pricing-name {
+            color: var(--teal);
+        }
+        .pricing-card.advanced {
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        .pricing-card.advanced .pricing-name {
+            color: var(--purple);
+        }
+        .pricing-card.advanced .pricing-features li i {
+            color: var(--purple);
+        }
+        
+        /* Ribbon */
+        .ribbon {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--teal);
+            color: #000;
+            padding: 6px 40px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            transform: rotate(45deg);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .pricing-card.advanced .ribbon {
+            background: var(--purple);
+            color: #fff;
+        }
+        
+        .pricing-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        @media (max-width: 992px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+                gap: 50px;
+            }
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            .pricing-card.popular:hover {
+                transform: translateY(-8px);
+            }
+        }
+    </style>
+
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header fade-up">
+                <h2 class="section-title" data-i18n="priceTitle">Bảng Giá Tool VEO 3</h2>
+                <p class="section-desc" data-i18n="priceDesc">Chọn gói phù hợp nhất với nhu cầu của bạn. Đầu tư một lần, sử dụng dài lâu.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Gói Standard -->
+                <div class="pricing-card fade-up">
+                    <div class="pricing-header">
+                        <div class="pricing-name" data-i18n="p1Name">Gói Standard</div>
+                        <div class="pricing-duration" data-i18n="p1Duration">(1 tháng)</div>
+                        <div class="pricing-price"><span data-i18n="p1Price">2.0</span><span class="pricing-currency" data-i18n="priceUnit">Triệu</span></div>
+                        <div class="pricing-anchor" data-i18n="p1Anchor">Chỉ ~6k/ngày</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p1F1">Tự động tạo prompt chuẩn VEO 3</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p1F2">Text to Video / Image to Video</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p1F3">Tạo video từ nhiều thành phần</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p1F4">Giữ bối cảnh nhân vật đồng bộ</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p1F5">Hướng dẫn sử dụng cơ bản</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p1F6"></span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p1F7"></span></li>
+                    </ul>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyH8pO661V_XXQMo1CTwBh65BPQTGCNLuwojPMz6mopntQA/viewform?usp=sharing&ouid=115157287162651414700" target="_blank" class="btn btn-secondary pricing-btn" data-i18n="btnBuy">Đăng ký ngay</a>
+                </div>
+
+                <!-- Gói Pro -->
+                <div class="pricing-card popular fade-up" style="transition-delay: 0.1s;">
+                    <div class="ribbon" data-i18n="badgePopular">Bán Chạy</div>
+                    <div class="pricing-header">
+                        <div class="pricing-name" data-i18n="p2Name">Gói Pro</div>
+                        <div class="pricing-duration" data-i18n="p2Duration">(1 năm)</div>
+                        <div class="pricing-price"><span data-i18n="p2Price">3.0</span><span class="pricing-currency" data-i18n="priceUnit">Triệu</span></div>
+                        <div class="pricing-anchor" data-i18n="p2Anchor">Chỉ ~8k/ngày</div>
+                        <p data-i18n="p2Choice" style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 12px; font-weight: 600;">🔥 80% người dùng chọn gói này</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> <strong data-i18n="p2F1">Tất cả tính năng gói Standard</strong></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p2F2">Tặng prompt nâng cao</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p2F3">Tặng trợ lý GPT viết kịch bản video</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p2F4">Tăng tốc quy trình tạo video</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p2F5">Hỗ trợ qua nhóm Zalo</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p2F6"></span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p2F7"></span></li>
+                    </ul>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyH8pO661V_XXQMo1CTwBh65BPQTGCNLuwojPMz6mopntQA/viewform?usp=sharing&ouid=115157287162651414700" target="_blank" class="btn btn-primary pricing-btn" data-i18n="btnBuy">Đăng ký ngay</a>
+                </div>
+
+                <!-- Gói Advanced -->
+                <div class="pricing-card advanced fade-up" style="transition-delay: 0.2s;">
+                    <div class="ribbon" data-i18n="badgePopular">Bán Chạy</div>
+                    <div class="pricing-header">
+                        <div class="pricing-name" data-i18n="p3Name">Gói Advanced</div>
+                        <div class="pricing-duration" data-i18n="p3Duration">(3 năm)</div>
+                        <div class="pricing-price"><span data-i18n="p3Price">4.5</span><span class="pricing-currency" data-i18n="priceUnit">Triệu</span></div>
+                        <div class="pricing-anchor" data-i18n="p3Anchor">Chỉ ~5k/ngày</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> <strong data-i18n="p3F1">Tất cả tính năng gói Pro</strong></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p3F2">Tham gia cộng đồng MMO/Creator</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p3F3">Tặng khóa học xây kênh video</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p3F4">Hỗ trợ tư vấn 1-1</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p3F5">Đồng hành phát triển nội dung dài hạn</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p3F6"></span></li>
+                        <li><i class="fa-solid fa-check"></i> <span data-i18n="p3F7"></span></li>
+                    </ul>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyH8pO661V_XXQMo1CTwBh65BPQTGCNLuwojPMz6mopntQA/viewform?usp=sharing&ouid=115157287162651414700" target="_blank" class="btn btn-primary pricing-btn" style="background: var(--purple); border-color: var(--purple);" data-i18n="btnBuy">Đăng ký ngay</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Payment Section -->
+    <style>
+        .payment-section {
+            padding: 80px 0 120px;
+        }
+        .payment-box {
+            background: rgba(20, 20, 22, 0.6);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .payment-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--teal), var(--purple), transparent);
+        }
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .qr-col {
+            display: flex;
+            justify-content: center;
+        }
+        .qr-wrapper {
+            background: rgba(255,255,255,0.02);
+            padding: 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 30px rgba(20, 184, 166, 0.1);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 260px;
+        }
+        .qr-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+        .payment-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .info-val {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-val.highlight {
+            color: var(--teal);
+            font-size: 1.15rem;
+        }
+        .copy-btn {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            color: var(--teal);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .copy-btn:hover {
+            background: var(--teal);
+            color: #000;
+        }
+        .payment-note {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding: 12px;
+            background: rgba(139, 92, 246, 0.05);
+            border-left: 3px solid var(--purple);
+            border-radius: 4px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        .btn-zalo {
+            display: block;
+            text-align: center;
+            width: 100%;
+            margin-top: 16px;
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0068FF, #00A3FF);
+            box-shadow: 0 10px 20px rgba(0, 104, 255, 0.3);
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
+        .btn-zalo:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 104, 255, 0.5);
+            color: #fff;
+            filter: brightness(1.1);
+        }
+        @media (max-width: 768px) {
+            .payment-grid { grid-template-columns: 1fr; gap: 30px; }
+            .payment-box { padding: 30px 20px; }
+            .info-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+        }
+    </style>
+
+    <section class="payment-section" id="cta">
+        <div class="container">
+            <div class="section-header fade-up">
+                <h2 class="section-title" data-i18n="payTitle">Thanh toán & Kích hoạt</h2>
+                <p class="section-desc" data-i18n="payDesc">Sở hữu VEO 3 và bắt đầu hành trình sáng tạo nội dung ngay hôm nay.</p>
+            </div>
+
+            <div class="payment-box fade-up">
+                <div class="payment-grid">
+                    <!-- QR Code -->
+                    <div class="qr-col">
+                        <div class="qr-wrapper">
+                            <img src="assets/qr-vcb.png" alt="QR Code Vietcombank">
+                        </div>
+                    </div>
+                    
+                    <!-- Info -->
+                    <div class="payment-info">
+                        <div class="info-row">
+                            <div class="info-label">Ngân hàng</div>
+                            <div class="info-val">Vietcombank</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Chủ tài khoản</div>
+                            <div class="info-val">CAO YOU SERAY DUOK</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Số tài khoản</div>
+                            <div class="info-val highlight">
+                                <span id="stk">0501000175406</span>
+                                <button class="copy-btn" onclick="copySTK()"><i class="fa-regular fa-copy"></i> Copy</button>
+                            </div>
+                        </div>
+                        <div class="info-row" style="background: rgba(20, 184, 166, 0.05); border-bottom-color: rgba(20, 184, 166, 0.2);">
+                            <div class="info-label" style="color: var(--teal)">Nội dung chuyển khoản</div>
+                            <div class="info-val">Họ tên - SĐT</div>
+                        </div>
+                        
+                        <div class="payment-note">
+                            <p><i class="fa-solid fa-circle-check" style="color: var(--teal); margin-right: 6px;"></i> <span data-i18n="payNote1">Sau khi chuyển khoản, vui lòng chụp màn hình và gửi qua Zalo.</span></p>
+                            <p style="margin-top: 8px;"><i class="fa-solid fa-bolt" style="color: #ffbd2e; margin-right: 6px;"></i> <span data-i18n="payNote2">Kích hoạt trong 5–10 phút sau thanh toán</span></p>
+                            <p style="margin-top: 8px;"><i class="fa-solid fa-headset" style="color: var(--purple); margin-right: 6px;"></i> <span data-i18n="payNote3">Hỗ trợ 1-1 qua Zalo</span></p>
+                            <p style="margin-top: 8px;"><i class="fa-solid fa-shield-halved" style="color: #27c93f; margin-right: 6px;"></i> <span data-i18n="payNote4">Cam kết kích hoạt hoặc hoàn tiền</span></p>
+                            <p style="margin-top: 8px;"><i class="fa-solid fa-handshake-angle" style="color: #ff5f56; margin-right: 6px;"></i> <span data-i18n="payNote5">Hỗ trợ 1-1 đến khi sử dụng được</span></p>
+                        </div>
+
+                        <a href="https://zalo.me/0983535077" target="_blank" class="btn-zalo">
+                            <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> <span data-i18n="btnZalo">Gửi xác nhận qua Zalo</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOMO Section -->
+    <section class="section-padding" style="background: rgba(10, 0, 0, 0.6); border-top: 1px solid rgba(255, 95, 86, 0.2); border-bottom: 1px solid rgba(255, 95, 86, 0.2); text-align: center; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; background: radial-gradient(circle, rgba(255, 95, 86, 0.1) 0%, transparent 60%); pointer-events: none;"></div>
+        <div class="container fade-up" style="position: relative; z-index: 2;">
+            <h2 class="section-title" data-i18n="fomoTitle" style="font-size: clamp(2rem, 4vw, 3rem); text-shadow: 0 0 30px rgba(255, 95, 86, 0.6); max-width: 900px; margin: 0 auto 20px;">
+                <span style="color: #ff5f56;">Đối thủ</span> của bạn đang đọc trang này. Ngay lúc này.
+            </h2>
+            <p class="section-desc" data-i18n="fomoDesc" style="font-size: 1.4rem; color: #fff; margin-bottom: 10px;">
+                Câu hỏi duy nhất: Ai sẽ bấm nút trước?.
+            </p>
+            <p class="section-desc" data-i18n="fomoDesc2" style="font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 40px; font-weight: 500;">
+                Bạn có 2 lựa chọn: bấm trước… hoặc bị bỏ lại.
+            </p>
+            
+            <div style="margin-bottom: 40px; padding: 30px; background: rgba(0,0,0,0.4); border-radius: 20px; border: 1px solid rgba(255, 95, 86, 0.3); display: inline-block;">
+                <p data-i18n="countdownTop" style="color: #ffbd2e; font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Ưu đãi sẽ biến mất khi đồng hồ về 0</p>
+                <div class="countdown-timer countdown-glow" style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; color: #fff; letter-spacing: 4px; font-family: monospace;">00:15:00</div>
+                <p data-i18n="countdownBottom" style="color: var(--text-secondary); font-size: 1rem; margin-top: 15px;">Chỉ còn số lượng giới hạn trong hôm nay</p>
+            </div>
+
+            <div>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyH8pO661V_XXQMo1CTwBh65BPQTGCNLuwojPMz6mopntQA/viewform?usp=sharing&ouid=115157287162651414700" target="_blank" class="btn btn-primary btn-fomo" data-i18n="btnFomo">Tôi không muốn tụt lại phía sau</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta-section section-padding" style="background: linear-gradient(180deg, transparent, rgba(20, 184, 166, 0.05)); text-align: center; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="container">
+            <div class="fade-up">
+                <h2 class="section-title" data-i18n="finalTitle" style="font-size: 2.2rem; max-width: 800px; margin: 0 auto 24px;">Bạn sẽ tiếp tục edit thủ công hay bắt đầu tạo video thông minh?</h2>
+                <p class="section-desc" data-i18n="finalDesc" style="margin-bottom: 32px;">Hàng ngàn người đã chuyển đổi và tiết kiệm hàng giờ mỗi ngày. Đừng để đối thủ bỏ xa bạn.</p>
+                <div class="btn-group" style="justify-content: center;">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScpyH8pO661V_XXQMo1CTwBh65BPQTGCNLuwojPMz6mopntQA/viewform?usp=sharing&ouid=115157287162651414700" target="_blank" class="btn btn-primary" style="padding: 18px 40px; font-size: 1.2rem;" data-i18n="btnBuy">Mở quyền truy cập VEO 3 ngay</a>
+                </div>
+                <p data-i18n="urgencyFinal" style="color: #ff5f56; font-size: 0.95rem; font-weight: 600; margin-top: 20px;">🔥 Giá có thể thay đổi bất cứ lúc nào</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Early Access CTA Section -->
+    <section class="section-padding" style="text-align: center; border-top: 1px solid rgba(255,255,255,0.05); background: linear-gradient(180deg, rgba(20, 184, 166, 0.04), rgba(108, 92, 231, 0.05));">
+        <div class="container">
+            <div class="fade-up">
+                <h2 class="section-title" data-i18n="earlyAccessTitle" style="max-width: 820px; margin: 0 auto 16px;">Nhận quyền truy cập sớm miễn phí</h2>
+                <p class="section-desc" data-i18n="earlyAccessDesc" style="max-width: 720px; margin: 0 auto 28px;">Ưu tiên cho những người đăng ký trước khi mở public.</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSe2uduJtROWNQP-ypANbLFnn8tprkfWj-CxNY4hQyOowuTzVA/viewform?usp=sharing&ouid=115157287162651414700" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding: 16px 36px;" data-i18n="earlyAccessBtn">Đăng ký ngay</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 VEO 3. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Chat widget (kịch bản: sales_script.md) -->
+    <div id="veo3-chat-root" class="chatbot-widget" aria-hidden="true">
+        <button type="button" class="veo3-chat-toggle" id="veo3-chat-toggle" aria-expanded="false" aria-controls="veo3-chat-panel" title="Chat VEO 3">
+            <i class="fa-solid fa-comments" aria-hidden="true"></i>
+        </button>
+        <div class="veo3-chat-panel" id="veo3-chat-panel" role="dialog" aria-modal="true" aria-labelledby="veo3-chat-title" hidden>
+            <div class="veo3-chat-head">
+                <div>
+                    <h3 id="veo3-chat-title">VEO 3</h3>
+                    <span>Em hỗ trợ nhanh — không ép mua đâu ạ</span>
+                </div>
+                <button type="button" class="veo3-chat-close" id="veo3-chat-close" aria-label="Đóng chat">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="veo3-chat-messages" id="veo3-chat-messages" aria-live="polite"></div>
+            <div class="veo3-chat-faq-grid" id="veo3-chat-faq-grid" aria-label="Câu hỏi thường gặp"></div>
+            <div class="veo3-chat-quick" id="veo3-chat-quick"></div>
+            <form class="veo3-chat-form" id="veo3-chat-form">
+                <input type="text" id="veo3-chat-input" autocomplete="off" placeholder="Nhập câu hỏi…" maxlength="500" />
+                <button type="submit">Gửi</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // --- Translations ---
+        const i18n = {
+            vi: {
+                heroBadge: "VEO 3 - VŨ KHÍ TẠO VIDEO",
+                heroTitle: "Từ 0 Subscriber Đến<br>Triệu View Trong 30 Ngày",
+                heroDesc: "Không cần học edit. Không cần team. Không cần thiết bị đắt tiền.<br><br><span style=\"color: #fff; font-weight: 600; font-size: 1.25rem; display: inline-block; padding-left: 16px; border-left: 3px solid #06b6d4; margin-top: 8px;\">VEO3 biến ý tưởng thô thành video viral chỉ trong vài phút.</span>",
+                btnFree: "Tôi muốn sở hữu VEO 3 ngay",
+                btnDemo: "Chiếm lĩnh TikTok ngay hôm nay",
+                urgencyHero: "⚠️ Chỉ còn 47 slot cuối cùng trong ngày",
+                socialProof: "⏱ Khuyến mãi kết thúc sau: <span id='countdown'>15:00</span>",
+                resultTitle: "Kết quả thực tế",
+                resultDesc: "Không hứa hẹn viển vông. Đây là những con số biết nói từ hàng ngàn nhà sáng tạo đã sử dụng VEO 3.",
+                resultCaption1: "Kênh mới tạo đạt 2.5 Triệu View chỉ sau 7 ngày",
+                resultCaption2: "Tăng trưởng 15,000 Follower tự nhiên không tốn một đồng Ads",
+                resultCaption3: "Chốt đơn liên tục nhờ video viral tiếp cận đúng tệp khách hàng",
+                metric1: "Tiết kiệm thời gian edit",
+                metric2: "Creator đã sử dụng",
+                metric3: "View cao nhất từ 1 video",
+                metric4: "Tạo video đầu tiên",
+                probTitle: "Bạn Đang Trả Cái Giá <span class=\"highlight-premium\">Quá Đắt</span>",
+                probDesc: "Không phải bằng tiền.<br>Mà bằng thứ không thể mua lại được:<br><span style=\"color:#fff; font-weight:700;\">thời gian và năng lượng của bạn.</span>",
+                prob1Title: "3 giờ chỉ để edit 1 video 60 giây",
+                prob1Desc: "Bạn ngồi hàng tiếng đồng hồ cắt ghép,<br>thêm phụ đề, chỉnh màu, chọn nhạc.<br><br>Rồi upload.<br>Rồi 200 views.<br>Rồi muốn đập bàn phím.",
+                prob2Title: "Ý tưởng hay mà không biết cách làm ra video đẹp",
+                prob2Desc: "Bạn biết mình có nội dung tốt.<br><br>Nhưng kỹ năng kỹ thuật không có —<br>Adobe Premiere, CapCut, DaVinci...<br><br>mỗi tool là một cuộc chiến mới.",
+                prob3Title: "Thuê người thì tốn tiền, lại phụ thuộc lịch của họ",
+                prob3Desc: "Freelancer editor giá 300–500K/video.<br><br>Bạn cần 10 video/tháng = 3–5 triệu.<br><br>Chưa kể họ trễ deadline và không hiểu style của bạn.",
+                prob4Title: "Đăng đều đặn 3 tháng — vẫn dưới 1.000 follows",
+                prob4Desc: "Bạn không thiếu cần cù.<br>Bạn thiếu hệ thống.<br><br>Thuật toán không quan tâm bạn chăm chỉ đến đâu —<br>nó chỉ thưởng cho người biết cách chơi.",
+                agitateBadge: "<i class=\"fa-solid fa-sparkles\" style=\"margin-right: 8px;\"></i>SỰ THẬT MÀ ÍT AI DÁM NÓI VỚI BẠN",
+                agitateTitle: "Trong Lúc Bạn<br>Vẫn Đang Loay Hoay...",
+                agitateQuote: "“Đối thủ của bạn đang dùng AI để sản xuất <span class=\"highlight-cyan\">10 video mỗi tuần</span><br>trong khi bạn vẫn đang ngồi cắt từng clip một.”",
+                agitateCard1Title: "Năm 2025, khoảng cách giữa creator dùng AI và creator làm thủ công đang nới rộng ra mỗi ngày.",
+                agitateCard1Desc: "Ai nắm công nghệ sẽ có người xem. Người còn lại sẽ chỉ là một kênh nữa trong hàng triệu kênh không ai nhớ tên.",
+                agitateCard2Title: "TikTok và YouTube đang ưu tiên những kênh vừa đăng đều, vừa ra video chất lượng.",
+                agitateCard2Desc: "Làm thủ công thì chỉ chọn được một trong hai. VEO 3 cho bạn cả hai cùng lúc.",
+                agitateCard3Title: "6 tháng nữa, kênh của đối thủ đã có lượng người theo dõi ổn định.",
+                agitateCard3Desc: "Thuật toán đã quen đẩy họ, còn kênh của bạn vẫn đang chạy từ đầu. Khoảng cách đó không phải không bù được — nhưng càng để lâu càng khó.",
+                bonusBadge: "<i class=\"fa-solid fa-gift\"></i> Bonus cho gói PRO",
+                bonusTitle: "Tặng Bộ Trợ Lý ChatGPT Cho Người Dùng PRO",
+                bonusDesc: "Khi đăng ký gói PRO trở lên, bạn nhận thêm bộ trợ lý GPT hỗ trợ viết kịch bản, prompt video, SEO, ý tưởng content và tự động hóa quy trình sáng tạo.",
+                bonusBtn: "Nhận bộ trợ lý khi đăng ký PRO",
+                solveTitle: "VEO 3 - Vũ Khí Tối Thượng Của Creator",
+                solveDesc: "Không phải một 'công cụ' phức tạp. Đây là đòn bẩy giúp bạn nhân bản bản thân.",
+                solve1Title: "Script → Video trong 8 phút",
+                solve1Desc: "",
+                solve2Title: "AI tối ưu thuật toán viral",
+                solve2Desc: "",
+                solve3Title: "1 Video → 3 nền tảng",
+                solve3Desc: "",
+                solve4Title: "Không cần kỹ năng edit",
+                solve4Desc: "",
+                solve5Title: "Analytics giúp quyết định đúng",
+                solve5Desc: "",
+                solve6Title: "Xây dựng style cá nhân",
+                solve6Desc: "",
+                testiTitle: "Hơn 500+ creator đã sử dụng và tăng trưởng",
+                testiDesc: "Họ đã tiết kiệm hàng ngàn giờ edit và đạt 3.2M views cao nhất cho 1 video với thời gian tạo chưa đến 10 phút.",
+                faqTitle: "Câu hỏi thường gặp",
+                faq1Q: "Tôi hoàn toàn không biết edit video, có dùng được không?",
+                faq1A: "Chắc chắn rồi. VEO 3 được thiết kế với giao diện tối giản nhất. Nếu bạn biết dùng điện thoại cơ bản, bạn có thể dùng công cụ này.",
+                faq2Q: "Video làm ra có phù hợp với TikTok hay Reels không?",
+                faq2A: "Có. Công cụ hỗ trợ mặc định tỷ lệ 9:16 (video dọc) chuyên dụng cho nền tảng video ngắn.",
+                faq3Q: "VEO 3 có thay thế được Editor chuyên nghiệp không?",
+                faq3A: "Không. Nếu bạn cần những hiệu ứng VFX phức tạp hay kỹ xảo điện ảnh, bạn vẫn cần editor. VEO 3 là công cụ giúp làm video thông tin, vlog, chia sẻ một cách NHANH, RÕ RÀNG và CHUẨN CƠ BẢN.",
+                ctaTitle: "Tiết kiệm thời gian edit của bạn",
+                ctaDesc: "Tập trung vào nội dung và kịch bản, để phần kỹ thuật cho VEO 3 lo.",
+                btnFree2: "Tôi muốn sở hữu VEO 3 ngay",
+                payTitle: "Thanh toán & Kích hoạt",
+                payDesc: "Sở hữu VEO 3 và bắt đầu hành trình sáng tạo nội dung ngay hôm nay.",
+                payNote1: "Sau khi chuyển khoản, vui lòng chụp màn hình và gửi qua Zalo.",
+                payNote2: "Kích hoạt trong 5–10 phút sau thanh toán",
+                payNote3: "Hỗ trợ 1-1 qua Zalo",
+                payNote4: "Cam kết kích hoạt hoặc hoàn tiền",
+                payNote5: "Hỗ trợ 1-1 đến khi sử dụng được",
+                btnZalo: "Gửi xác nhận qua Zalo",
+                priceTitle: "Bảng Giá Tool VEO 3",
+                priceDesc: "Chọn gói phù hợp nhất với nhu cầu của bạn. Đầu tư một lần, sử dụng dài lâu.",
+                priceUnit: "Triệu",
+                btnBuy: "Chiếm lĩnh TikTok ngay hôm nay",
+                badgePopular: "Phổ biến nhất",
+                fomoTitle: "Đối thủ của bạn đang đọc trang này. Ngay lúc này.",
+                fomoDesc: "Câu hỏi duy nhất: Ai sẽ bấm nút trước?.",
+                fomoDesc2: "Bạn có 2 lựa chọn: bấm trước… hoặc bị bỏ lại.",
+                btnFomo: "Tôi không muốn tụt lại phía sau",
+                p1Price: "2.0",
+                p1Name: "Gói Standard",
+                p1Duration: "(1 năm)",
+                p1Anchor: "Chỉ ~6k/ngày",
+                p1F1: "Tự động tạo prompt chuẩn VEO 3",
+                p1F2: "Text to Video / Image to Video",
+                p1F3: "Tạo video từ nhiều thành phần",
+                p1F4: "Giữ bối cảnh nhân vật đồng bộ",
+                p1F5: "Hướng dẫn sử dụng cơ bản",
+                p1F6: "",
+                p1F7: "",
+                p2Price: "3.0",
+                p2Name: "Gói Pro",
+                p2Duration: "(1 năm)",
+                p2Anchor: "Chỉ ~8k/ngày",
+                p2Choice: "🔥 80% người dùng chọn gói này",
+                p2F1: "Tất cả tính năng gói Standard",
+                p2F2: "Tặng prompt nâng cao",
+                p2F3: "Tặng trợ lý GPT viết kịch bản video",
+                p2F4: "Tăng tốc quy trình tạo video",
+                p2F5: "Hỗ trợ qua nhóm Zalo",
+                p2F6: "",
+                p2F7: "",
+                p3Price: "4.5",
+                p3Name: "Gói Advanced",
+                p3Duration: "(3 năm)",
+                p3Anchor: "Chỉ ~5k/ngày",
+                p3F1: "Tất cả tính năng gói Pro",
+                p3F2: "Tham gia cộng đồng MMO/Creator",
+                p3F3: "Tặng khóa học xây kênh video",
+                p3F4: "Hỗ trợ tư vấn 1-1",
+                p3F5: "Đồng hành phát triển nội dung dài hạn",
+                p3F6: "",
+                p3F7: "",
+                testiTitle: "Phản hồi từ người dùng VEO 3",
+                testiDesc: "Một vài kết quả và chia sẻ từ những người đã sử dụng công cụ để tạo nội dung nhanh hơn.",
+                testiQ1: "\"Trước đây tôi mất cả buổi để làm một video ngắn, giờ quy trình rõ ràng hơn rất nhiều.\"",
+                testiA1: "Hoàng Anh",
+                testiR1: "Content Creator",
+                testiQ2: "\"Tôi không rành edit nhưng vẫn có thể tạo nội dung đều đặn cho TikTok và Reels.\"",
+                testiA2: "Minh Châu",
+                testiR2: "Chủ shop Online",
+                testiQ3: "\"Tính năng ghép nhiều video ngắn thành nội dung dài giúp tôi tiết kiệm rất nhiều thời gian.\"",
+                testiA3: "Thành Long",
+                testiR3: "YouTuber",
+                testiQ4: "\"Phù hợp cho người mới bắt đầu xây kênh mà chưa biết dùng phần mềm dựng video.\"",
+                testiA4: "Linh Đan",
+                testiR4: "Người mới làm TikTok",
+                testiImgPlaceholder: "Hình ảnh Feedback",
+                finalTitle: "Bạn sẽ tiếp tục edit thủ công hay bắt đầu tạo video thông minh?",
+                finalDesc: "Hàng ngàn người đã chuyển đổi và tiết kiệm hàng giờ mỗi ngày. Đừng để đối thủ bỏ xa bạn.",
+                urgencyFinal: "🔥 Giá có thể thay đổi bất cứ lúc nào",
+                earlyAccessTitle: "Nhận quyền truy cập sớm miễn phí",
+                earlyAccessDesc: "Ưu tiên cho những người đăng ký trước khi mở public.",
+                earlyAccessBtn: "Đăng ký ngay",
+                formTitle: "Đăng Ký Khởi Tạo VEO 3",
+                formDesc: "Điền thông tin của bạn để nhận hướng dẫn kích hoạt ngay lập tức.",
+                formName: "Họ và tên *",
+                formEmail: "Email *",
+                formZalo: "Số Zalo / Telegram *",
+                formPackage: "Gói muốn mua *",
+                formPkgPro: "Gói Pro (Bán chạy nhất) - 3.0 Triệu",
+                formPkgStd: "Gói Standard - 2.0 Triệu",
+                formPkgAdv: "Gói Advanced - 4.5 Triệu",
+                btnSubmit: "Nhận hướng dẫn kích hoạt VEO3",
+                formSuccessMsg: "Đăng ký thành công. Chúng tôi sẽ liên hệ với bạn sớm."
+            },
+            en: {
+                heroBadge: "VEO 3 - VIDEO CREATION WEAPON",
+                heroTitle: "From 0 Subscriber To<br>A Million Views In 30 Days",
+                heroDesc: "No editing skills needed. No team needed. No expensive gear.<br><br><span style=\"color: #fff; font-weight: 600; font-size: 1.25rem; display: inline-block; padding-left: 16px; border-left: 3px solid #06b6d4; margin-top: 8px;\">VEO3 turns raw ideas into viral videos in minutes.</span>",
+                btnFree: "I want VEO 3 right now",
+                btnDemo: "Dominate TikTok today",
+                urgencyHero: "⚠️ Only 47 slots left today",
+                socialProof: "⏱ Offer ends in: <span id='countdown'>15:00</span>",
+                resultTitle: "Real Results",
+                resultDesc: "No empty promises. These are the speaking numbers from thousands of creators using VEO 3.",
+                resultCaption1: "New channel hit 2.5 Million Views in just 7 days",
+                resultCaption2: "Gained 15,000 organic Followers without a single cent on Ads",
+                resultCaption3: "Continuous sales thanks to viral videos targeting the right audience",
+                metric1: "Editing time saved",
+                metric2: "Creators using VEO3",
+                metric3: "Highest views from 1 video",
+                metric4: "To create your first video",
+                probTitle: "You Are Paying <span class=\"highlight-premium\">A Very High Price</span>",
+                probDesc: "Not with money.<br>But with something you can never buy back:<br><span style=\"color:#fff; font-weight:700;\">your time and energy.</span>",
+                prob1Title: "3 hours just to edit a 60-second video",
+                prob1Desc: "You sit for hours cutting, splicing,<br>adding subtitles, grading colors, picking music.<br><br>Then upload.<br>Then get 200 views.<br>Then want to smash the keyboard.",
+                prob2Title: "Great ideas but don't know how to make them look good",
+                prob2Desc: "You know your content is good.<br><br>But you lack the technical skills —<br>Adobe Premiere, CapCut, DaVinci...<br><br>every tool is a new battle.",
+                prob3Title: "Hiring someone is expensive and dependent on their schedule",
+                prob3Desc: "Freelance editors cost $20–$50/video.<br><br>You need 10 videos/month = $200–$500.<br><br>Not to mention they miss deadlines and don't get your style.",
+                prob4Title: "Posting consistently for 3 months — still under 1,000 followers",
+                prob4Desc: "You don't lack diligence.<br>You lack a system.<br><br>The algorithm doesn't care how hard you work —<br>it only rewards those who know how to play the game.",
+                agitateBadge: "<i class=\"fa-solid fa-sparkles\" style=\"margin-right: 8px;\"></i>THE TRUTH NOBODY TELLS YOU",
+                agitateTitle: "While You Are<br>Still Struggling...",
+                agitateQuote: "“Your competitors are using AI to produce <span class=\"highlight-cyan\">10 videos a week</span><br>while you're still manually cutting every single clip.”",
+                agitateCard1Title: "In 2025, the gap between AI creators and manual creators widens every day.",
+                agitateCard1Desc: "Those who grasp technology will own the audience. The rest will just be another channel among millions nobody remembers.",
+                agitateCard2Title: "TikTok and YouTube prioritize channels that post consistently and with high quality.",
+                agitateCard2Desc: "Working manually forces you to choose one. VEO 3 gives you both simultaneously.",
+                agitateCard3Title: "In 6 months, your competitors will have a stable follower base.",
+                agitateCard3Desc: "The algorithm gets used to pushing them, while your channel is still at the starting line. It's not impossible to catch up — but the longer you wait, the harder it gets.",
+                bonusBadge: "<i class=\"fa-solid fa-gift\"></i> Bonus for PRO Plan",
+                bonusTitle: "Free ChatGPT Assistant Suite For PRO Users",
+                bonusDesc: "When upgrading to PRO or above, you get an exclusive suite of GPT assistants for scriptwriting, video prompting, SEO, content ideas, and creative workflow automation.",
+                bonusBtn: "Get the assistants with PRO",
+                solveTitle: "VEO 3 - The Ultimate Creator Weapon",
+                solveDesc: "Not a complex 'tool'. This is the leverage to clone yourself.",
+                solve1Title: "8 Minutes Done",
+                solve1Desc: "Reduce time from 3 hours to 8 minutes for a complete video. Publish immediately without thinking.",
+                solve2Title: "Save 90% Time",
+                solve2Desc: "Spend 90% of your free time creating scripts instead of waiting for beats or subtitles.",
+                solve3Title: "1 Video → 3 Platforms",
+                solve3Desc: "Produce once, automatically optimize framing to cover TikTok, Reels, and YouTube Shorts.",
+                solve4Title: "Goodbye Freelancers",
+                solve4Desc: "Fully control the process. No more dependency, waiting, or wasting money.",
+                solve5Title: "Maintain 3 Videos/Day",
+                solve5Desc: "Turn making videos into a habit as easy as eating candy. Push back laziness and stay consistent.",
+                solve6Title: "Algorithm Favor",
+                solve6Desc: "Consistency is key. Your channel will naturally be boosted by the platform algorithm.",
+                faqTitle: "Frequently Asked Questions",
+                faq1Q: "I don't know how to edit videos at all, can I use it?",
+                faq1A: "Absolutely. VEO 3 is designed with the most minimalist interface. If you can use a smartphone, you can use this tool.",
+                faq2Q: "Are the exported videos suitable for TikTok or Reels?",
+                faq2A: "Yes. The tool defaults to a 9:16 aspect ratio (vertical video) specialized for short video platforms.",
+                faq3Q: "Does VEO 3 replace a professional video editor?",
+                faq3A: "No. If you need complex VFX or cinematic effects, you still need an editor. VEO 3 helps you make informational, vlog, and sharing videos FAST, CLEAR, and to BASIC STANDARDS.",
+                ctaTitle: "Save your editing time",
+                ctaDesc: "Focus on content and scripts, let VEO 3 handle the technical parts.",
+                btnFree2: "I want VEO 3 right now",
+                payTitle: "Payment & Activation",
+                payDesc: "Get VEO 3 and start your content creation journey today.",
+                payNote1: "After transferring, please take a screenshot and send it via Zalo.",
+                payNote2: "Activated within 5–10 minutes after payment",
+                payNote3: "1-on-1 support via Zalo",
+                payNote4: "Activation guaranteed or money back",
+                payNote5: "1-on-1 support until you master it",
+                btnZalo: "Send confirmation via Zalo",
+                priceTitle: "VEO3 Ultra Tool Price List",
+                priceDesc: "Choose the plan that fits your needs. Invest once, use long-term.",
+                priceUnit: "$",
+                btnBuy: "DOMINATE TIKTOK TODAY",
+                badgePopular: "Most Popular",
+                p1Price: "150",
+                p1Name: "STANDARD",
+                p1Duration: "(1 Year)",
+                p1Anchor: "Only ~$0.4/day",
+                p1F1: "Automatically generate optimized VEO3 prompts",
+                p1F2: "Fast Text-to-Video / Image-to-Video creation",
+                p1F3: "Upscale video from 720p to 1080p",
+                p1F4: "Maintain character & scene consistency",
+                p1F5: "Create thousands of videos per day",
+                p1F6: "Basic training & support included",
+                p1F7: "",
+                p2Price: "200",
+                p2Name: "PRO",
+                p2Duration: "(3 Years)",
+                p2Anchor: "Only ~$0.2/day",
+                p2Choice: "🔥 80% of users choose this plan",
+                p2F1: "All features from Standard",
+                p2F2: "Advanced GPT support for video scripting",
+                p2F3: "Built-in image & video editing tools",
+                p2F4: "Install on one device",
+                p2F5: "Free AI/ChatGPT practical course",
+                p2F6: "Affiliate marketing support",
+                p2F7: "Access to private Zalo group",
+                p3Price: "250",
+                p3Name: "ADVANCED",
+                p3Duration: "(5 Years)",
+                p3Anchor: "Only ~$0.15/day",
+                p3F1: "All features from Pro",
+                p3F2: "Access to Affiliate Global Club",
+                p3F3: "Join MMO Club (1 year)",
+                p3F4: "Free YouTube monetization course",
+                p3F5: "Affiliate partnership support",
+                p3F6: "1-on-1 consultation support",
+                p3F7: "",
+                testiTitle: "Feedback from VEO 3 Users",
+                testiDesc: "Some results and insights from those who used the tool to create content faster.",
+                testiQ1: "\"I used to spend half a day on a short video, now the process is much clearer.\"",
+                testiA1: "Hoang Anh",
+                testiR1: "Content Creator",
+                testiQ2: "\"I don't know much about editing but can still create regular content for TikTok and Reels.\"",
+                testiA2: "Minh Chau",
+                testiR2: "Online Seller",
+                testiQ3: "\"The feature to merge short videos into long content saves me a lot of time.\"",
+                testiA3: "Thanh Long",
+                testiR3: "YouTuber",
+                testiQ4: "\"Perfect for beginners building a channel who don't know how to use editing software.\"",
+                testiA4: "Linh Dan",
+                testiR4: "TikTok Beginner",
+                testiImgPlaceholder: "Feedback Image",
+                finalTitle: "Will you keep editing manually or start creating videos smartly?",
+                finalDesc: "Thousands have switched and saved hours every day. Don't let your competitors leave you behind.",
+                urgencyFinal: "🔥 Price may change at any time",
+                earlyAccessTitle: "Get free early access",
+                earlyAccessDesc: "Priority for people who register before the public launch.",
+                earlyAccessBtn: "Register now"
+            }
+        };
+
+        // --- Language Switching Logic ---
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const elementsToTranslate = document.querySelectorAll('[data-i18n]');
+        const mockupInput = document.querySelector('.mockup-input');
+        const mockupBtn = document.querySelector('.mockup-btn');
+
+        function setLanguage(lang) {
+            elementsToTranslate.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key] !== undefined) {
+                    const text = i18n[lang][key];
+                    el.innerHTML = text; // allow rendering strong tag if any
+                    
+                    // Toggle li display if empty to support variable feature counts
+                    if (key.startsWith('p1F') || key.startsWith('p2F') || key.startsWith('p3F')) {
+                        const li = el.closest('li');
+                        if (li) {
+                            li.style.display = text === "" ? "none" : "flex";
+                        }
+                    }
+                }
+            });
+            
+            // Update placeholders & static text in mockup
+            if (lang === 'en') {
+                if(mockupInput) mockupInput.placeholder = "Enter your video idea...";
+                if(mockupBtn) mockupBtn.textContent = "Generate";
+            } else {
+                if(mockupInput) mockupInput.placeholder = "Nhập ý tưởng video của bạn...";
+                if(mockupBtn) mockupBtn.textContent = "Tạo Video";
+            }
+            
+            // Update active button state
+            langBtns.forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Init language based on active button
+        setLanguage('vi');
+
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.getAttribute('data-lang');
+                setLanguage(lang);
+            });
+        });
+
+        // --- Scroll Animations (Intersection Observer) ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const fadeElements = document.querySelectorAll('.fade-up');
+        fadeElements.forEach(el => observer.observe(el));
+
+        // --- Copy Logic ---
+        function copySTK() {
+            const stk = document.getElementById('stk').innerText;
+            navigator.clipboard.writeText(stk).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Đã chép';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        // --- Countdown Timer Logic ---
+        let timer = 15 * 60; // 15 mins
+        setInterval(() => {
+            let minutes = parseInt(timer / 60, 10);
+            let seconds = parseInt(timer % 60, 10);
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+            const displays = document.querySelectorAll('#countdown, .countdown-timer');
+            displays.forEach(display => {
+                if(display.classList.contains('countdown-timer')) {
+                    display.innerHTML = "00:" + minutes + ":" + seconds;
+                } else {
+                    display.innerHTML = minutes + ":" + seconds;
+                }
+            });
+            if (--timer < 0) timer = 15 * 60;
+        }, 1000);
+
+
+    </script>
+    <script>
+        (function () {
+            /* Kịch bản theo sales_script.md */
+            var FORM_WAITLIST = 'https://docs.google.com/forms/d/e/1FAIpQLSe2uduJtROWNQP-ypANbLFnn8tprkfWj-CxNY4hQyOowuTzVA/viewform?usp=sharing&ouid=115157287162651414700';
+            var FORM_PURCHASE = 'https://docs.google.com/forms/d/e/1FAIpQLScpyH8pO661V_XXQMo1CTwBh65BPQTGCNLuwojPMz6mopntQA/viewform?usp=sharing&ouid=115157287162651414700';
+
+            var FAQ = [
+                { id: 'q1', short: 'Không biết edit?', text: 'Dạ em hiểu nỗi ngại của anh/chị. VEO 3 rút gọn phần kỹ thuật để mình tập trung nội dung và hook.\n\nKhông cần là editor pro mới bắt đầu.\n\nAnh/chị đang muốn làm video về sản phẩm hay chia sẻ cá nhân?' },
+                { id: 'q2', short: 'TikTok / Reels?', text: 'Dạ em thấy VEO3 phù hợp với TikTok / Reels / Shorts. Kích thước mặc định là 9:16 nên anh/chị không cần lo format.\n\nAnh/chị đang nhắm mục tiêu nội dung quảng cáo hay content chia sẻ vậy?' },
+                { id: 'q3', short: 'Thay editor pro?', text: 'Dạ em nói thẳng nhé: VEO 3 không thay thế editor chuyên sâu.\n\nNếu cần VFX phức tạp hay dựng phim cao cấp, vẫn cần người làm riêng.\n\nCòn nếu muốn ra clip nhanh, rõ ràng và dễ duy trì, VEO 3 sẽ giúp anh/chị đi nhanh hơn.' },
+                { id: 'q4', short: 'Giá bao nhiêu?', text: 'Dạ em hiểu giá là điều anh/chị cân nhắc. Hiện có 3 gói: 2 triệu, 3 triệu và 4.5 triệu.\n\nQuan trọng là anh/chị muốn tiết kiệm thời gian, giảm đầu việc kỹ thuật hay cần đồng hành lâu dài.\n\nAnh/chị muốn em tư vấn theo nhu cầu đó không?' },
+{  id: 'q5',
+  short: 'Ba gói khác gì?',
+  text: 'Dạ em tư vấn nhanh cho anh/chị nha 👌\n\nNếu anh/chị mới bắt đầu, muốn thử trước cho nhẹ rủi ro thì Standard sẽ hợp hơn. Gói này đủ để ra clip nhanh và ít phải mò kỹ thuật.\n\nNếu muốn làm đều hơn và giảm cảnh ngồi bí ý tưởng hay kẹt prompt thì Pro sẽ đáng tiền hơn nhiều.\n\nCòn Advanced phù hợp với anh/chị muốn đi đường dài và cần hỗ trợ sát hơn trong quá trình làm content.\n\nNói ngắn gọn:\n• Muốn thử nhanh → Standard\n• Muốn làm đều, bớt tự mò → Pro\n• Muốn đi dài và cần hỗ trợ sâu → Advanced'
+},                { id: 'q6', short: 'Bao lâu ra video đầu?', text: 'Dạ em hiểu, nhiều người băn khoăn chuyện này.\n\nNhiều bạn làm theo hướng dẫn có thể ra clip đầu trong cùng buổi.\n\nQuan trọng là ra được cái đầu tiên, rồi mình mới tối ưu tiếp.\n\nAnh/chị muốn em hướng dẫn cách bắt đầu clip đầu luôn không?' },
+                { id: 'q7', short: 'CK xong ai trả lời?', text: 'Dạ em biết phần thanh toán làm nhiều người ngại.\n\nThực tế: điền form, chuyển khoản, gửi bill Zalo, bên em xác nhận trong 24h.\n\nAnh/chị muốn em gửi link danh sách chờ để tiện hơn không?' },
+                { id: 'q8', short: 'Bản quyền / AI?', text: 'Dạ em hiểu câu hỏi này. Mỗi nền tảng có luật riêng, nên mình vẫn nên ưu tiên nhạc/hình sạch.\n\nVEO3 giúp anh/chị làm nhanh, còn phần luật thì nên tự kiểm tra kỹ.\n\nAnh/chị đang dùng cho nội dung cá nhân hay thương hiệu vậy?' },
+                { id: 'q9', short: 'Cài mấy máy?', text: 'Dạ em biết câu này nhiều người hỏi.\n\nHiện mỗi tài khoản dùng cho 1 máy chính để ổn định hơn.\n\nNếu cần đổi máy vì lý do thật sự, bên em có thể hỗ trợ chuyển.\n\nAnh/chị dùng cho cá nhân hay cho team?' },
+                { id: 'q10', short: 'Có cần code?', text: 'Dạ không cần code đâu.\n\nNhiều người mới chỉ cần thử video mẫu trước, rồi mình chỉnh dần.\n\nAnh/chị muốn em gợi ý cách bắt đầu nhanh với VEO3 không?' }
+            ];
+
+            var GREET_FIRST = 'Dạ chào anh/chị, em hiểu cảm giác muốn ra video mà bị kẹt với quá nhiều bước.\n\nNếu anh/chị đang bối rối với ý tưởng, edit hay đăng, nói em chỗ khó nhất đi.\n\nVEO3 sinh ra để giảm phần kỹ thuật — để mình tập trung nội dung.\n\nEm ở đây để hỗ trợ, không ép mua.';
+
+            var GREET_RETURN = 'Dạ quay lại rồi, tốt quá.\n\nCho em biết chỗ anh/chị muốn mình giải thích tiếp: gói, TikTok/Reels hay cách vào danh sách chờ nhanh.';
+
+            var TXT_BUY = 'Dạ em hiểu, nhiều người muốn bớt mệt và không muốn tốn thời gian ngồi edit.\n\nStandard hợp để thử, Pro hợp để ra clip đều, Advanced phù hợp nếu anh/chị muốn hỗ trợ dài hạn.\n\nAnh/chị muốn em tư vấn nhanh theo mục tiêu tiết kiệm thời gian hay cần đồng hành lâu dài?';
+
+            var TXT_SOFT = 'Dạ em hiểu nếu anh/chị muốn suy nghĩ thêm.\n\nGiữ thông tin trước vẫn tốt, mình vẫn có đường đi tiếp khi anh/chị sẵn sàng.\n\nNếu anh/chị muốn, em có thể gửi link danh sách chờ ngay.';
+
+            var root = document.getElementById('veo3-chat-root');
+            var toggle = document.getElementById('veo3-chat-toggle');
+            var closeBtn = document.getElementById('veo3-chat-close');
+            var panel = document.getElementById('veo3-chat-panel');
+            var messagesEl = document.getElementById('veo3-chat-messages');
+            var quickEl = document.getElementById('veo3-chat-quick');
+            var faqGrid = document.getElementById('veo3-chat-faq-grid');
+            var form = document.getElementById('veo3-chat-form');
+            var input = document.getElementById('veo3-chat-input');
+
+            function norm(s) {
+                return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+            }
+
+            function scrollDown() {
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+
+            function appendUser(text) {
+                var el = document.createElement('div');
+                el.className = 'veo3-chat-msg user';
+                el.textContent = text;
+                messagesEl.appendChild(el);
+                scrollDown();
+            }
+
+            function appendBot(text, ctas) {
+                var el = document.createElement('div');
+                el.className = 'veo3-chat-msg bot';
+                el.textContent = text;
+                if (ctas && ctas.length) {
+                    var wrap = document.createElement('div');
+                    wrap.className = 'veo3-chat-cta-wrap';
+                    ctas.forEach(function (c) {
+                        var a = document.createElement('a');
+                        a.href = c.href;
+                        a.target = '_blank';
+                        a.rel = 'noopener noreferrer';
+                        a.className = 'veo3-chat-cta' + (c.secondary ? ' secondary' : '');
+                        a.textContent = c.label;
+                        wrap.appendChild(a);
+                    });
+                    el.appendChild(wrap);
+                }
+                messagesEl.appendChild(el);
+                scrollDown();
+            }
+
+            function renderQuickChips() {
+                quickEl.innerHTML = '';
+                var chips = [
+                    { label: 'Câu hỏi thường gặp', action: 'faq' },
+                    { label: 'Gợi ý gói phù hợp', action: 'recommend' },
+                    { label: 'Muốn đăng ký / mua', action: 'buy' },
+                    { label: 'Chưa sẵn sàng — ghi danh', action: 'soft' },
+                    { label: 'Form chọn gói (đầy đủ)', action: 'purchase' }
+                ];
+                chips.forEach(function (c) {
+                    var b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'veo3-chat-chip';
+                    b.textContent = c.label;
+                    b.addEventListener('click', function () {
+                        if (c.action === 'faq') {
+                            faqGrid.classList.toggle('visible');
+                            return;
+                        }
+                        if (c.action === 'recommend') {
+                            faqGrid.classList.remove('visible');
+                            appendUser(c.label);
+                            respond(getPackageRecommendation(''), null, 'package-recommend');
+                            return;
+                        }
+                        if (c.action === 'buy') {
+                            faqGrid.classList.remove('visible');
+                            appendUser(c.label);
+                            buyFlow();
+                            return;
+                        }
+                        if (c.action === 'soft') {
+                            faqGrid.classList.remove('visible');
+                            appendUser(c.label);
+                            softFlow();
+                            return;
+                        }
+                        if (c.action === 'purchase') {
+                            faqGrid.classList.remove('visible');
+                            appendUser(c.label);
+                            respond('Đây là form chọn gói. Điền xong, bên em sẽ liên hệ lại và hướng dẫn tiếp.', [
+                                { href: FORM_PURCHASE, label: 'Mở form chọn gói' }
+                            ]);
+                        }
+                    });
+                    quickEl.appendChild(b);
+                });
+            }
+
+            function renderFaqGrid() {
+                faqGrid.innerHTML = '';
+                FAQ.forEach(function (item) {
+                    var b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'veo3-chat-chip';
+                    b.textContent = item.short;
+                    b.addEventListener('click', function () {
+                        appendUser(item.short);
+                        respond(item.text);
+                    });
+                    faqGrid.appendChild(b);
+                });
+            }
+
+            var lastUserInput = '';
+            var lastReplyId = '';
+            var typingTimer = null;
+            var typingEl = null;
+
+            function createTypingIndicator() {
+                var el = document.createElement('div');
+                el.className = 'veo3-chat-msg typing';
+                var dots = document.createElement('div');
+                dots.className = 'typing-dots';
+                for (var i = 0; i < 3; i++) {
+                    var dot = document.createElement('span');
+                    dots.appendChild(dot);
+                }
+                el.appendChild(dots);
+                return el;
+            }
+
+            function showTyping() {
+                hideTyping();
+                typingEl = createTypingIndicator();
+                messagesEl.appendChild(typingEl);
+                scrollDown();
+            }
+
+            function hideTyping() {
+                if (typingTimer) {
+                    clearTimeout(typingTimer);
+                    typingTimer = null;
+                }
+                if (typingEl && typingEl.parentNode) {
+                    typingEl.parentNode.removeChild(typingEl);
+                    typingEl = null;
+                }
+            }
+
+            function containsAny(text, items) {
+                return items.some(function (item) {
+                    return text.indexOf(item) !== -1;
+                });
+            }
+
+            function respond(text, ctas, id) {
+                hideTyping();
+                showTyping();
+                typingTimer = setTimeout(function () {
+                    hideTyping();
+                    appendBot(text, ctas);
+                    lastReplyId = id || '';
+                }, 600 + Math.random() * 600);
+            }
+
+            function getPackageRecommendation(text) {
+                if (/dang deu|dang nhieu|quy trinh dang lien tuc|ke hoach content|thuong xuyen|dong doi|nang cap|ban muon xuat ban sieu toc|dang du|an toan/.test(text)) {
+                    return 'Dạ em thấy nếu anh/chị cần ra clip đều và không muốn lạc tay, Pro là lựa chọn phù hợp.\n\nNó có workflow và prompt nâng cao để giảm phần kỹ thuật.\n\nAnh/chị muốn em so sánh nhanh giữa Pro và Advanced không?';
+                }
+                if (/moi bat dau|test|lam quen|chua biet|chua rung|chua biet edit|muon thu|moi ban dau|muon nhanh|thu nghiem/.test(text)) {
+                    return 'Dạ nếu anh/chị muốn thử trước, Standard là lựa chọn nhẹ nhàng.\n\nNó giúp mình ra clip nhanh mà không phải lo quá nhiều.\n\nEm nói thêm về cách bắt đầu với Standard nhé?';
+                }
+                if (/dai han|dong hanh|1-1|tu van|lo trinh|chuyen sau|co hoi|khoa hoc|dong doi|can thuc su|ho tro|tu van chuyen sau|chi tiet/.test(text)) {
+                    return 'Dạ em thấy nếu anh/chị muốn đi dài và cần đồng hành, Advanced hợp hơn.\n\nGói này có tư vấn 1-1 và cộng đồng, để mình không phải làm một mình.\n\nAnh/chị muốn em giải thích ưu điểm Advanced ngay?';
+                }
+                return 'Dạ em tư vấn nhanh cho anh/chị nha 👌\n\nNếu anh/chị mới bắt đầu, muốn thử trước cho nhẹ rủi ro thì chọn Standard là hợp. Gói này đủ để ra clip nhanh, ít phải mò kỹ thuật.\n\nNếu anh/chị muốn làm đều hơn, giảm cảnh ngồi tự nghĩ ý tưởng rồi kẹt ở prompt/kịch bản thì Pro sẽ đáng hơn. Đây là gói em nghĩ hợp nhất với người muốn làm content nghiêm túc.\n\nCòn Advanced phù hợp nếu anh/chị muốn đi đường dài, cần người đồng hành sát hơn và hỗ trợ chi tiết hơn trong quá trình xây kênh.\n\nNói ngắn gọn:\n• Muốn thử nhanh → Standard\n• Muốn làm đều, bớt tự mò → Pro\n• Muốn đi dài và cần hỗ trợ sâu → Advanced\n\nAnh/chị đang ở nhóm nào hơn để em chốt giúp gói phù hợp nhất nè?';
+            }
+
+            function buyFlow() {
+                respond(TXT_BUY, [{ href: FORM_WAITLIST, label: 'Mở form danh sách chờ' }], 'buy');
+            }
+
+            function softFlow() {
+                respond(TXT_SOFT, [{ href: FORM_WAITLIST, label: 'Mở form danh sách chờ' }], 'soft');
+            }
+
+            function replyFromText(raw) {
+                var t = norm(raw);
+                if (!t) return;
+
+                if (t === lastUserInput) {
+                    respond('Dạ em vừa trả lời câu này rồi.\n\nAnh/chị muốn em giải thích rõ hơn phần nào để em hỗ trợ đúng hơn?', null, 'repeat');
+                    return;
+                }
+                lastUserInput = t;
+
+                var buyTriggers = ['muon mua', 'mua ngay', 'dang ky mua', 'chot don', 'dat mua', 'mua luon', 'toi muon mua', 'em muon mua', 'dang ky goi', 'chon goi', 'muon dang ky', 'xin dang ky', 'mua veo', 'lay veo', 'so huu veo', 'mua'];
+                var softTriggers = ['chua san sang', 'chua quyet dinh', 'de toi xem', 'xem thu', 'suy nghi', 'dang nghi', 'chua chac', 'chua du', 'de nghi', 'chua dau'];
+
+                if (containsAny(t, buyTriggers) && !/chua|chua san sang|chua quyet dinh|xem thu|de voi/.test(t)) {
+                    buyFlow();
+                    return;
+                }
+                if (containsAny(t, softTriggers) || /chua san sang|chua quyet dinh|xem thu|de nghi|tam thoi/.test(t)) {
+                    softFlow();
+                    return;
+                }
+                if (/chuyen khoan|thanh toan|zalo|bill|bien lai|hoan tien|khong ai tra loi|tra tien|chuyển khoản|xác nhận thanh toán/.test(t)) {
+                    respond(FAQ[6].text, [{ href: FORM_WAITLIST, label: 'Form danh sách chờ' }], 'payment');
+                    return;
+                }
+                if (/bao lau|video dau|khi nao co video|bao lau ra|thoi gian|trong bao lau/.test(t)) {
+                    respond(FAQ[5].text, null, 'time');
+                    return;
+                }
+                if (/khong biet edit|khong biet dung|co dung duoc|dung duoc khong|edit duoc khong|khong biet lam|khong biet cach|bang cach nao|edit|sua video/.test(t) && /edit|sua video|dung video|dung duoc/.test(t)) {
+                    respond(FAQ[0].text, null, 'edit');
+                    return;
+                }
+                if (/ban quyen|policy|vi pham|copyright|dinh dang|quy dinh/.test(t)) {
+                    respond(FAQ[7].text, null, 'policy');
+                    return;
+                }
+                if (/cau hinh|can may|may yeu|laptop|may tinh|render|may manh|may tam trung|cau hinh toi thieu|cau hinh de xuat|co can may manh/.test(t)) {
+                    respond('Dạ anh/chị yên tâm nha 😄\n\nKhông cần phải đầu tư máy quá mạnh mới dùng được đâu.\n\nChỉ cần máy xử lý ổn các tác vụ đồ họa cơ bản là đã làm được rồi. Quan trọng nhất vẫn là workflow + cách làm nhanh hơn chứ không phải cấu hình thật khủng 👌\n\nMáy mạnh thì xử lý sẽ mượt hơn, còn máy tầm trung hiện tại nhiều anh/chị vẫn dùng để làm content bình thường nha.', null, 'hardware');
+                    return;
+                }
+                if (/cai.*may|dung.*may|doi.*may|chuyen.*may|license.*may|may.*may|may$/.test(t) || /may tinh|cai dat|nhieu may|thiet bi|1 may|1 thiet bi|may moi|may chinh/.test(t)) {
+                    respond(FAQ[8].text, null, 'device');
+                    return;
+                }
+                if (/code|lap trinh|kho dung|phuc tap|ky thuat/.test(t)) {
+                    respond(FAQ[9].text, null, 'code');
+                    return;
+                }
+                if (/tiktok|reels|short|9:16|dang duoc khong|phu hop|clip doc|shorts/.test(t)) {
+                    respond(FAQ[1].text, null, 'format');
+                    return;
+                }
+                if (/gia|bao nhieu|chi phi|trieu|don gia|co dat|re hon|mien phi|free|giá/.test(t)) {
+                    respond(FAQ[3].text, null, 'price');
+                    return;
+                }
+                if (/goi phu hop|nen chon goi|goi nao|goi phu hop cho|goi phu hop|phu hop goi|goi phu hop voi|goi nay phu hop/.test(t)) {
+                    respond(getPackageRecommendation(t), null, 'package-recommend');
+                    return;
+                }
+                if (/goi|gói|ba goi|3 goi|standard|pro|advanced|package|goi nao|chinh sach goi|goi dich vu/.test(t)) {
+                    respond(FAQ[4].text, null, 'package');
+                    return;
+                }
+                if (/chao|hello|hi\b|help|ho tro|xin chao/.test(t)) {
+                    respond(GREET_FIRST, null, 'greeting');
+                    return;
+                }
+
+                respond('Dạ em chưa rõ lắm.\n\nAnh/chị nói rõ hơn chút được không? Ví dụ: cần tư vấn gói, format TikTok/Reels hay cách thanh toán.', null, 'fallback');
+            }
+
+            function openChat() {
+                root.classList.add('open');
+                root.setAttribute('aria-hidden', 'false');
+                panel.hidden = false;
+                toggle.setAttribute('aria-expanded', 'true');
+                if (messagesEl.children.length === 0) {
+                    if (!sessionStorage.getItem('veo3_chat_intro')) {
+                        respond(GREET_FIRST);
+                        sessionStorage.setItem('veo3_chat_intro', '1');
+                    } else {
+                        respond(GREET_RETURN);
+                    }
+                }
+                renderQuickChips();
+                renderFaqGrid();
+                setTimeout(function () { input.focus(); scrollDown(); }, 200);
+            }
+
+            function closeChat() {
+                root.classList.remove('open');
+                root.setAttribute('aria-hidden', 'true');
+                panel.hidden = true;
+                toggle.setAttribute('aria-expanded', 'false');
+                faqGrid.classList.remove('visible');
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openChat();
+                });
+            }
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeChat();
+                });
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var v = input.value.trim();
+                if (!v) return;
+                appendUser(v);
+                input.value = '';
+                replyFromText(v);
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && root.classList.contains('open')) closeChat();
+            });
+        })();
+    </script>
+</body>
+</html>

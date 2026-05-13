@@ -1,0 +1,25 @@
+{
+  "id": "veo3-standard",
+  "name": "VEO 3 — Gói Standard",
+  "slug": "standard",
+  "price_display_vn": "2.0 Triệu",
+  "billing_note": "Theo landing (i18n vi): thời hạn tham chiếu 1 năm; HTML fallback có thể hiển thị khác — cần chốt một bản trước khi publish.",
+  "headline": "Bắt đầu nhanh: ý tưởng → video short-form chuẩn cơ bản",
+  "ideal_for": [
+    "Người mới xây kênh, cần ra video đều mà không rành Premiere/CapCut nâng cao",
+    "Seller / KOL nhỏ cần clip 9:16 để test creative"
+  ],
+  "features": [
+    "Tự động tạo prompt tối ưu cho VEO 3",
+    "Text to Video / Image to Video",
+    "Tạo video từ nhiều thành phần (workflow ghép ý tưởng → output)",
+    "Giữ bối cảnh & nhân vật đồng bộ (nhất quán series)",
+    "Hướng dẫn sử dụng cơ bản"
+  ],
+  "limitations": [
+    "Không nhắm tới VFX điện ảnh hay dựng phim phức tạp",
+    "Không cam kết viral — công cụ hỗ trợ tốc độ & nhất quán"
+  ],
+  "activation": "Đăng ký form → thanh toán → gửi biên lai qua Zalo (theo flow trên landing).",
+  "support_level": "HDSD cơ bản (theo mô tả gói)"
+}

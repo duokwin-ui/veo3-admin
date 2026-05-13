@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - VEO 3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-base: #030303;
+            --bg-surface: #0a0a0a;
+            --teal: #14b8a6;
+            --purple: #8b5cf6;
+            --gradient-primary: linear-gradient(135deg, var(--teal) 0%, var(--purple) 100%);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .form-section, .payment-guide {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid #1a1a1a;
+        }
+
+        .payment-guide {
+            display: none;
+        }
+
+        h1 {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: var(--text-primary);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 10px rgba(20, 184, 166, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Payment Guide Styles */
+        .payment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .payment-header h2 {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.8rem;
+        }
+
+        .order-info {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 3px solid var(--teal);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        .bank-info {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid var(--teal);
+        }
+
+        .bank-info h3 {
+            color: var(--teal);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .bank-detail {
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bank-detail:last-child {
+            border-bottom: none;
+        }
+
+        .bank-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .bank-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: rgba(20, 184, 166, 0.2);
+            border: 1px solid var(--teal);
+            color: var(--teal);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(20, 184, 166, 0.3);
+        }
+
+        .qr-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .qr-section h3 {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .qr-placeholder {
+            background: #1a1a1a;
+            border: 2px dashed var(--teal);
+            border-radius: 8px;
+            padding: 40px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .qr-image {
+            max-width: 250px;
+            max-height: 250px;
+            border-radius: 8px;
+            border: 1px solid var(--teal);
+        }
+
+        .payment-steps {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .payment-steps h3 {
+            color: var(--teal);
+            margin-bottom: 15px;
+        }
+
+        .step {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            border-bottom: 1px solid #333;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            background: var(--teal);
+            color: var(--bg-base);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--teal);
+            color: var(--teal);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(20, 184, 166, 0.1);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--teal);
+        }
+
+        .zalo-link {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .zalo-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .form-section, .payment-guide {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h1>💳 Thanh Toán VEO 3</h1>
+            <p class="subtitle">Nhập thông tin để tạo đơn hàng</p>
+
+            <div class="error-message" id="error-message"></div>
+
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="name">👤 Tên Khách Hàng *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">📱 Số Điện Thoại *</label>
+                    <input type="tel" id="phone" name="phone" placeholder="0123456789" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="zalo">💬 Zalo</label>
+                    <input type="text" id="zalo" name="zalo" placeholder="(nếu có)">
+                </div>
+
+                <div class="form-group">
+                    <label for="product_id">📦 Chọn Sản Phẩm *</label>
+                    <select id="product_id" name="product_id" required>
+                        <option value="">-- Chọn sản phẩm --</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Tiếp Tục Thanh Toán</button>
+            </form>
+        </div>
+
+        <div class="payment-guide">
+            <div class="success-icon">✅</div>
+            
+            <div class="payment-header">
+                <h2>Hướng Dẫn Thanh Toán</h2>
+            </div>
+
+            <div class="order-info">
+                <div class="info-row">
+                    <span class="info-label">Mã Đơn Hàng:</span>
+                    <span class="info-value" id="display-payment-code">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Sản Phẩm:</span>
+                    <span class="info-value" id="display-product">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số Tiền:</span>
+                    <span class="info-value" id="display-amount">--</span>
+                </div>
+            </div>
+
+            <div class="bank-info">
+                <h3>🏦 Thông Tin Ngân Hàng</h3>
+                <div class="bank-detail">
+                    <span class="bank-label">Ngân Hàng:</span>
+                    <span class="bank-value">Vietcombank (VCB)</span>
+                </div>
+                <div class="bank-detail">
+                    <span class="bank-label">Số Tài Khoản:</span>
+                    <div>
+                        <span class="bank-value">1234567890</span>
+                        <button type="button" class="copy-btn" onclick="copyToClipboard('1234567890')">Copy</button>
+                    </div>
+                </div>
+                <div class="bank-detail">
+                    <span class="bank-label">Chủ Tài Khoản:</span>
+                    <span class="bank-value">NGUYEN VAN A</span>
+                </div>
+            </div>
+
+            <div class="qr-section">
+                <h3>📲 QR Chuyển Khoản</h3>
+                <div class="qr-placeholder" id="qr-container">
+                    <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--teal);"></i>
+                    <p>QR Code Chuyển Khoản</p>
+                </div>
+            </div>
+
+            <div class="payment-steps">
+                <h3>📝 Bước Thanh Toán</h3>
+                <div class="step" data-step="1">Chuyển khoản đúng số tiền tới số tài khoản ngân hàng trên</div>
+                <div class="step" data-step="2">Nội dung chuyển khoản: <strong id="payment-code-step">VEO3-xxxxx</strong></div>
+                <div class="step" data-step="3">Gửi ảnh chứng chỉ chuyển khoản qua Zalo (bấm nút bên dưới)</div>
+                <div class="step" data-step="4">Chúng tôi sẽ xác nhận và gửi link kích hoạt sản phẩm</div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn btn-primary" id="send-zalo-btn">
+                    <i class="fab fa-whatsapp"></i> Gửi Bill Qua Zalo
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">
+                    Quay Lại
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load products on page load
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                const select = document.getElementById('product_id');
+                
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.id;
+                    option.textContent = `${product.name} - ${product.price.toLocaleString('vi-VN')}đ`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading products:', error);
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                zalo: document.getElementById('zalo').value,
+                product_id: parseInt(document.getElementById('product_id').value)
+            };
+
+            try {
+                const response = await fetch('/api/thanh-toan/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Lỗi khi tạo đơn hàng');
+                    return;
+                }
+
+                // Show payment guide
+                displayPaymentGuide(data);
+            } catch (error) {
+                showError('Lỗi: ' + error.message);
+            }
+        });
+
+        function displayPaymentGuide(data) {
+            // Hide form, show guide
+            document.querySelector('.form-section').style.display = 'none';
+            document.querySelector('.payment-guide').style.display = 'block';
+
+            // Display order info
+            document.getElementById('display-payment-code').textContent = data.paymentCode;
+            document.getElementById('display-product').textContent = data.productName;
+            document.getElementById('display-amount').textContent = data.productPrice.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('payment-code-step').textContent = data.paymentCode;
+
+            // Store order data for Zalo link
+            window.orderData = data;
+
+            // Setup Zalo button
+            document.getElementById('send-zalo-btn').onclick = () => {
+                const message = `Xin chào, tôi muốn gửi bill thanh toán:\n\nMã Đơn: ${data.paymentCode}\nSản phẩm: ${data.productName}\nSố tiền: ${data.productPrice.toLocaleString('vi-VN')}đ\n\nĐang chờ hướng dẫn kích hoạt.`;
+                const zaloLink = 'https://zalo.me/0336366666'; // TODO: Replace with your Zalo phone number
+                
+                // Copy message to clipboard for user to paste
+                navigator.clipboard.writeText(message).then(() => {
+                    alert('Tin nhắn đã được copy. Bấm OK để mở Zalo.');
+                    window.open(zaloLink, '_blank');
+                });
+            };
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Đã copy!');
+            });
+        }
+
+        // Initialize
+        loadProducts();
+    </script>
+</body>
+</html>

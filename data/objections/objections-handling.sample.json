@@ -1,0 +1,41 @@
+{
+  "_note": "Mẫu xử lý từ chối phù hợp positioning VEO 3: tốc độ, đều đặn, short-form — không overpromise VFX.",
+  "objections": [
+    {
+      "id": "obj-expensive",
+      "objection": "2–4.5 triệu là đắt, CapCut miễn phí mà?",
+      "response": "CapCut giải quyết dựng tay; VEO 3 định vị giảm thời gian lặp lại từ ý tưởng → nhiều video, kèm prompt/GPT và hỗ trợ theo gói. ROI nên tính theo giờ creator/tháng và chi phí thuê editor.",
+      "proof_to_add": ["Bảng so sánh thời gian", "Calculator tiền/giờ"]
+    },
+    {
+      "id": "obj-ai-quality",
+      "objection": "Video AI nhìn không 'xịn', sợ không ai xem.",
+      "response": "VEO 3 không thay editor phim; mục tiêu là video thông tin/vlog/short-form rõ ràng, đăng đều để test hook và chủ đề. Chất lượng tăng khi bạn tối ưu script + nhất quán series.",
+      "proof_to_add": ["3 ví dụ video thật theo niche", "Before/after script"]
+    },
+    {
+      "id": "obj-no-skill",
+      "objection": "Tôi không biết gì về AI/prompt.",
+      "response": "Gói Standard đã có prompt chuẩn VEO3; Pro có prompt nâng cao + GPT kịch bản. Onboarding cơ bản + nhóm Zalo giúp vượt rào cạn đầu.",
+      "proof_to_add": ["Video 3 phút 'tạo video đầu tiên'", "FAQ prompt"]
+    },
+    {
+      "id": "obj-scam-trust",
+      "objection": "Chuyển khoản xong không ai trả lời?",
+      "response": "Quy trình landing: gửi biên lai qua Zalo, cam kết kích hoạt nhanh + hoàn tiền nếu không kích hoạt (ghi điều kiện rõ). Success page: liên hệ trong 24h.",
+      "proof_to_add": ["Số Zalo/brand verified", "Screenshot review Zalo group"]
+    },
+    {
+      "id": "obj-platform-ban",
+      "objection": "TikTok có ban nội dung AI không?",
+      "response": "Không hứa hệ thống nền tảng; khuyến nghị tuân thủ community guidelines, minh bạch khi cần, tránh vi phạm bản quyền nhạc/hình. Bạn có thể thêm mục 'Tuân thủ & bản quyền' trên web.",
+      "proof_to_add": ["Link policy TikTok/YouTube", "Checklist asset sạch"]
+    },
+    {
+      "id": "obj-later",
+      "objection": "Để tôi nghiên cứu đã, lỡ sau này mua.",
+      "response": "Đối thủ vẫn đăng đều mỗi ngày. Gợi ý: đăng ký early access / gói thấp nhất để vào nhóm và học workflow 7 ngày; quyết định nâng cấp sau khi có output thật.",
+      "proof_to_add": ["Early access form", "Lịch mở bán public"]
+    }
+  ]
+}

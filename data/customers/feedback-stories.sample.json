@@ -1,0 +1,40 @@
+{
+  "_note": "Đây là bản mở rộng/ghi chú storytelling dựa trên quote testimonial trên landing. Khi đăng case thật, thay bằng dữ liệu đã được khách đồng ý (tên, số liệu, hình).",
+  "stories": [
+    {
+      "id": "story-creator-time",
+      "persona": "Content Creator",
+      "short_quote": "Trước đây tôi mất cả buổi để làm một video ngắn, giờ quy trình rõ ràng hơn rất nhiều.",
+      "extended_story": "Hoàng Anh từng dựng tay từng cảnh; sau khi chuyển sang workflow VEO 3, cô ấy ưu tiên 80% thời gian cho hook và CTA, phần kỹ thuật lặp lại được chuẩn hóa. Gợi ý metrics minh họa: từ 4h/video → ~45–60 phút end-to-end (cần xác thực với user thật trước khi public).",
+      "source_quote": "landing_testiQ1"
+    },
+    {
+      "id": "story-seller-consistency",
+      "persona": "Chủ shop Online",
+      "short_quote": "Tôi không rành edit nhưng vẫn có thể tạo nội dung đều đặn cho TikTok và Reels.",
+      "extended_story": "Minh Châu cần clip sản phẩm 9:16 đều đặn; gói Pro giúp có prompt và GPT kịch bản để không bí ý tưởng thứ 3, thứ 4 trong tuần. Gợi ý: lịch 1 video/ngày x 5 ngày, reuse template intro/outro.",
+      "source_quote": "landing_testiQ2"
+    },
+    {
+      "id": "story-youtube-repurpose",
+      "persona": "YouTuber",
+      "short_quote": "Tính năng ghép nhiều video ngắn thành nội dung dài giúp tôi tiết kiệm rất nhiều thời gian.",
+      "extended_story": "Thành Long quay nhiều short; workflow ghép short → long giúp tái sử dụng asset cho YouTube dài hoặc compilation. Gợi ý KPI: +30% output/tuần (minh họa — cần số liệu thật).",
+      "source_quote": "landing_testiQ3"
+    },
+    {
+      "id": "story-beginner-friendly",
+      "persona": "Người mới làm TikTok",
+      "short_quote": "Phù hợp cho người mới bắt đầu xây kênh mà chưa biết dùng phần mềm dựng video.",
+      "extended_story": "Linh Đan bắt đầu từ checklist 7 ngày: 1 chủ đề/ngày, 1 format cố định, đo lường retention 3s. Gợi ý nội dung landing tiếp theo: 'lộ trình 7 ngày cho người mới'.",
+      "source_quote": "landing_testiQ4"
+    },
+    {
+      "id": "story-metrics-hero-section",
+      "persona": "Tổng hợp social proof (từ hero/metrics trên landing — chỉ dùng nếu đã verify)",
+      "short_quote": "Kênh mới đạt 2.5M view trong 7 ngày / 15k follower organic / 3.2M view peak 1 video",
+      "extended_story": "Các con số xuất hiện trên landing là để minh họa positioning. Trước khi đưa vào file customers production: lưu proof (screenshot analytics, date range, URL kênh) và consent.",
+      "source_quote": "landing_metrics_captions"
+    }
+  ]
+}
