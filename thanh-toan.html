@@ -356,6 +356,65 @@
             box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);
         }
 
+        .payment-status {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid var(--teal);
+            text-align: center;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .status-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-secondary);
+            border-top: 2px solid var(--teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .payment-status h3 {
+            color: var(--teal);
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .payment-status p {
+            color: var(--text-secondary);
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .payment-status.success h3 {
+            color: #4ade80;
+        }
+
+        .payment-status.error h3 {
+            color: #f87171;
+        }
+
+        .payment-status.success .status-spinner {
+            display: none;
+        }
+
+        .payment-status.error .status-spinner {
+            display: none;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -430,19 +489,23 @@
                     <span class="info-label">Số Tiền:</span>
                     <span class="info-value" id="display-amount">--</span>
                 </div>
+                <div class="info-row">
+                    <span class="info-label">Trạng thái:</span>
+                    <span class="info-value" id="display-payment-status">Đang chờ thanh toán</span>
+                </div>
             </div>
 
             <div class="bank-info">
                 <h3>🏦 Thông Tin Ngân Hàng</h3>
                 <div class="bank-detail">
                     <span class="bank-label">Ngân Hàng:</span>
-                    <span class="bank-value">Vietcombank (VCB)</span>
+                    <span class="bank-value">MSB (Maritime Bank)</span>
                 </div>
                 <div class="bank-detail">
                     <span class="bank-label">Số Tài Khoản:</span>
                     <div>
-                        <span class="bank-value">0501000175406</span>
-                        <button type="button" class="copy-btn" onclick="copyToClipboard('1234567890')">Copy</button>
+                        <span class="bank-value" id="account-number">96886693012464</span>
+                        <button type="button" class="copy-btn" onclick="copyToClipboard('96886693012464')">Copy</button>
                     </div>
                 </div>
                 <div class="bank-detail">
@@ -456,14 +519,23 @@
                 <div class="qr-placeholder" id="qr-container">
                     <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--teal);"></i>
                     <p>QR Code Chuyển Khoản</p>
-                    <img src="https://img.vietqr.io/image/vcb-0501000175406-compact2.png?amount=4500000&addInfo=VEO3" style="width: 250px; margin-top: 20px; border-radius: 12px;" />
+                    <img id="qr-image" src="" style="width: 250px; margin-top: 20px; border-radius: 12px;" />
                 </div>
+            </div>
+
+            <div class="payment-status" id="payment-status-section" style="display: none;">
+                <div class="status-header">
+                    <div class="status-spinner" id="status-spinner"></div>
+                    <h3 id="status-title">Đang chờ thanh toán...</h3>
+                </div>
+                <p id="status-message">Website đang tự động kiểm tra giao dịch mỗi 5 giây. Vui lòng không tắt trang.</p>
+                <p id="status-code">Mã đơn: <strong id="status-payment-code">--</strong></p>
             </div>
 
             <div class="payment-steps">
                 <h3>📝 Bước Thanh Toán</h3>
                 <div class="step" data-step="1">Chuyển khoản đúng số tiền tới số tài khoản ngân hàng trên</div>
-                <div class="step" data-step="2">Nội dung chuyển khoản: <strong id="payment-code-step">VEO3-xxxxx</strong></div>
+                <div class="step" data-step="2">Nội dung chuyển khoản: <strong id="payment-code-step">VEOxxxxx</strong></div>
                 <div class="step" data-step="3">Gửi ảnh chứng chỉ chuyển khoản qua Zalo (bấm nút bên dưới)</div>
                 <div class="step" data-step="4">Chúng tôi sẽ xác nhận và gửi link kích hoạt sản phẩm</div>
             </div>
@@ -540,9 +612,25 @@
             document.getElementById('display-product').textContent = data.productName;
             document.getElementById('display-amount').textContent = data.productPrice.toLocaleString('vi-VN') + 'đ';
             document.getElementById('payment-code-step').textContent = data.paymentCode;
+            document.getElementById('display-payment-status').textContent = 'Đang chờ thanh toán';
+            document.getElementById('display-payment-status').style.color = '#14b8a6';
+
+            // Generate dynamic QR code with proper URL encoding
+            const encodedPaymentCode = encodeURIComponent(data.paymentCode);
+            const qrUrl = `https://img.vietqr.io/image/msb-96886693012464-compact2.png?amount=${data.productPrice}&addInfo=${encodedPaymentCode}`;
+            console.log('[QR Code] Generated QR URL:', qrUrl);
+            console.log('[QR Code] PaymentCode:', data.paymentCode);
+            document.getElementById('qr-image').src = qrUrl;
+
+            // Show payment status section
+            document.getElementById('payment-status-section').style.display = 'block';
+            document.getElementById('status-payment-code').textContent = data.paymentCode;
 
             // Store order data for Zalo link
             window.orderData = data;
+
+            // Start polling payment status
+            startPaymentPolling(data.paymentCode);
 
             // Setup Zalo button
             document.getElementById('send-zalo-btn').onclick = () => {
@@ -558,6 +646,77 @@
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        let paymentPollingInterval = null;
+        let paymentPollingTimeout = null;
+
+        function startPaymentPolling(paymentCode) {
+            stopPaymentPolling();
+            console.log('polling started', paymentCode);
+
+            // Update both status displays
+            document.getElementById('display-payment-status').textContent = 'Đang chờ thanh toán';
+            document.getElementById('display-payment-status').style.color = '#14b8a6';
+            document.getElementById('status-title').textContent = 'Đang chờ thanh toán...';
+            document.getElementById('payment-status-section').className = 'payment-status';
+
+            const checkPayment = async () => {
+                console.log('checking payment', paymentCode);
+                try {
+                    const response = await fetch(`/api/check-payment/${paymentCode}`);
+                    const result = await response.json();
+
+                    if (response.ok && result.success && result.paid) {
+                        console.log('payment success', paymentCode);
+                        document.getElementById('display-payment-status').textContent = 'Thanh toán thành công';
+                        document.getElementById('display-payment-status').style.color = '#4ade80';
+                        document.getElementById('status-title').textContent = 'Thanh toán thành công';
+                        document.getElementById('status-message').textContent = 'Đang chuyển hướng...';
+                        document.getElementById('payment-status-section').className = 'payment-status success';
+
+                        // Hide Zalo button on success
+                        document.getElementById('send-zalo-btn').style.display = 'none';
+
+                        alert('Thanh toán thành công');
+                        stopPaymentPolling();
+                        setTimeout(() => {
+                            window.location.href = '/success.html';
+                        }, 3000);
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        console.error('check-payment error', response.status, result);
+                    }
+                } catch (error) {
+                    console.error('check-payment failed', error);
+                }
+            };
+
+            checkPayment();
+            paymentPollingInterval = setInterval(checkPayment, 5000);
+            paymentPollingTimeout = setTimeout(() => {
+                stopPaymentPolling();
+                document.getElementById('display-payment-status').textContent = 'Chưa nhận được thanh toán';
+                document.getElementById('display-payment-status').style.color = '#f87171';
+                document.getElementById('status-title').textContent = 'Chưa nhận được thanh toán';
+                document.getElementById('status-message').textContent = 'Vui lòng liên hệ hỗ trợ hoặc gửi bill qua Zalo.';
+                document.getElementById('payment-status-section').className = 'payment-status error';
+                showError('Chưa nhận được thanh toán');
+            }, 5 * 60 * 1000);
+        }
+
+        function stopPaymentPolling() {
+            if (paymentPollingInterval) {
+                clearInterval(paymentPollingInterval);
+                paymentPollingInterval = null;
+            }
+            if (paymentPollingTimeout) {
+                clearTimeout(paymentPollingTimeout);
+                paymentPollingTimeout = null;
+            }
+            console.log('polling stopped');
         }
 
         function showError(message) {
