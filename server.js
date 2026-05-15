@@ -225,11 +225,12 @@ async function triggerEmailSequence(email) {
 // --- END EMAIL SEQUENCE ---
 
 // --- ORDER CONFIRM EMAIL ---
-const orderConfirmHtml = (productName, amount) => `
+const orderConfirmHtml = (productName, amount, paymentCode) => `
 <p>Chào anh/chị,</p>
 <p>Cảm ơn anh/chị đã quan tâm. Đơn hàng của anh/chị đã được tạo thành công.</p>
 <p><b>Thông tin đơn hàng:</b><br>
 - Sản phẩm: ${productName}<br>
+- Mã đơn hàng: ${paymentCode}<br>
 - Tổng thanh toán: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</p>
 <p><b>Hướng dẫn nhận hàng:</b><br>
 Anh/chị vui lòng kiểm tra Zalo hoặc chờ cuộc gọi từ đội ngũ để kích hoạt tài khoản ngay nhé.<br>
@@ -239,7 +240,7 @@ Nếu có vấn đề gì, cứ phản hồi trực tiếp qua email này.</p>
 Đội ngũ VEO3</p>
 `;
 
-async function triggerOrderConfirmEmail(email, productName, amount) {
+async function triggerOrderConfirmEmail(email, productName, amount, paymentCode) {
   if (!resend) return;
 
   const isTest = email.includes('+test');
@@ -251,15 +252,15 @@ async function triggerOrderConfirmEmail(email, productName, amount) {
       from: fromEmail,
       to: [destinationEmail],
       subject: 'Xác nhận đơn hàng VEO3 - Bắt đầu ngay',
-      html: orderConfirmHtml(productName, amount)
+      html: orderConfirmHtml(productName, amount, paymentCode)
     });
     if (error) {
-      console.error('Error sending Order Confirm to', destinationEmail, ':', error);
+      console.error(`Error sending Order Confirm ${destinationEmail}:`, error);
     } else {
-      console.log('Order Confirm sent to', destinationEmail);
+      console.log(`Order Confirm sent to ${destinationEmail}`);
     }
   } catch (err) {
-    console.error('Exception sending Order Confirm to', destinationEmail, ':', err.message);
+    console.error(`Error sending Order Confirm ${destinationEmail}:`, err.message);
   }
 }
 // --- END ORDER CONFIRM EMAIL ---
@@ -391,7 +392,7 @@ app.post('/api/orders', (req, res) => {
           if (err) console.error('Error updating stock:', err.message);
           
           if (customer && customer.email) {
-            await triggerOrderConfirmEmail(customer.email, product.name, amount);
+            await triggerOrderConfirmEmail(customer.email, product.name, amount, payment_code);
           }
 
           res.json({ id: orderId });
@@ -472,6 +473,7 @@ app.post('/api/thanh-toan/create', (req, res) => {
             
             // Trigger the email sequence here after creating the order
             await triggerEmailSequence(email);
+            await triggerOrderConfirmEmail(email, product.name, product.price, paymentCode);
 
             res.json({
               orderId: this.lastID,
