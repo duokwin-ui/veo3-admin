@@ -3,6 +3,18 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const https = require('https');
+const fs = require('fs');
+const { Resend } = require('resend');
+
+// Initialize Resend
+let resend;
+try {
+  const resendApiKey = fs.readFileSync(path.join(__dirname, 'resend_config.txt'), 'utf8').trim();
+  resend = new Resend(resendApiKey);
+  console.log('Resend initialized.');
+} catch (err) {
+  console.error('Error reading Resend API key:', err.message);
+}
 
 const customFetch = global.fetch || ((url, options = {}) => new Promise((resolve, reject) => {
   const parsedUrl = new URL(url);
@@ -62,6 +74,182 @@ app.get('/thanh-toan', (req, res) => {
   res.sendFile(path.join(__dirname, 'thanh-toan.html'));
 });
 
+// Test Email Route
+app.post('/api/test-email', async (req, res) => {
+  const { to, subject, html } = req.body;
+  if (!resend) return res.status(500).json({ error: 'Resend not initialized' });
+  if (!to) return res.status(400).json({ error: 'Missing destination email (to)' });
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: [to],
+      subject: subject || 'Test Email from VEO 3',
+      html: html || '<p>This is a test email sent from VEO 3 using Resend.</p>'
+    });
+
+    if (error) {
+      return res.status(400).json({ error });
+    }
+    
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- EMAIL SEQUENCE ---
+const email1Html = `
+<p>Chào anh/chị,</p>
+<p>Thật ra, em rất vui vì anh/chị đã quan tâm và đăng ký.</p>
+<p>Em là Đội ngũ VEO3.</p>
+<p>Em ở đây để giúp anh/chị giải quyết một vấn đề cực kỳ đau đầu: làm video quá chậm.</p>
+<p>Anh/chị không cần phải tốn 3 tiếng đồng hồ chỉ cho một video ngắn nữa.</p>
+<p>Trong vài ngày tới, em sẽ gửi cho anh/chị những cách thực chiến nhất để làm content nhanh hơn, ra số nhanh hơn.<br>
+Không lý thuyết suông.<br>
+Chỉ có sự thật và kết quả.</p>
+<p>Anh/chị hãy chú ý hộp thư để chờ email tiếp theo của em nhé.</p>
+<p>Hẹn gặp lại anh/chị,<br>
+Đội ngũ VEO3</p>
+`;
+
+const email2Html = `
+<p>Chào anh/chị,</p>
+<p>Vấn đề không phải là anh/chị thiếu ý tưởng.<br>
+Anh/chị thất bại vì mỗi video mất quá nhiều thời gian để làm.</p>
+<p>Em thấy rất nhiều người đang kẹt đoạn này. <br>
+Cứ cặm cụi ngồi cắt ghép, chỉnh sửa từng khung hình trên điện thoại.</p>
+<p>Nhưng thật ra...<br>
+Trong lúc anh/chị còn ngồi hì hục edit,<br>
+Người khác đã dùng AI để đăng 5–10 video mỗi ngày.</p>
+<p>Đơn giản thôi: <br>
+Khán giả không quan tâm anh/chị edit mượt thế nào. <br>
+Họ quan tâm ai xuất hiện nhiều hơn, cung cấp giá trị đều đặn hơn.</p>
+<p>Anh/chị đừng cố làm cho mọi thứ hoàn hảo ngay từ đầu.<br>
+Cứ làm trước.<br>
+Done trước rồi tối ưu sau.</p>
+<p>Cái giá phải trả cho việc quá cầu toàn chính là sự chậm chạp.<br>
+Và sự chậm chạp sẽ khiến anh/chị bị đối thủ bỏ xa.</p>
+<p>Ngày mai, em sẽ chỉ cho anh/chị cách để giải quyết triệt để vấn đề này. <br>
+Cách để anh/chị xuất bản video chỉ trong vài phút.</p>
+<p>Đừng bỏ lỡ email ngày mai nhé.</p>
+`;
+
+const email3Html = `
+<p>Chào anh/chị,</p>
+<p>Hôm qua em đã nói về việc tốc độ quan trọng như thế nào.<br>
+Nếu không làm bây giờ, anh/chị sẽ tiếp tục dậm chân tại chỗ.<br>
+AI không thay thế anh/chị, nhưng người dùng AI sẽ.</p>
+<p>Đó là lý do em tạo ra VEO3.</p>
+<p>VEO3 là công cụ AI hỗ trợ anh/chị biến ý tưởng thành video hoàn chỉnh chỉ trong vài phút. <br>
+Không cần phải là một editor chuyên nghiệp.</p>
+<p>Lợi ích thật sự khi anh/chị dùng VEO3:<br>
+- Không cần biết edit.<br>
+- Không cần học CapCut hay Premiere phức tạp.<br>
+- Không cần thuê editor (vừa tốn tiền, vừa chậm deadline lại không đúng ý).</p>
+<p>Anh/chị chỉ cần nhập ý tưởng, VEO3 sẽ lo phần nặng nhọc nhất.<br>
+Để anh/chị có thể tập trung thời gian vào việc tạo ra doanh thu.</p>
+<p>Đã đến lúc anh/chị lấy lại thời gian của mình và scale quy trình làm content.</p>
+<p>Bắt đầu dùng VEO3 ngay tại đây:<br>
+👉 <a href="http://localhost:3000/thanh-toan">Đăng ký VEO3</a></p>
+<p>Hẹn gặp anh/chị ở bên trong,<br>
+Đội ngũ VEO3</p>
+`;
+
+async function triggerEmailSequence(email) {
+  console.log("triggerEmailSequence started");
+
+  if (!resend) {
+    console.log('Resend is not initialized, skipping email sequence.');
+    return;
+  }
+
+  const isTest = email.includes('+test');
+  const delay2Days = 2 * 24 * 60 * 60 * 1000;
+  const delay3Days = 3 * 24 * 60 * 60 * 1000; // Total 3 days from start
+  
+  // Lấy email gốc nếu có +test (vd: kha+test@gmail.com -> kha@gmail.com)
+  const destinationEmail = isTest ? email.replace(/\+[^@]+/, '') : email;
+
+  const sendEmail = async (subject, html, label) => {
+    try {
+      console.log(`Sending ${label} to ${destinationEmail}`);
+      const { data, error } = await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: [destinationEmail],
+        subject: subject,
+        html: html
+      });
+      if (error) {
+        console.error(`Error sending ${label} to`, email, ':', error);
+      } else {
+        console.log(`${label} sent to`, email, ':', subject);
+      }
+    } catch (err) {
+      console.error(`Exception sending ${label} to`, email, ':', err.message);
+    }
+  };
+
+  if (isTest) {
+    console.log(`Scheduling sequence for ${email} (Test mode: true)`);
+    await sendEmail('Chào anh/chị. Đây là điều anh/chị cần biết.', email1Html, 'Email 1');
+    await sendEmail('Sự thật: Anh/chị không thất bại vì thiếu ý tưởng', email2Html, 'Email 2');
+    await sendEmail('Đã đến lúc tăng tốc (và đây là vũ khí của anh/chị)', email3Html, 'Email 3');
+  } else {
+    console.log(`Scheduling sequence for ${email} (Test mode: false)`);
+    await sendEmail('Chào anh/chị. Đây là điều anh/chị cần biết.', email1Html, 'Email 1');
+
+    setTimeout(() => {
+      sendEmail('Sự thật: Anh/chị không thất bại vì thiếu ý tưởng', email2Html, 'Email 2');
+    }, delay2Days);
+
+    setTimeout(() => {
+      sendEmail('Đã đến lúc tăng tốc (và đây là vũ khí của anh/chị)', email3Html, 'Email 3');
+    }, delay3Days);
+  }
+}
+// --- END EMAIL SEQUENCE ---
+
+// --- ORDER CONFIRM EMAIL ---
+const orderConfirmHtml = (productName, amount) => `
+<p>Chào anh/chị,</p>
+<p>Cảm ơn anh/chị đã quan tâm. Đơn hàng của anh/chị đã được tạo thành công.</p>
+<p><b>Thông tin đơn hàng:</b><br>
+- Sản phẩm: ${productName}<br>
+- Tổng thanh toán: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</p>
+<p><b>Hướng dẫn nhận hàng:</b><br>
+Anh/chị vui lòng kiểm tra Zalo hoặc chờ cuộc gọi từ đội ngũ để kích hoạt tài khoản ngay nhé.<br>
+Nếu có vấn đề gì, cứ phản hồi trực tiếp qua email này.</p>
+<p>Bắt tay vào làm ngay nhé, đừng chần chừ.</p>
+<p>Hẹn gặp anh/chị bên trong,<br>
+Đội ngũ VEO3</p>
+`;
+
+async function triggerOrderConfirmEmail(email, productName, amount) {
+  if (!resend) return;
+
+  const isTest = email.includes('+test');
+  const destinationEmail = isTest ? email.replace(/\+[^@]+/, '') : email;
+
+  try {
+    console.log(`Sending Order Confirm to ${destinationEmail}`);
+    const { data, error } = await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: [destinationEmail],
+      subject: 'Xác nhận đơn hàng VEO3 - Bắt đầu ngay',
+      html: orderConfirmHtml(productName, amount)
+    });
+    if (error) {
+      console.error('Error sending Order Confirm to', destinationEmail, ':', error);
+    } else {
+      console.log('Order Confirm sent to', destinationEmail);
+    }
+  } catch (err) {
+    console.error('Exception sending Order Confirm to', destinationEmail, ':', err.message);
+  }
+}
+// --- END ORDER CONFIRM EMAIL ---
+
 // API Routes
 // Products
 app.get('/api/products', (req, res) => {
@@ -119,18 +307,18 @@ app.get('/api/customers/:id', (req, res) => {
 });
 
 app.post('/api/customers', (req, res) => {
-  const { name, phone, zalo } = req.body;
-  db.run('INSERT INTO customers (name, phone, zalo) VALUES (?, ?, ?)',
-    [name, phone, zalo], function(err) {
+  const { name, phone, email, zalo } = req.body;
+  db.run('INSERT INTO customers (name, phone, email, zalo) VALUES (?, ?, ?, ?)',
+    [name, phone, email, zalo], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ id: this.lastID });
   });
 });
 
 app.put('/api/customers/:id', (req, res) => {
-  const { name, phone, zalo } = req.body;
-  db.run('UPDATE customers SET name = ?, phone = ?, zalo = ? WHERE id = ?',
-    [name, phone, zalo, req.params.id], function(err) {
+  const { name, phone, email, zalo } = req.body;
+  db.run('UPDATE customers SET name = ?, phone = ?, email = ?, zalo = ? WHERE id = ?',
+    [name, phone, email, zalo, req.params.id], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ changes: this.changes });
   });
@@ -145,7 +333,14 @@ app.delete('/api/customers/:id', (req, res) => {
 
 // Orders
 app.get('/api/orders', (req, res) => {
-  db.all('SELECT * FROM orders', (err, rows) => {
+  const query = `
+    SELECT orders.*, customers.name as customer_name, customers.email as customer_email, products.name as product_name
+    FROM orders
+    LEFT JOIN customers ON orders.customer_id = customers.id
+    LEFT JOIN products ON orders.product_id = products.id
+    ORDER BY orders.id DESC
+  `;
+  db.all(query, (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
@@ -162,19 +357,31 @@ app.post('/api/orders', (req, res) => {
   const { customer_id, product_id, amount, status, payment_code } = req.body;
   
   // Check stock
-  db.get('SELECT stock FROM products WHERE id = ?', [product_id], (err, product) => {
+  db.get('SELECT stock, name FROM products WHERE id = ?', [product_id], (err, product) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!product || product.stock < 1) return res.status(400).json({ error: 'Out of stock' });
     
-    // Insert order
-    db.run('INSERT INTO orders (customer_id, product_id, amount, status, payment_code) VALUES (?, ?, ?, ?, ?)',
-      [customer_id, product_id, amount, status || 'pending', payment_code], function(err) {
+    // Get customer email
+    db.get('SELECT email FROM customers WHERE id = ?', [customer_id], (err, customer) => {
       if (err) return res.status(500).json({ error: err.message });
-      
-      // Decrease stock
-      db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], function(err) {
-        if (err) console.error('Error updating stock:', err.message);
-        res.json({ id: this.lastID });
+
+      // Insert order
+      db.run('INSERT INTO orders (customer_id, product_id, amount, status, payment_code) VALUES (?, ?, ?, ?, ?)',
+        [customer_id, product_id, amount, status || 'pending', payment_code], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        const orderId = this.lastID;
+
+        // Decrease stock
+        db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], async function(err) {
+          if (err) console.error('Error updating stock:', err.message);
+          
+          if (customer && customer.email) {
+            await triggerOrderConfirmEmail(customer.email, product.name, amount);
+          }
+
+          res.json({ id: orderId });
+        });
       });
     });
   });
@@ -215,10 +422,15 @@ app.delete('/api/orders/:id', (req, res) => {
 
 // Thanh toán
 app.post('/api/thanh-toan/create', (req, res) => {
-  const { name, phone, zalo, product_id } = req.body;
+  const { name, phone, email, zalo, product_id } = req.body;
   
-  if (!name || !phone || !product_id) {
+  if (!name || !phone || !email || !product_id) {
     return res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Email không đúng định dạng' });
   }
   
   // Get product info
@@ -241,9 +453,12 @@ app.post('/api/thanh-toan/create', (req, res) => {
           if (err) return res.status(500).json({ error: err.message });
           
           // Decrease stock
-          db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], function(err) {
+          db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], async function(err) {
             if (err) console.error('Error updating stock:', err.message);
             
+            // Trigger the email sequence here after creating the order
+            await triggerEmailSequence(email);
+
             res.json({
               orderId: this.lastID,
               customerId: customerId,
@@ -260,14 +475,14 @@ app.post('/api/thanh-toan/create', (req, res) => {
       
       if (customer) {
         // Update customer if needed
-        db.run('UPDATE customers SET name = ?, zalo = ? WHERE id = ?',
-          [name, zalo, customer.id], (err) => {
+        db.run('UPDATE customers SET name = ?, email = ?, zalo = ? WHERE id = ?',
+          [name, email, zalo, customer.id], (err) => {
           processOrder(customer.id);
         });
       } else {
         // Create new customer
-        db.run('INSERT INTO customers (name, phone, zalo) VALUES (?, ?, ?)',
-          [name, phone, zalo], function(err) {
+        db.run('INSERT INTO customers (name, phone, email, zalo) VALUES (?, ?, ?, ?)',
+          [name, phone, email, zalo], function(err) {
           if (err) return res.status(500).json({ error: err.message });
           processOrder(this.lastID);
         });

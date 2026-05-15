@@ -454,6 +454,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="email">📧 Email *</label>
+                    <input type="email" id="email" name="email" placeholder="email@example.com" required>
+                </div>
+
+                <div class="form-group">
                     <label for="zalo">💬 Zalo</label>
                     <input type="text" id="zalo" name="zalo" placeholder="(nếu có)">
                 </div>
@@ -577,9 +582,16 @@
             const formData = {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
                 zalo: document.getElementById('zalo').value,
                 product_id: parseInt(document.getElementById('product_id').value)
             };
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                showError('Email không đúng định dạng');
+                return;
+            }
 
             try {
                 const response = await fetch('/api/thanh-toan/create', {
