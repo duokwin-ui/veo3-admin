@@ -82,6 +82,10 @@ app.get('/thanh-toan', (req, res) => {
   res.sendFile(path.join(__dirname, 'thanh-toan.html'));
 });
 
+app.get('/success', (req, res) => {
+  res.sendFile(path.join(__dirname, 'success.html'));
+});
+
 // Test Email Route
 app.post('/api/test-email', async (req, res) => {
   const { to, subject, html } = req.body;
