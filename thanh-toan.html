@@ -500,6 +500,15 @@
                 </div>
             </div>
 
+            <div class="qr-section">
+                <h3>📲 QR Chuyển Khoản</h3>
+                <div class="qr-placeholder" id="qr-container">
+                    <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--teal);"></i>
+                    <p>QR Code Chuyển Khoản</p>
+                    <img id="qr-image" src="" style="width: 250px; margin-top: 20px; border-radius: 12px;" />
+                </div>
+            </div>
+
             <div class="bank-info">
                 <h3>🏦 Thông Tin Ngân Hàng</h3>
                 <div class="bank-detail">
@@ -516,15 +525,6 @@
                 <div class="bank-detail">
                     <span class="bank-label">Chủ Tài Khoản:</span>
                     <span class="bank-value">CAO YOU SERAY DUOK</span>
-                </div>
-            </div>
-
-            <div class="qr-section">
-                <h3>📲 QR Chuyển Khoản</h3>
-                <div class="qr-placeholder" id="qr-container">
-                    <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--teal);"></i>
-                    <p>QR Code Chuyển Khoản</p>
-                    <img id="qr-image" src="" style="width: 250px; margin-top: 20px; border-radius: 12px;" />
                 </div>
             </div>
 
@@ -586,6 +586,13 @@
                 zalo: document.getElementById('zalo').value,
                 product_id: parseInt(document.getElementById('product_id').value)
             };
+
+            // Phone validation: only allow 10-11 digits
+            const phoneDigits = formData.phone.replace(/\D/g, '');
+            if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                showError('Số điện thoại phải có 10-11 chữ số');
+                return;
+            }
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(formData.email)) {

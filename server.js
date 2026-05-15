@@ -327,6 +327,17 @@ app.get('/api/customers/:id', (req, res) => {
 
 app.post('/api/customers', (req, res) => {
   const { name, phone, email, zalo } = req.body;
+  
+  if (!name || !phone) {
+    return res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
+  }
+  
+  // Phone validation: only allow 10-11 digits
+  const phoneDigits = phone.replace(/\D/g, '');
+  if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+    return res.status(400).json({ error: 'Số điện thoại phải có 10-11 chữ số' });
+  }
+  
   db.run('INSERT INTO customers (name, phone, email, zalo) VALUES (?, ?, ?, ?)',
     [name, phone, email, zalo], function(err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -336,6 +347,15 @@ app.post('/api/customers', (req, res) => {
 
 app.put('/api/customers/:id', (req, res) => {
   const { name, phone, email, zalo } = req.body;
+  
+  // Phone validation: only allow 10-11 digits (if phone is provided)
+  if (phone) {
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+      return res.status(400).json({ error: 'Số điện thoại phải có 10-11 chữ số' });
+    }
+  }
+  
   db.run('UPDATE customers SET name = ?, phone = ?, email = ?, zalo = ? WHERE id = ?',
     [name, phone, email, zalo, req.params.id], function(err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -384,23 +404,15 @@ app.post('/api/orders', (req, res) => {
     db.get('SELECT email FROM customers WHERE id = ?', [customer_id], (err, customer) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      // Insert order
+        // Insert order
       db.run('INSERT INTO orders (customer_id, product_id, amount, status, payment_code) VALUES (?, ?, ?, ?, ?)',
         [customer_id, product_id, amount, status || 'pending', payment_code], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         
         const orderId = this.lastID;
 
-        // Decrease stock
-        db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], async function(err) {
-          if (err) console.error('Error updating stock:', err.message);
-          
-          if (customer && customer.email) {
-            await triggerOrderConfirmEmail(customer.email, product.name, amount, payment_code);
-          }
-
-          res.json({ id: orderId });
-        });
+        // Note: Email is sent ONLY on payment success, not on order creation
+        res.json({ id: orderId });
       });
     });
   });
@@ -423,13 +435,63 @@ app.put('/api/orders/:id', (req, res) => {
     return res.status(400).json({ error: 'No fields to update' });
   }
   
-  values.push(req.params.id);
-  const query = `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`;
+  // Check if this is a status change to 'success' (for email triggering)
+  const isStatusChangeToSuccess = status === 'success';
   
-  db.run(query, values, function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ changes: this.changes });
-  });
+  // Get current order info before update if we need to send emails
+  if (isStatusChangeToSuccess) {
+    db.get(`
+      SELECT o.*, c.email, c.name as customer_name, p.name as product_name
+      FROM orders o
+      LEFT JOIN customers c ON o.customer_id = c.id
+      LEFT JOIN products p ON o.product_id = p.id
+      WHERE o.id = ?
+    `, [req.params.id], async (err, order) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!order) return res.status(404).json({ error: 'Order not found' });
+      
+      // Only send email if transitioning from non-success to success
+      if (order.status !== 'success' && order.email) {
+        // Update order first
+        values.push(req.params.id);
+        const query = `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`;
+        
+        db.run(query, values, async function(err) {
+          if (err) return res.status(500).json({ error: err.message });
+          
+          // Decrease stock
+          db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [order.product_id], (err) => {
+            if (err) console.error('Error updating stock:', err.message);
+          });
+          
+          // Send emails on success
+          console.log('[admin] Sending confirmation emails for order:', req.params.id);
+          await triggerEmailSequence(order.email);
+          await triggerOrderConfirmEmail(order.email, order.product_name, order.amount, order.payment_code);
+          
+          res.json({ changes: this.changes, emailSent: true });
+        });
+      } else {
+        // No email needed, just update
+        values.push(req.params.id);
+        const query = `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`;
+        
+        db.run(query, values, function(err) {
+          if (err) return res.status(500).json({ error: err.message });
+          res.json({ changes: this.changes });
+        });
+      }
+    });
+  } else {
+    // Regular update without email
+    values.push(req.params.id);
+    const query = `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`;
+    
+    db.run(query, values, function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ changes: this.changes });
+    });
+  }
 });
 
 app.delete('/api/orders/:id', (req, res) => {
@@ -445,6 +507,12 @@ app.post('/api/thanh-toan/create', (req, res) => {
   
   if (!name || !phone || !email || !product_id) {
     return res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
+  }
+
+  // Phone validation: only allow 10-11 digits
+  const phoneDigits = phone.replace(/\D/g, '');
+  if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+    return res.status(400).json({ error: 'Số điện thoại phải có 10-11 chữ số' });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -475,9 +543,9 @@ app.post('/api/thanh-toan/create', (req, res) => {
           db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], async function(err) {
             if (err) console.error('Error updating stock:', err.message);
             
-            // Trigger the email sequence here after creating the order
-            await triggerEmailSequence(email);
-            await triggerOrderConfirmEmail(email, product.name, product.price, paymentCode);
+            // Removed: Email is now sent ONLY on payment success
+            // await triggerEmailSequence(email);
+            // await triggerOrderConfirmEmail(email, product.name, product.price, paymentCode);
 
             res.json({
               orderId: this.lastID,
@@ -588,17 +656,51 @@ app.get('/api/check-payment/:paymentCode', async (req, res) => {
 
     if (foundTransactionByContent) {
       console.log('[check-payment] Found transaction by normalized content, transaction id:', foundTransactionByContent.id);
-      db.run(
-        'UPDATE orders SET status = ? WHERE payment_code = ? AND status = ?',
-        ['success', paymentCode, 'pending'],
-        function (err) {
-          if (err) {
-            console.error('[check-payment] DB update error:', err.stack || err.message);
-            return res.status(500).json({ success: false, error: err.message });
-          }
-          return res.json({ success: true, paid: true, matchedBy: 'normalized-content', transactionId: foundTransactionByContent.id });
+      
+      // First get order info for email
+      db.get(`
+        SELECT o.*, c.email, c.name as customer_name, p.name as product_name
+        FROM orders o
+        LEFT JOIN customers c ON o.customer_id = c.id
+        LEFT JOIN products p ON o.product_id = p.id
+        WHERE o.payment_code = ? AND o.status = 'pending'
+      `, [paymentCode], async (err, order) => {
+        if (err) {
+          console.error('[check-payment] DB query error:', err.message);
+          return res.status(500).json({ success: false, error: err.message });
         }
-      );
+        
+        if (!order) {
+          console.log('[check-payment] Order not found or already processed');
+          return res.json({ success: true, paid: false, reason: 'Order not found or already processed' });
+        }
+        
+        // Update order status to success
+        db.run(
+          'UPDATE orders SET status = ? WHERE id = ?',
+          ['success', order.id],
+          async function (err) {
+            if (err) {
+              console.error('[check-payment] DB update error:', err.message);
+              return res.status(500).json({ success: false, error: err.message });
+            }
+            
+            // Decrease stock
+            db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [order.product_id], (err) => {
+              if (err) console.error('[check-payment] Error updating stock:', err.message);
+            });
+            
+            // Send emails on payment success
+            if (order.email) {
+              console.log('[check-payment] Sending confirmation emails to:', order.email);
+              await triggerEmailSequence(order.email);
+              await triggerOrderConfirmEmail(order.email, order.product_name, order.amount, paymentCode);
+            }
+            
+            return res.json({ success: true, paid: true, matchedBy: 'normalized-content', transactionId: foundTransactionByContent.id });
+          }
+        );
+      });
       return;
     }
 
