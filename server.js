@@ -8,12 +8,20 @@ const { Resend } = require('resend');
 
 // Initialize Resend
 let resend;
-try {
-  const resendApiKey = fs.readFileSync(path.join(__dirname, 'resend_config.txt'), 'utf8').trim();
-  resend = new Resend(resendApiKey);
-  console.log('Resend initialized.');
-} catch (err) {
-  console.error('Error reading Resend API key:', err.message);
+const resendApiKey = process.env.RESEND_API_KEY;
+const fromEmail = process.env.FROM_EMAIL;
+
+if (!resendApiKey) {
+  console.error('CRITICAL ERROR: RESEND_API_KEY environment variable is missing. Email features will be disabled.');
+} else if (!fromEmail) {
+  console.error('CRITICAL ERROR: FROM_EMAIL environment variable is missing. Email features will be disabled.');
+} else {
+  try {
+    resend = new Resend(resendApiKey);
+    console.log(`Resend initialized with FROM_EMAIL: ${fromEmail}`);
+  } catch (err) {
+    console.error('Error initializing Resend:', err.message);
+  }
 }
 
 const customFetch = global.fetch || ((url, options = {}) => new Promise((resolve, reject) => {
@@ -82,7 +90,7 @@ app.post('/api/test-email', async (req, res) => {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: fromEmail,
       to: [to],
       subject: subject || 'Test Email from VEO 3',
       html: html || '<p>This is a test email sent from VEO 3 using Resend.</p>'
@@ -175,7 +183,7 @@ async function triggerEmailSequence(email) {
     try {
       console.log(`Sending ${label} to ${destinationEmail}`);
       const { data, error } = await resend.emails.send({
-        from: 'onboarding@resend.dev',
+        from: fromEmail,
         to: [destinationEmail],
         subject: subject,
         html: html
@@ -234,7 +242,7 @@ async function triggerOrderConfirmEmail(email, productName, amount) {
   try {
     console.log(`Sending Order Confirm to ${destinationEmail}`);
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: fromEmail,
       to: [destinationEmail],
       subject: 'Xác nhận đơn hàng VEO3 - Bắt đầu ngay',
       html: orderConfirmHtml(productName, amount)
