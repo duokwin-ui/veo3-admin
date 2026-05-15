@@ -201,8 +201,14 @@ async function triggerEmailSequence(email) {
   if (isTest) {
     console.log(`Scheduling sequence for ${email} (Test mode: true)`);
     await sendEmail('Chào anh/chị. Đây là điều anh/chị cần biết.', email1Html, 'Email 1');
-    await sendEmail('Sự thật: Anh/chị không thất bại vì thiếu ý tưởng', email2Html, 'Email 2');
-    await sendEmail('Đã đến lúc tăng tốc (và đây là vũ khí của anh/chị)', email3Html, 'Email 3');
+    
+    setTimeout(() => {
+      sendEmail('Sự thật: Anh/chị không thất bại vì thiếu ý tưởng', email2Html, 'Email 2');
+    }, 2000);
+
+    setTimeout(() => {
+      sendEmail('Đã đến lúc tăng tốc (và đây là vũ khí của anh/chị)', email3Html, 'Email 3');
+    }, 5000);
   } else {
     console.log(`Scheduling sequence for ${email} (Test mode: false)`);
     await sendEmail('Chào anh/chị. Đây là điều anh/chị cần biết.', email1Html, 'Email 1');
