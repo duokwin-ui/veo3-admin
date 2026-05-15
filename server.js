@@ -450,37 +450,46 @@ app.put('/api/orders/:id', (req, res) => {
       if (err) return res.status(500).json({ error: err.message });
       if (!order) return res.status(404).json({ error: 'Order not found' });
       
-      // Only send email if transitioning from non-success to success
-      if (order.status !== 'success' && order.email) {
-        // Update order first
-        values.push(req.params.id);
-        const query = `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`;
-        
-        db.run(query, values, async function(err) {
-          if (err) return res.status(500).json({ error: err.message });
-          
-          // Decrease stock
-          db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [order.product_id], (err) => {
-            if (err) console.error('Error updating stock:', err.message);
-          });
-          
-          // Send emails on success
-          console.log('[admin] Sending confirmation emails for order:', req.params.id);
-          await triggerEmailSequence(order.email);
-          await triggerOrderConfirmEmail(order.email, order.product_name, order.amount, order.payment_code);
-          
-          res.json({ changes: this.changes, emailSent: true });
-        });
-      } else {
-        // No email needed, just update
+      // Check if already success - avoid duplicate emails
+      if (order.status === 'success') {
+        console.log(`[admin] Skipping email because order already success: ${order.payment_code}`);
+        // Still update the status (in case it's being re-confirmed)
         values.push(req.params.id);
         const query = `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`;
         
         db.run(query, values, function(err) {
           if (err) return res.status(500).json({ error: err.message });
-          res.json({ changes: this.changes });
+          res.json({ changes: this.changes, emailSent: false, alreadySuccess: true });
         });
+        return;
       }
+      
+      // Transitioning from non-success to success - send emails
+      console.log(`[admin] Manual admin success triggered for ${order.payment_code}`);
+      
+      // Update order first
+      values.push(req.params.id);
+      const query = `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`;
+      
+      db.run(query, values, async function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        console.log(`[admin] Order status updated to success: ${order.payment_code}`);
+        
+        // Decrease stock
+        db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [order.product_id], (err) => {
+          if (err) console.error('[admin] Error updating stock:', err.message);
+        });
+        
+        // Send emails on success
+        if (order.email) {
+          console.log('[admin] Sending confirmation emails to:', order.email);
+          await triggerEmailSequence(order.email);
+          await triggerOrderConfirmEmail(order.email, order.product_name, order.amount, order.payment_code);
+        }
+        
+        res.json({ changes: this.changes, emailSent: true });
+      });
     });
   } else {
     // Regular update without email
@@ -654,61 +663,94 @@ app.get('/api/check-payment/:paymentCode', async (req, res) => {
       return match;
     });
 
-    if (foundTransactionByContent) {
-      console.log('[check-payment] Found transaction by normalized content, transaction id:', foundTransactionByContent.id);
+    // Check if order already has success status (admin manual success)
+    db.get(`
+      SELECT o.*, c.email, c.name as customer_name, p.name as product_name
+      FROM orders o
+      LEFT JOIN customers c ON o.customer_id = c.id
+      LEFT JOIN products p ON o.product_id = p.id
+      WHERE UPPER(o.payment_code) = UPPER(?)
+    `, [paymentCode], (err, existingOrder) => {
+      if (err) {
+        console.error('[check-payment] DB query error:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
       
-      // First get order info for email
-      db.get(`
-        SELECT o.*, c.email, c.name as customer_name, p.name as product_name
-        FROM orders o
-        LEFT JOIN customers c ON o.customer_id = c.id
-        LEFT JOIN products p ON o.product_id = p.id
-        WHERE o.payment_code = ? AND o.status = 'pending'
-      `, [paymentCode], async (err, order) => {
-        if (err) {
-          console.error('[check-payment] DB query error:', err.message);
-          return res.status(500).json({ success: false, error: err.message });
+      // If order exists and is already success, return success (no duplicate emails)
+      if (existingOrder && existingOrder.status === 'success') {
+        console.log('[check-payment] Order already marked as success:', paymentCode);
+        return res.json({ success: true, paid: true, alreadySuccess: true });
+      }
+      
+      // Order doesn't exist or is pending, check SePay for transaction
+      const foundTransactionByContent = transactions.find(tx => {
+        const contentRaw = String(tx.transaction_content || tx.content || tx.description || tx.transfer_content || '').toUpperCase();
+        const contentNormalized = contentRaw.replace(/[^A-Z0-9]/g, '');
+        const match = contentRaw.includes(codeRaw) || contentNormalized.includes(codeNormalized);
+        if (match) {
+          console.log('[check-payment] Content match found:', contentRaw);
         }
-        
-        if (!order) {
-          console.log('[check-payment] Order not found or already processed');
-          return res.json({ success: true, paid: false, reason: 'Order not found or already processed' });
-        }
-        
-        // Update order status to success
-        db.run(
-          'UPDATE orders SET status = ? WHERE id = ?',
-          ['success', order.id],
-          async function (err) {
-            if (err) {
-              console.error('[check-payment] DB update error:', err.message);
-              return res.status(500).json({ success: false, error: err.message });
-            }
-            
-            // Decrease stock
-            db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [order.product_id], (err) => {
-              if (err) console.error('[check-payment] Error updating stock:', err.message);
-            });
-            
-            // Send emails on payment success
-            if (order.email) {
-              console.log('[check-payment] Sending confirmation emails to:', order.email);
-              await triggerEmailSequence(order.email);
-              await triggerOrderConfirmEmail(order.email, order.product_name, order.amount, paymentCode);
-            }
-            
-            return res.json({ success: true, paid: true, matchedBy: 'normalized-content', transactionId: foundTransactionByContent.id });
-          }
-        );
+        return match;
       });
-      return;
-    }
 
-    console.log('[check-payment] No match found by content');
-    return res.json({
-      success: true,
-      paid: false,
-      reason: "paymentCode not found in transaction content"
+      if (foundTransactionByContent) {
+        console.log('[check-payment] Found transaction by normalized content, transaction id:', foundTransactionByContent.id);
+        
+        // First get order info for email (use UPPER() for case-insensitive match)
+        db.get(`
+          SELECT o.*, c.email, c.name as customer_name, p.name as product_name
+          FROM orders o
+          LEFT JOIN customers c ON o.customer_id = c.id
+          LEFT JOIN products p ON o.product_id = p.id
+          WHERE UPPER(o.payment_code) = UPPER(?) AND o.status = 'pending'
+        `, [paymentCode], async (err, order) => {
+          if (err) {
+            console.error('[check-payment] DB query error:', err.message);
+            return res.status(500).json({ success: false, error: err.message });
+          }
+          
+          if (!order) {
+            console.log('[check-payment] Order not found or already processed');
+            return res.json({ success: true, paid: false, reason: 'Order not found or already processed' });
+          }
+          
+          // Update order status to success
+          db.run(
+            'UPDATE orders SET status = ? WHERE id = ?',
+            ['success', order.id],
+            async function (err) {
+              if (err) {
+                console.error('[check-payment] DB update error:', err.message);
+                return res.status(500).json({ success: false, error: err.message });
+              }
+              
+              console.log(`[check-payment] Order status updated to success: ${order.payment_code}`);
+              
+              // Decrease stock
+              db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [order.product_id], (err) => {
+                if (err) console.error('[check-payment] Error updating stock:', err.message);
+              });
+              
+              // Send emails on payment success
+              if (order.email) {
+                console.log('[check-payment] Sending confirmation emails to:', order.email);
+                await triggerEmailSequence(order.email);
+                await triggerOrderConfirmEmail(order.email, order.product_name, order.amount, paymentCode);
+              }
+              
+              return res.json({ success: true, paid: true, matchedBy: 'normalized-content', transactionId: foundTransactionByContent.id });
+            }
+          );
+        });
+        return;
+      }
+
+      console.log('[check-payment] No match found by content');
+      return res.json({
+        success: true,
+        paid: false,
+        reason: "paymentCode not found in transaction content"
+      });
     });
   } catch (error) {
     console.error('[check-payment] catch error:', error.stack || error.message);
