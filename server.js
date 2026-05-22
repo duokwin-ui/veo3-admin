@@ -220,6 +220,11 @@ app.get('/ai-content-starter-kit', (req, res) => {
   res.sendFile(path.join(__dirname, 'digital-product', 'index.html'));
 });
 
+// Digital product checkout route
+app.get('/ai-content-starter-kit/checkout', (req, res) => {
+  res.sendFile(path.join(__dirname, 'digital-product', 'checkout.html'));
+});
+
 // Digital product PDF download route
 app.get('/download-ai-kit', (req, res) => {
   const pdfPath = path.join(__dirname, 'digital-product', 'product-assets', 'AI-Content-Automation-Starter-Kit.pdf');

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - AI Content Automation Starter Kit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .checkout-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .checkout-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .product-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .product-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .product-price {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .trust-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 480px) {
+            .checkout-container {
+                padding: 25px;
+            }
+            .checkout-header h1 {
+                font-size: 1.3rem;
+            }
+            .product-price {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1>Thanh Toán</h1>
+        </div>
+        
+        <div class="product-info">
+            <div class="product-name">AI Content Automation Starter Kit</div>
+            <div class="product-price">149.000đ</div>
+        </div>
+
+        <form id="checkout-form">
+            <div class="form-group">
+                <label for="name">Họ và Tên</label>
+                <input type="text" id="name" name="name" placeholder="Nhập họ tên của bạn" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required>
+            </div>
+
+            <button type="submit" class="checkout-btn">Thanh Toán 149K</button>
+        </form>
+
+        <p class="trust-note">Giao sản phẩm qua email sau khi thanh toán</p>
+        
+        <a href="/ai-content-starter-kit" class="back-link">← Quay lại trang sản phẩm</a>
+    </div>
+
+    <script>
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            if (!name || !email) {
+                alert('Vui lòng nhập đầy đủ thông tin');
+                return;
+            }
+            
+            alert('Tính năng thanh toán đang được phát triển. Vui lòng liên hệ admin.');
+        });
+    </script>
+</body>
+</html>
