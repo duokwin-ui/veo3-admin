@@ -220,6 +220,20 @@ app.get('/ai-content-starter-kit', (req, res) => {
   res.sendFile(path.join(__dirname, 'digital-product', 'index.html'));
 });
 
+// Digital product PDF download route
+app.get('/download-ai-kit', (req, res) => {
+  const pdfPath = path.join(__dirname, 'digital-product', 'product-assets', 'AI-Content-Automation-Starter-Kit.pdf');
+  const fs = require('fs');
+  
+  if (!fs.existsSync(pdfPath)) {
+    console.error('[DOWNLOAD] File not found:', pdfPath);
+    return res.status(404).json({ error: 'File not found' });
+  }
+  
+  console.log('[DOWNLOAD] Serving PDF:', pdfPath);
+  res.download(pdfPath, 'AI-Content-Automation-Starter-Kit.pdf');
+});
+
 // Database
 const db = new sqlite3.Database('brain.db', (err) => {
   if (err) {
