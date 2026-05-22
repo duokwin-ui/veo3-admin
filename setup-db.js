@@ -28,8 +28,16 @@ db.serialize(() => {
     phone TEXT,
     email TEXT,
     zalo TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    telegram_notified_at DATETIME
   )`);
+
+  // Migration: Add telegram_notified_at column if it doesn't exist
+  db.run(`ALTER TABLE customers ADD COLUMN telegram_notified_at DATETIME`, (err) => {
+    if (err && !err.message.includes('duplicate column name')) {
+      console.log('Migration note:', err.message);
+    }
+  });
 
   // Orders table
   db.run(`CREATE TABLE IF NOT EXISTS orders (

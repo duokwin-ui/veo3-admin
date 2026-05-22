@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -23,6 +24,159 @@ if (!resendApiKey) {
     console.error('Error initializing Resend:', err.message);
   }
 }
+
+// --- TELEGRAM AUTO REPLY (POLLING) ---
+let lastUpdateId = 0;
+
+async function sendTelegramReply(chatId, text) {
+  const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+  try {
+    const response = await customFetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text
+      })
+    });
+    const data = await response.json();
+    if (data.ok) {
+      console.log('[POLLING] reply sent');
+    } else {
+      console.error('[POLLING] error - failed to send reply:', data.description);
+    }
+    return data.ok === true;
+  } catch (err) {
+    console.error('[POLLING] error:', err.message);
+    return false;
+  }
+}
+
+async function pollTelegram() {
+  if (!telegramBotToken) return;
+
+  try {
+    const url = `https://api.telegram.org/bot${telegramBotToken}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`;
+    const response = await customFetch(url);
+    const data = await response.json();
+
+    if (data.ok && data.result && data.result.length > 0) {
+      for (const update of data.result) {
+        // Move lastUpdateId AFTER processing to avoid duplicate processing
+        const updateId = update.update_id;
+
+        if (update.message && update.message.text) {
+          const chatId = update.message.chat.id;
+          const rawText = update.message.text.toLowerCase().trim();
+          // Strip trailing punctuation for matching
+          const text = rawText.replace(/[?!.,]+$/, '');
+
+          console.log(`[POLLING] received text = "${text}"`);
+
+          // Only respond if chatId matches TELEGRAM_CHAT_ID
+          if (telegramChatId && String(chatId) !== String(telegramChatId)) {
+            lastUpdateId = updateId;
+            continue;
+          }
+
+          // Who-are-you triggers
+          if (
+            text === 'bạn là ai' ||
+            text === 'ban la ai' ||
+            text === 'who are you'
+          ) {
+            console.log('[POLLING] matched who-are-you');
+            const reply = 'Tôi là VEO3 Notify Bot 🔥 — trợ lý AI đồng hành cùng Duôk trong hệ thống MMO, AI content và automation. Tôi hỗ trợ quản lý khách hàng, nội dung, workflow và các tác vụ tự động hóa.';
+            await sendTelegramReply(chatId, reply);
+          }
+        }
+
+        // Set lastUpdateId AFTER all processing for this update is done
+        lastUpdateId = updateId;
+      }
+    }
+  } catch (err) {
+    console.error('[POLLING] error:', err.message);
+  }
+}
+
+function startTelegramPolling() {
+  if (!telegramBotToken) return;
+
+  console.log('[POLLING] started');
+  setInterval(pollTelegram, 3000);
+}
+// --- END TELEGRAM AUTO REPLY ---
+
+// Initialize Telegram
+const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+
+console.log('[STARTUP] Checking Telegram configuration...');
+console.log('[STARTUP] TELEGRAM_BOT_TOKEN:', telegramBotToken ? `SET (${telegramBotToken.substring(0, 10)}...)` : 'NOT SET');
+console.log('[STARTUP] TELEGRAM_CHAT_ID:', telegramChatId ? 'SET' : 'NOT SET');
+
+if (!telegramBotToken) {
+  console.log('[STARTUP] ⚠️  TELEGRAM_BOT_TOKEN not configured - Telegram notifications disabled');
+} else if (!telegramChatId) {
+  console.log('[STARTUP] ⚠️  TELEGRAM_CHAT_ID not configured - Telegram notifications disabled');
+} else {
+  console.log('[STARTUP] ✅ Telegram notification configured and ready');
+  startTelegramPolling(); // Start polling for incoming messages
+}
+
+// --- TELEGRAM NOTIFICATION HELPER ---
+async function sendTelegramNotification(customerData) {
+  // Skip if Telegram not configured
+  if (!telegramBotToken || !telegramChatId) {
+    console.log('[Telegram] Not configured, skipping notification');
+    return { success: false, reason: 'not_configured' };
+  }
+
+  const { name, phone, email, zalo } = customerData;
+
+  // Format timestamp
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  // Build message with nice formatting
+  const message = `🆕 <b>Khách hàng mới!</b>
+
+👤 <b>Tên:</b> ${name || 'N/A'}
+📱 <b>Phone:</b> ${phone || 'N/A'}
+📧 <b>Email:</b> ${email || 'N/A'}
+💬 <b>Zalo:</b> ${zalo || 'N/A'}
+⏰ <b>Thời gian:</b> ${timeStr} - ${dateStr}`;
+
+  const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+
+  try {
+    const response = await customFetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: telegramChatId,
+        text: message,
+        parse_mode: 'HTML'
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.ok) {
+      console.log(`[Telegram] Notification sent successfully for: ${name} (${phone})`);
+      return { success: true };
+    } else {
+      console.error(`[Telegram] API error:`, data.description || data);
+      return { success: false, reason: 'api_error', detail: data.description };
+    }
+  } catch (err) {
+    console.error(`[Telegram] Failed to send notification:`, err.message);
+    return { success: false, reason: 'network_error', detail: err.message };
+  }
+}
+// --- END TELEGRAM NOTIFICATION HELPER ---
 
 const customFetch = global.fetch || ((url, options = {}) => new Promise((resolve, reject) => {
   const parsedUrl = new URL(url);
@@ -60,12 +214,26 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Digital product landing page route
+app.get('/ai-content-starter-kit', (req, res) => {
+  res.sendFile(path.join(__dirname, 'digital-product', 'index.html'));
+});
+
 // Database
 const db = new sqlite3.Database('brain.db', (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
   } else {
     console.log('Connected to the SQLite database.');
+    
+    // Migration: Add telegram_notified_at column if it doesn't exist
+    db.run(`ALTER TABLE customers ADD COLUMN telegram_notified_at DATETIME`, (migrateErr) => {
+      if (migrateErr && !migrateErr.message.includes('duplicate column name')) {
+        console.log('[Migration] Note:', migrateErr.message);
+      } else if (!migrateErr) {
+        console.log('[Migration] Added telegram_notified_at column to customers table');
+      }
+    });
   }
 });
 
@@ -514,74 +682,153 @@ app.delete('/api/orders/:id', (req, res) => {
 app.post('/api/thanh-toan/create', (req, res) => {
   const { name, phone, email, zalo, product_id } = req.body;
   
+  console.log('[CUSTOMER] Route called - /api/thanh-toan/create');
+  console.log('[CUSTOMER] Received data:', { name, phone, email, zalo, product_id });
+  
   if (!name || !phone || !email || !product_id) {
+    console.log('[CUSTOMER] ERROR: Missing required fields');
     return res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
   }
 
   // Phone validation: only allow 10-11 digits
   const phoneDigits = phone.replace(/\D/g, '');
   if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+    console.log('[CUSTOMER] ERROR: Invalid phone number');
     return res.status(400).json({ error: 'Số điện thoại phải có 10-11 chữ số' });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
+    console.log('[CUSTOMER] ERROR: Invalid email format');
     return res.status(400).json({ error: 'Email không đúng định dạng' });
   }
   
   // Get product info
   db.get('SELECT * FROM products WHERE id = ?', [product_id], (err, product) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!product) return res.status(404).json({ error: 'Sản phẩm không tồn tại' });
-    if (product.stock < 1) return res.status(400).json({ error: 'Hết hàng' });
+    if (err) {
+      console.error('[CUSTOMER] ERROR: Product query failed:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    if (!product) {
+      console.log('[CUSTOMER] ERROR: Product not found');
+      return res.status(404).json({ error: 'Sản phẩm không tồn tại' });
+    }
+    if (product.stock < 1) {
+      console.log('[CUSTOMER] ERROR: Out of stock');
+      return res.status(400).json({ error: 'Hết hàng' });
+    }
+    
+    console.log('[CUSTOMER] Product found:', product.name);
     
     // Check if customer exists by phone
-    db.get('SELECT id FROM customers WHERE phone = ?', [phone], (err, customer) => {
-      if (err) return res.status(500).json({ error: err.message });
+    db.get('SELECT id, telegram_notified_at FROM customers WHERE phone = ?', [phone], (err, customer) => {
+      if (err) {
+        console.error('[CUSTOMER] ERROR: Customer check failed:', err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      
+      console.log('[CUSTOMER] Customer check result:', customer ? `EXISTS (id=${customer.id})` : 'NEW CUSTOMER');
       
       const processOrder = (customerId) => {
+        console.log('[CUSTOMER] Processing order for customerId:', customerId);
+        
         // Generate payment code
         const paymentCode = 'VEO' + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+        console.log('[CUSTOMER] Generated paymentCode:', paymentCode);
         
         // Create order
         db.run('INSERT INTO orders (customer_id, product_id, amount, status, payment_code) VALUES (?, ?, ?, ?, ?)',
           [customerId, product_id, product.price, 'pending', paymentCode], function(err) {
-          if (err) return res.status(500).json({ error: err.message });
+          if (err) {
+            console.error('[CUSTOMER] ERROR: Order insert failed:', err.message);
+            return res.status(500).json({ error: err.message });
+          }
+          
+          console.log('[CUSTOMER] Order created successfully, id:', this.lastID);
           
           // Decrease stock
-          db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], async function(err) {
-            if (err) console.error('Error updating stock:', err.message);
-            
-            // Removed: Email is now sent ONLY on payment success
-            // await triggerEmailSequence(email);
-            // await triggerOrderConfirmEmail(email, product.name, product.price, paymentCode);
+          db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [product_id], function(err) {
+            if (err) console.error('[CUSTOMER] ERROR: Stock update failed:', err.message);
+          });
 
-            res.json({
-              orderId: this.lastID,
-              customerId: customerId,
-              paymentCode: paymentCode,
-              productName: product.name,
-              productPrice: product.price,
-              customerName: name,
-              customerPhone: phone,
-              customerZalo: zalo
-            });
+          console.log('[CUSTOMER] === ORDER COMPLETE, SENDING RESPONSE ===');
+          res.json({
+            orderId: this.lastID,
+            customerId: customerId,
+            paymentCode: paymentCode,
+            productName: product.name,
+            productPrice: product.price,
+            customerName: name,
+            customerPhone: phone,
+            customerZalo: zalo
           });
         });
       };
       
       if (customer) {
-        // Update customer if needed
+        // Customer exists - update info
+        console.log('[CUSTOMER] Existing customer - updating info');
         db.run('UPDATE customers SET name = ?, email = ?, zalo = ? WHERE id = ?',
           [name, email, zalo, customer.id], (err) => {
+          if (err) {
+            console.error('[CUSTOMER] ERROR: Customer update failed:', err.message);
+            return res.status(500).json({ error: err.message });
+          }
+          console.log('[CUSTOMER] Customer info updated');
           processOrder(customer.id);
         });
       } else {
-        // Create new customer
+        // New customer - INSERT FIRST, then send Telegram async
+        console.log('[CUSTOMER] NEW CUSTOMER - Inserting into database');
+        
         db.run('INSERT INTO customers (name, phone, email, zalo) VALUES (?, ?, ?, ?)',
           [name, phone, email, zalo], function(err) {
-          if (err) return res.status(500).json({ error: err.message });
-          processOrder(this.lastID);
+          if (err) {
+            console.error('[CUSTOMER] ERROR: Customer insert failed:', err.message);
+            return res.status(500).json({ error: err.message });
+          }
+          
+          const newCustomerId = this.lastID;
+          console.log('[CUSTOMER] ✅ INSERT SUCCESS, customer id:', newCustomerId);
+          
+          // Fire-and-forget Telegram notification (don't await, don't block)
+          // Use setTimeout to ensure it runs after response is sent
+          setTimeout(() => {
+            console.log('[TELEGRAM] Attempting to send notification for:', name, phone);
+            
+            // Check if already notified (double-check)
+            db.get('SELECT telegram_notified_at FROM customers WHERE id = ?', [newCustomerId], (err, row) => {
+              if (err) {
+                console.error('[TELEGRAM] ERROR: Could not check notified status:', err.message);
+                return;
+              }
+              
+              if (row && row.telegram_notified_at) {
+                console.log('[TELEGRAM] SKIPPED: Customer already notified');
+                return;
+              }
+              
+              // Send Telegram
+              sendTelegramNotification({ name, phone, email, zalo })
+                .then((result) => {
+                  if (result.success) {
+                    console.log('[TELEGRAM] ✅ SUCCESS for:', name, phone);
+                    // Mark as notified
+                    db.run('UPDATE customers SET telegram_notified_at = CURRENT_TIMESTAMP WHERE id = ?', [newCustomerId], (err) => {
+                      if (err) console.error('[TELEGRAM] ERROR: Could not mark as notified:', err.message);
+                    });
+                  } else {
+                    console.log('[TELEGRAM] ❌ ERROR: Failed to send, result:', result);
+                  }
+                })
+                .catch((err) => {
+                  console.error('[TELEGRAM] ❌ EXCEPTION:', err.message);
+                });
+            });
+          }, 100);
+          
+          // Continue with order creation immediately (don't wait for Telegram)
+          processOrder(newCustomerId);
         });
       }
     });
