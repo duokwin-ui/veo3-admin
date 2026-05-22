@@ -302,7 +302,7 @@ app.post('/api/digital/create', (req, res) => {
   );
 });
 
-// API: Check digital product payment status
+// API: Check digital product payment status (read-only, for frontend polling)
 app.get('/api/digital/check/:paymentCode', (req, res) => {
   const { paymentCode } = req.params;
   
@@ -329,6 +329,184 @@ app.get('/api/digital/check/:paymentCode', (req, res) => {
         status: order.status,
         paymentCode: order.payment_code
       });
+    }
+  );
+});
+
+// ==========================================
+// DIGITAL PRODUCT EMAIL FUNCTION
+// ==========================================
+
+async function sendDigitalProductEmail(email, customerName, productName, downloadUrl) {
+  if (!resend || !fromEmail) {
+    console.log('[DIGITAL-EMAIL] Resend not configured, skipping email');
+    return;
+  }
+
+  const emailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h1 { color: #667eea; margin: 0; }
+    .product-card { background: #f8f9fa; border-radius: 10px; padding: 25px; margin-bottom: 25px; }
+    .product-name { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; }
+    .download-btn { display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 16px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
+    .download-btn:hover { opacity: 0.9; }
+    .note { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px; margin-top: 20px; font-size: 0.9rem; color: #92400e; }
+    .footer { text-align: center; margin-top: 30px; font-size: 0.85rem; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✅ Thanh Toán Thành Công!</h1>
+    </div>
+    
+    <p>Xin chào <strong>${customerName}</strong>,</p>
+    <p>Cảm ơn bạn đã mua sản phẩm! Thanh toán của bạn đã được xác nhận thành công.</p>
+    
+    <div class="product-card">
+      <div class="product-name">📦 ${productName}</div>
+      <p style="color: #666; margin-bottom: 15px;">Đơn hàng đã thanh toán thành công</p>
+      <p style="text-align: center;">
+        <a href="${downloadUrl}" class="download-btn">📥 Tải Về Ngay</a>
+      </p>
+    </div>
+    
+    <div class="note">
+      💡 <strong>Lưu ý quan trọng:</strong> Hãy lưu email này để tải lại sản phẩm bất cứ lúc nào. Link tải sẽ hoạt động vĩnh viễn.
+    </div>
+    
+    <div class="footer">
+      <p>AI Content Automation Starter Kit © 2026</p>
+      <p>Email này được gửi tự động. Vui lòng không reply.</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+  try {
+    await resend.emails.send({
+      from: fromEmail,
+      to: email,
+      subject: `✅ Thanh toán thành công - ${productName}`,
+      html: emailHtml,
+    });
+    console.log(`[DIGITAL-EMAIL] Email sent to ${email}`);
+  } catch (err) {
+    console.error('[DIGITAL-EMAIL] Failed to send email:', err.message);
+  }
+}
+
+// API: Check digital product payment with SePay + send email on success
+app.get('/api/digital/check-payment/:paymentCode', async (req, res) => {
+  const { paymentCode } = req.params;
+  const sepayApiKey = process.env.SEPAY_API_KEY;
+
+  console.log('[DIGITAL-CHECK] Checking payment for:', paymentCode);
+
+  // Check if already paid
+  db.get(
+    'SELECT id, status, customer_name, customer_email FROM orders WHERE payment_code = ? AND product_id = ?',
+    [paymentCode, DIGITAL_PRODUCT.id],
+    async (err, order) => {
+      if (err) {
+        console.error('[DIGITAL-CHECK] DB query error:', err.message);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+
+      if (!order) {
+        return res.json({ success: false, paid: false, error: 'Order not found' });
+      }
+
+      // Already paid
+      if (order.status === 'success') {
+        console.log('[DIGITAL-CHECK] Order already paid:', paymentCode);
+        return res.json({ success: true, paid: true, alreadySuccess: true });
+      }
+
+      // No SePay configured - just return current status
+      if (!sepayApiKey) {
+        console.log('[DIGITAL-CHECK] SePay not configured, returning current status');
+        return res.json({ success: true, paid: false, status: order.status });
+      }
+
+      // Check SePay
+      try {
+        const response = await customFetch('https://my.sepay.vn/userapi/transactions/list', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${sepayApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const text = await response.text();
+        if (!response.ok) {
+          console.error('[DIGITAL-CHECK] SePay error:', text);
+          return res.json({ success: true, paid: false, status: order.status });
+        }
+
+        let result;
+        try {
+          result = JSON.parse(text || '{}');
+        } catch {
+          return res.json({ success: true, paid: false, status: order.status });
+        }
+
+        const transactions = Array.isArray(result.data) ? result.data
+          : Array.isArray(result.transactions) ? result.transactions
+          : Array.isArray(result.list) ? result.list
+          : [];
+
+        // Match by payment code content
+        const codeNormalized = paymentCode.toLowerCase().replace(/\s+/g, '');
+        const foundTx = transactions.find(tx => {
+          const contentRaw = (tx.transaction_content || tx.content || tx.description || '') + '';
+          const contentNorm = contentRaw.toLowerCase().replace(/\s+/g, '');
+          return contentNorm.includes(codeNormalized);
+        });
+
+        if (!foundTx) {
+          return res.json({ success: true, paid: false, status: order.status });
+        }
+
+        // Payment matched! Update to success and send email
+        db.run(
+          'UPDATE orders SET status = ?, paid_at = CURRENT_TIMESTAMP WHERE id = ?',
+          ['success', order.id],
+          async (err) => {
+            if (err) {
+              console.error('[DIGITAL-CHECK] Update error:', err.message);
+              return res.status(500).json({ success: false, error: err.message });
+            }
+
+            console.log(`[DIGITAL-CHECK] Order paid: ${paymentCode}`);
+
+            // Send email ONLY on successful payment
+            const downloadUrl = 'https://veo3ai.pro.vn/download-ai-kit';
+            if (order.customer_email) {
+              await sendDigitalProductEmail(
+                order.customer_email,
+                order.customer_name || 'Khách hàng',
+                DIGITAL_PRODUCT.name,
+                downloadUrl
+              );
+            }
+
+            return res.json({ success: true, paid: true });
+          }
+        );
+      } catch (err) {
+        console.error('[DIGITAL-CHECK] Error:', err.message);
+        return res.json({ success: true, paid: false, status: order.status });
+      }
     }
   );
 });

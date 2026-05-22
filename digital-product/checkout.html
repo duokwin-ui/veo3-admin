@@ -364,7 +364,7 @@
                 document.getElementById('countdown').textContent = `Đang chờ thanh toán... (${countdown}s)`;
                 
                 try {
-                    const response = await fetch(`/api/digital/check/${paymentCode}`);
+                    const response = await fetch(`/api/digital/check-payment/${paymentCode}`);
                     const data = await response.json();
                     
                     if (data.paid) {
