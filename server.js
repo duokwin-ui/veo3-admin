@@ -211,6 +211,7 @@ const PORT = 3000;
 
 // Middleware
 app.use(express.static(__dirname));
+app.use('/digital-product', express.static(path.join(__dirname, 'digital-product')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
