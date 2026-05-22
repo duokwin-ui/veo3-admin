@@ -269,7 +269,7 @@
                 Cảm ơn bạn! Đơn hàng của bạn đã được xác nhận.
             </p>
 
-            <a href="/ai-content-starter-kit/cam-on?code=${paymentCode}" class="checkout-btn" style="display: block; text-align: center; text-decoration: none;">
+            <a href="#" id="receive-product-btn" class="checkout-btn" style="display: block; text-align: center; text-decoration: none;">
                 Nhận Sản Phẩm →
             </a>
         </div>
@@ -372,6 +372,9 @@
                         document.getElementById('qr-section').classList.remove('active');
                         document.getElementById('success-section').classList.add('active');
                         updateSteps(3);
+                        
+                        // Update the "Nhận Sản Phẩm" link with payment code
+                        document.getElementById('receive-product-btn').href = '/ai-content-starter-kit/cam-on?code=' + paymentCode;
                     }
                 } catch (err) {
                     console.error('Check error:', err);
