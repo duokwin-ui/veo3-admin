@@ -178,6 +178,58 @@ async function sendTelegramNotification(customerData) {
 }
 // --- END TELEGRAM NOTIFICATION HELPER ---
 
+// --- DIGITAL PRODUCT ORDER NOTIFICATION ---
+async function sendDigitalOrderTelegram(orderData) {
+  // Skip if Telegram not configured
+  if (!telegramBotToken || !telegramChatId) {
+    console.log('[DIGITAL-TELEGRAM] Not configured, skipping');
+    return { success: false, reason: 'not_configured' };
+  }
+
+  const { paymentCode, customerName, customerEmail, amount } = orderData;
+
+  // Format timestamp
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+  // Build message
+  const message = `🟢 <b>Có đơn hàng mới đã thanh toán!</b>
+
+📦 <b>Sản phẩm:</b> AI Content Automation Starter Kit
+💰 <b>Giá:</b> ${amount || '149.000đ'}
+👤 <b>Tên khách:</b> ${customerName || 'N/A'}
+📧 <b>Email khách:</b> ${customerEmail || 'N/A'}
+🔖 <b>Mã đơn:</b> ${paymentCode}
+🕐 <b>Thời gian:</b> ${dateStr} lúc ${timeStr}
+🔗 <b>Link tải:</b> https://veo3ai.pro.vn/download-ai-kit`;
+
+  const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+  try {
+    const response = await customFetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: telegramChatId,
+        text: message,
+        parse_mode: 'HTML'
+      })
+    });
+    const data = await response.json();
+    if (data.ok) {
+      console.log(`[DIGITAL-TELEGRAM] ✅ Notification sent for: ${paymentCode}`);
+      return { success: true };
+    } else {
+      console.error(`[DIGITAL-TELEGRAM] ❌ API error:`, data.description);
+      return { success: false, reason: 'api_error', detail: data.description };
+    }
+  } catch (err) {
+    console.error(`[DIGITAL-TELEGRAM] ❌ Failed:`, err.message);
+    return { success: false, reason: 'network_error', detail: err.message };
+  }
+}
+// --- END DIGITAL PRODUCT ORDER NOTIFICATION ---
+
 const customFetch = global.fetch || ((url, options = {}) => new Promise((resolve, reject) => {
   const parsedUrl = new URL(url);
   const requestOptions = {
@@ -500,6 +552,25 @@ app.get('/api/digital/check-payment/:paymentCode', async (req, res) => {
               );
             }
 
+            // Send Telegram admin notification (fire-and-forget, don't block response)
+            sendDigitalOrderTelegram({
+              paymentCode: paymentCode,
+              customerName: order.customer_name,
+              customerEmail: order.customer_email,
+              amount: '149.000đ'
+            }).then(result => {
+              if (result.success) {
+                // Mark as notified to prevent duplicate sends
+                db.run(
+                  'UPDATE orders SET telegram_digital_notified_at = CURRENT_TIMESTAMP WHERE id = ?',
+                  [order.id],
+                  (err) => { if (err) console.error('[DIGITAL-TELEGRAM] Error marking notified:', err.message); }
+                );
+              }
+            }).catch(err => {
+              console.error('[DIGITAL-TELEGRAM] Error sending notification:', err.message);
+            });
+
             return res.json({ success: true, paid: true });
           }
         );
@@ -542,6 +613,15 @@ const db = new sqlite3.Database('brain.db', (err) => {
         console.log('[Migration] Note:', migrateErr.message);
       } else if (!migrateErr) {
         console.log('[Migration] Added customer_email column to orders table');
+      }
+    });
+
+    // Migration: Add telegram_digital_notified_at column to prevent duplicate notifications
+    db.run(`ALTER TABLE orders ADD COLUMN telegram_digital_notified_at DATETIME`, (migrateErr) => {
+      if (migrateErr && !migrateErr.message.includes('duplicate column name')) {
+        console.log('[Migration] Note:', migrateErr.message);
+      } else if (!migrateErr) {
+        console.log('[Migration] Added telegram_digital_notified_at column to orders table');
       }
     });
   }
