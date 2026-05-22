@@ -256,6 +256,7 @@ const DIGITAL_PRODUCT = {
   description: 'Workflow Content AI Cho Người Mới'
 };
 
+// NOTE: Migrations for digital product columns are in the Database section below
 // API: Create digital product order
 app.post('/api/digital/create', (req, res) => {
   const { name, email } = req.body;
@@ -278,8 +279,8 @@ app.post('/api/digital/create', (req, res) => {
   
   // Store order in database
   db.run(
-    'INSERT INTO orders (customer_id, product_id, amount, status, payment_code) VALUES (?, ?, ?, ?, ?)',
-    [0, DIGITAL_PRODUCT.id, DIGITAL_PRODUCT.price, 'pending', paymentCode],
+    'INSERT INTO orders (customer_id, product_id, amount, status, payment_code, customer_name, customer_email) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [0, DIGITAL_PRODUCT.id, DIGITAL_PRODUCT.price, 'pending', paymentCode, name, email],
     function(err) {
       if (err) {
         console.error('[DIGITAL] ERROR: Order insert failed:', err.message);
@@ -345,6 +346,24 @@ const db = new sqlite3.Database('brain.db', (err) => {
         console.log('[Migration] Note:', migrateErr.message);
       } else if (!migrateErr) {
         console.log('[Migration] Added telegram_notified_at column to customers table');
+      }
+    });
+
+    // Migration: Add customer_name column for digital product orders
+    db.run(`ALTER TABLE orders ADD COLUMN customer_name TEXT`, (migrateErr) => {
+      if (migrateErr && !migrateErr.message.includes('duplicate column name')) {
+        console.log('[Migration] Note:', migrateErr.message);
+      } else if (!migrateErr) {
+        console.log('[Migration] Added customer_name column to orders table');
+      }
+    });
+
+    // Migration: Add customer_email column for digital product orders
+    db.run(`ALTER TABLE orders ADD COLUMN customer_email TEXT`, (migrateErr) => {
+      if (migrateErr && !migrateErr.message.includes('duplicate column name')) {
+        console.log('[Migration] Note:', migrateErr.message);
+      } else if (!migrateErr) {
+        console.log('[Migration] Added customer_email column to orders table');
       }
     });
   }
