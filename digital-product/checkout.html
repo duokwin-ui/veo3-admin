@@ -30,45 +30,63 @@
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+        .step {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e1e1e1;
+        }
+        .step.active {
+            background: #667eea;
+        }
+        .step.done {
+            background: #10b981;
+        }
         .checkout-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         .checkout-header h1 {
             font-family: 'Poppins', sans-serif;
             font-size: 1.5rem;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .product-info {
             background: #f8f9fa;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
         .product-name {
             font-weight: 600;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
         .product-price {
             font-family: 'Poppins', sans-serif;
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #667eea;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .form-group label {
             display: block;
             font-weight: 500;
             color: #555;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .form-group input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 14px;
             border: 2px solid #e1e1e1;
             border-radius: 10px;
             font-size: 1rem;
@@ -81,12 +99,12 @@
         }
         .checkout-btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -94,6 +112,50 @@
         .checkout-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .checkout-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        /* QR Section */
+        .qr-section {
+            display: none;
+            text-align: center;
+        }
+        .qr-section.active {
+            display: block;
+        }
+        .qr-code {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .qr-code img {
+            max-width: 200px;
+            border-radius: 8px;
+        }
+        .payment-info {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .payment-info p {
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .payment-info strong {
+            color: #d97706;
+        }
+        .countdown {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 10px;
         }
         .trust-note {
             text-align: center;
@@ -104,13 +166,23 @@
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
         }
         .back-link:hover {
             text-decoration: underline;
+        }
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
         }
         @media (max-width: 480px) {
             .checkout-container {
@@ -120,55 +192,192 @@
                 font-size: 1.3rem;
             }
             .product-price {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="checkout-container">
-        <div class="checkout-header">
-            <h1>Thanh Toán</h1>
-        </div>
-        
-        <div class="product-info">
-            <div class="product-name">AI Content Automation Starter Kit</div>
-            <div class="product-price">149.000đ</div>
+        <div class="step-indicator">
+            <div class="step active" id="step1"></div>
+            <div class="step" id="step2"></div>
+            <div class="step" id="step3"></div>
         </div>
 
-        <form id="checkout-form">
-            <div class="form-group">
-                <label for="name">Họ và Tên</label>
-                <input type="text" id="name" name="name" placeholder="Nhập họ tên của bạn" required>
+        <!-- Step 1: Form -->
+        <div id="form-section">
+            <div class="checkout-header">
+                <h1>Thanh Toán</h1>
+            </div>
+            
+            <div class="product-info">
+                <div class="product-name">AI Content Automation Starter Kit</div>
+                <div class="product-price">149.000đ</div>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required>
+            <div class="error-message" id="error-message"></div>
+
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="name">Họ và Tên</label>
+                    <input type="text" id="name" name="name" placeholder="Nhập họ tên của bạn" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required>
+                </div>
+
+                <button type="submit" class="checkout-btn" id="submit-btn">Tiếp Tục Thanh Toán</button>
+            </form>
+
+            <p class="trust-note">Giao sản phẩm qua email sau khi thanh toán</p>
+            
+            <a href="/ai-content-starter-kit" class="back-link">← Quay lại trang sản phẩm</a>
+        </div>
+
+        <!-- Step 2: QR Payment -->
+        <div id="qr-section" class="qr-section">
+            <div class="checkout-header">
+                <h1>Quét QR Để Thanh Toán</h1>
+            </div>
+            
+            <div class="payment-info">
+                <p><strong>Số tiền:</strong> <span id="display-amount">149.000đ</span></p>
+                <p><strong>Nội dung CK:</strong> <span id="display-code" style="font-weight: 700; color: #667eea;"></span></p>
+                <p style="font-size: 0.85rem; color: #666; margin-top: 8px;">⚠️ Quý khách vui lòng nhập đúng nội dung chuyển khoản để hệ thống tự động xác nhận.</p>
             </div>
 
-            <button type="submit" class="checkout-btn">Thanh Toán 149K</button>
-        </form>
+            <div class="qr-code">
+                <img id="qr-image" src="" alt="QR Code thanh toán">
+            </div>
 
-        <p class="trust-note">Giao sản phẩm qua email sau khi thanh toán</p>
-        
-        <a href="/ai-content-starter-kit" class="back-link">← Quay lại trang sản phẩm</a>
+            <p class="countdown" id="countdown">Đang chờ thanh toán...</p>
+            <p class="trust-note">Đơn hàng sẽ được xác nhận tự động trong vài phút</p>
+            
+            <a href="/ai-content-starter-kit/checkout" class="back-link">← Huỷ và quay lại</a>
+        </div>
+
+        <!-- Step 3: Success -->
+        <div id="success-section" class="qr-section">
+            <div class="checkout-header">
+                <h1>✅ Thanh Toán Thành Công!</h1>
+            </div>
+            
+            <p style="text-align: center; color: #333; margin-bottom: 20px;">
+                Cảm ơn bạn! Đơn hàng của bạn đã được xác nhận.
+            </p>
+
+            <a href="/ai-content-starter-kit/cam-on?code=${paymentCode}" class="checkout-btn" style="display: block; text-align: center; text-decoration: none;">
+                Nhận Sản Phẩm →
+            </a>
+        </div>
     </div>
 
     <script>
+        // VietQR bank config - UPDATE THIS WITH YOUR BANK
+        const VIETQR_BANK = 'msb'; // Bank code (e.g., mb: MB Bank, vcb: Vietcombank, tcb: Techcombank)
+        const VIETQR_ACCOUNT = '96886693012464'; // Your account number
+        
+        let paymentCode = '';
+        let checkInterval = null;
+        
+        // Step indicators
+        function updateSteps(step) {
+            document.getElementById('step1').className = step >= 1 ? (step > 1 ? 'step done' : 'step active') : 'step';
+            document.getElementById('step2').className = step >= 2 ? (step > 2 ? 'step done' : 'step active') : 'step';
+            document.getElementById('step3').className = step >= 3 ? 'step done' : 'step';
+        }
+        
+        function showError(msg) {
+            const el = document.getElementById('error-message');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+        
+        function hideError() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+        
+        // Form submit - create order
         document.getElementById('checkout-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            hideError();
             
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             
             if (!name || !email) {
-                alert('Vui lòng nhập đầy đủ thông tin');
+                showError('Vui lòng nhập đầy đủ thông tin');
                 return;
             }
             
-            alert('Tính năng thanh toán đang được phát triển. Vui lòng liên hệ admin.');
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.textContent = 'Đang xử lý...';
+            
+            try {
+                const response = await fetch('/api/digital/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    showError(data.error || 'Có lỗi xảy ra');
+                    btn.disabled = false;
+                    btn.textContent = 'Tiếp Tục Thanh Toán';
+                    return;
+                }
+                
+                paymentCode = data.paymentCode;
+                
+                // Generate QR code URL
+                const qrUrl = `https://img.vietqr.io/image/${VIETQR_BANK}-${VIETQR_ACCOUNT}-compact2.png?amount=149000&addInfo=${encodeURIComponent(paymentCode)}&theme=light`;
+                
+                document.getElementById('qr-image').src = qrUrl;
+                document.getElementById('display-code').textContent = paymentCode;
+                
+                // Show QR section
+                document.getElementById('form-section').style.display = 'none';
+                document.getElementById('qr-section').classList.add('active');
+                updateSteps(2);
+                
+                // Start polling
+                startPaymentCheck();
+                
+            } catch (err) {
+                showError('Lỗi kết nối: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = 'Tiếp Tục Thanh Toán';
+            }
         });
+        
+        function startPaymentCheck() {
+            let countdown = 0;
+            
+            checkInterval = setInterval(async () => {
+                countdown++;
+                document.getElementById('countdown').textContent = `Đang chờ thanh toán... (${countdown}s)`;
+                
+                try {
+                    const response = await fetch(`/api/digital/check/${paymentCode}`);
+                    const data = await response.json();
+                    
+                    if (data.paid) {
+                        clearInterval(checkInterval);
+                        document.getElementById('qr-section').classList.remove('active');
+                        document.getElementById('success-section').classList.add('active');
+                        updateSteps(3);
+                    }
+                } catch (err) {
+                    console.error('Check error:', err);
+                }
+            }, 3000);
+        }
     </script>
 </body>
 </html>

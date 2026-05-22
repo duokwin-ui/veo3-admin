@@ -225,6 +225,11 @@ app.get('/ai-content-starter-kit/checkout', (req, res) => {
   res.sendFile(path.join(__dirname, 'digital-product', 'checkout.html'));
 });
 
+// Digital product thank you route (verify payment before showing download)
+app.get('/ai-content-starter-kit/cam-on', (req, res) => {
+  res.sendFile(path.join(__dirname, 'digital-product', 'cam-on.html'));
+});
+
 // Digital product PDF download route
 app.get('/download-ai-kit', (req, res) => {
   const pdfPath = path.join(__dirname, 'digital-product', 'product-assets', 'AI-Content-Automation-Starter-Kit.pdf');
@@ -237,6 +242,94 @@ app.get('/download-ai-kit', (req, res) => {
   
   console.log('[DOWNLOAD] Serving PDF:', pdfPath);
   res.download(pdfPath, 'AI-Content-Automation-Starter-Kit.pdf');
+});
+
+// ==========================================
+// DIGITAL PRODUCT CHECKOUT API
+// ==========================================
+
+// Hardcoded digital product info (no stock management needed)
+const DIGITAL_PRODUCT = {
+  id: 'digital-ai-kit',
+  name: 'AI Content Automation Starter Kit',
+  price: 149000,
+  description: 'Workflow Content AI Cho Người Mới'
+};
+
+// API: Create digital product order
+app.post('/api/digital/create', (req, res) => {
+  const { name, email } = req.body;
+  
+  console.log('[DIGITAL] Create order - name:', name, 'email:', email);
+  
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
+  }
+  
+  // Validate email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Email không đúng định dạng' });
+  }
+  
+  // Generate payment code
+  const paymentCode = 'AIK' + Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+  console.log('[DIGITAL] Generated paymentCode:', paymentCode);
+  
+  // Store order in database
+  db.run(
+    'INSERT INTO orders (customer_id, product_id, amount, status, payment_code) VALUES (?, ?, ?, ?, ?)',
+    [0, DIGITAL_PRODUCT.id, DIGITAL_PRODUCT.price, 'pending', paymentCode],
+    function(err) {
+      if (err) {
+        console.error('[DIGITAL] ERROR: Order insert failed:', err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      
+      console.log('[DIGITAL] Order created, id:', this.lastID);
+      
+      res.json({
+        success: true,
+        orderId: this.lastID,
+        paymentCode: paymentCode,
+        productName: DIGITAL_PRODUCT.name,
+        productPrice: DIGITAL_PRODUCT.price,
+        customerName: name,
+        customerEmail: email
+      });
+    }
+  );
+});
+
+// API: Check digital product payment status
+app.get('/api/digital/check/:paymentCode', (req, res) => {
+  const { paymentCode } = req.params;
+  
+  console.log('[DIGITAL] Checking payment for:', paymentCode);
+  
+  db.get(
+    'SELECT status, payment_code, customer_name, customer_email FROM orders WHERE payment_code = ? AND product_id = ?',
+    [paymentCode, DIGITAL_PRODUCT.id],
+    (err, order) => {
+      if (err) {
+        console.error('[DIGITAL] ERROR: Query failed:', err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      
+      if (!order) {
+        console.log('[DIGITAL] Order not found:', paymentCode);
+        return res.json({ success: false, paid: false, error: 'Order not found' });
+      }
+      
+      console.log('[DIGITAL] Order status:', order.status);
+      res.json({
+        success: true,
+        paid: order.status === 'success',
+        status: order.status,
+        paymentCode: order.payment_code
+      });
+    }
+  );
 });
 
 // Database
