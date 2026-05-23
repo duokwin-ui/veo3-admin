@@ -217,8 +217,6 @@ Thu tiền định kỳ:
 **Cách làm:**
 
 - Bộ đầy đủ: 149k (5 quy trình)
-- Option A: Bộ đầy đủ 149k
-- Option B: Chỉ 1 quy trình 197k
 - Vẫn giữ "sau này muốn lên bộ đầy đủ được"
 
 ---
