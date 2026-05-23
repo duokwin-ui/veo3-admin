@@ -126,7 +126,7 @@ mình thấy bạn đã xem AI Starter Kit.
 
 bạn có gì thắc mắc không?
 
-nếu giá là vấn đề → bạn có thể trả góp 2 lần (250k + 247k).
+nếu giá là vấn đề → bạn có thể trả góp 2 lần (75k + 74k).
 
 reply cho mình nếu bạn cần hỏi gì.
 ```

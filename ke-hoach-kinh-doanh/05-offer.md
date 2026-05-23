@@ -154,7 +154,7 @@ Sau khi có quy trình đầu tiên — bạn sẽ muốn thêm quy trình khác
 **Giúp bạn:**
 Copy → Dán → Dùng ngay — không cần nghĩ prompt từ đầu.
 
-**Trị giá nếu mua riêng:** 297k
+**Trị giá nếu mua riêng:** 397k
 
 ---
 

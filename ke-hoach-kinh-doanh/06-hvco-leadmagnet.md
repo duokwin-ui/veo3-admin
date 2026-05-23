@@ -375,7 +375,7 @@ Offer chính tiết kiệm cho bạn:
 
 149k cho 8 tiếng tiết kiệm mỗi tháng → Tương đương 18k/giờ.
 
-**→ Hoặc bạn trả góp: 250k đợt 1 + 247k đợt 2.**
+**→ Hoặc bạn trả góp: 75k đợt 1 + 74k đợt 2.**
 
 ---
 

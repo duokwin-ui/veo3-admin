@@ -4,7 +4,7 @@
 
 **Loại funnel:** HVCO Funnel (Mồi nhử + Nuôi dưỡng)
 
-**Offer chính:** AI Starter Kit — 497k
+**Offer chính:** AI Starter Kit — 149k
 
 **Lead magnet miễn phí:** Checklist 5 bước viết content với ChatGPT
 
@@ -16,7 +16,7 @@
 
 ### Tại sao không phải Straight-to-Offer (bán thẳng)
 
-Với offer 497k, bán thẳng có thể được. Nhưng:
+Với offer 149k, bán thẳng có thể được. Nhưng:
 
 - Avatar (Minh) đang **sợ bị lùa gà** — cần thấy giá trị trước
 - Avatar đã **mua xong bỏ đó** nhiều lần — cần "thử trước khi mua"
@@ -26,12 +26,12 @@ Với offer 497k, bán thẳng có thể được. Nhưng:
 
 ### Tại sao không phải Webinar hoặc Application
 
-- Offer chỉ 497k — không đủ justify thời gian tổ chức webinar
+- Offer chỉ 149k — không đủ justify thời gian tổ chức webinar
 - Audience là beginner — họ muốn **tự phục vụ**, không muốn phỏng vấn
 
 ### Tại sao HVCO Funnel phù hợp
 
-1. **Offer 497k** — giá vừa đủ để nurture qua email
+1. **Offer 149k** — giá vừa đủ để nurture qua email
 2. **Cold traffic** — người chưa biết gì cần được "sưởi ấm" trước
 3. **Beginner audience** — cần thấy mình làm được trước khi mua
 4. **Self-service product** — không cần call để chốt
@@ -134,8 +134,8 @@ TRAFFIC (Nguồn khách)
 │   ├── Problem: "Bạn đang bị ngợp vì quá nhiều tool AI"               │
 │   ├── Solution: "Không phải học thêm. Chỉ cần 1 quy trình cụ thể."  │
 │   ├── Benefits + What you get + Bonuses + Price                       │
-│   ├── Offer: 497k (hoặc trả góp 250k + 247k)                         │
-│   └── CTA: "MUA NGAY — 497k"                                          │
+│   ├── Offer: 149k (hoặc trả góp 75k + 74k)                         │
+│   └── CTA: "MUA NGAY — 149k"                                          │
 │                                                                         │
 │   Expected conversion: 3-8% (từ traffic vào page)                      │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -327,7 +327,7 @@ TRAFFIC (Nguồn khách)
 - "Mình sợ mua xong bỏ" → Cam kết 24 giờ
 - "Mấy cái trước toàn lý thuyết" → Video demo thật
 - "Có cần mua thêm tool gì không?" → Không. ChatGPT miễn phí là đủ.
-- "Đắt quá" → So sánh: 497k = 62k/giờ nếu tiết kiệm 8 tiếng/tháng
+- "Đắt quá" → So sánh: 149k = 19k/giờ nếu tiết kiệm 8 tiếng/tháng
 
 **CTA:** Link đến sales page
 
@@ -384,25 +384,25 @@ TRAFFIC (Nguồn khách)
 
   9. **Social proof:** Testimonials (khi có) + Case study
 
-  10. **Godfather offer:** AI Starter Kit — 497k
+  10. **Godfather offer:** AI Starter Kit — 149k
 
   11. **Add bonuses:**
       - Checklist 23 câu hỏi viết prompt (197k)
-      - Bộ 7 quy trình phổ biến (297k)
+      - Bộ 7 quy trình phổ biến (397k)
 
-  12. **Stack value:** Tổng ~1.5 triệu → Chỉ 497k
+  12. **Stack value:** Tổng ~1.5 triệu → Chỉ 149k
 
-  13. **Reveal price:** 497k hoặc trả góp 250k + 247k
+  13. **Reveal price:** 149k hoặc trả góp 75k + 74k
 
   14. **Inject scarcity:** Không deadline giả — nhưng nói thẳng "Giá này cho người mua hôm nay"
 
   15. **Power guarantee:** Cam kết 24 giờ — hỗ trợ trực tiếp nếu không chạy được
 
-  16. **CTA:** "MUA NGAY — 497k" (hoặc "Trả góp 2 lần")
+  16. **CTA:** "MUA NGAY — 149k" (hoặc "Trả góp 2 lần")
 
   17. **P.S.:** Tóm tắt offer + nhắc lại cam kết
 
-**CTA:** "MUA NGAY — 497k" → Checkout Page
+**CTA:** "MUA NGAY — 149k" → Checkout Page
 
 **Framework:** Full 17-step selling system
 
@@ -513,7 +513,7 @@ TRAFFIC (Nguồn khách)
 ### Chi phí
 
 - Nếu chạy ads: CPL mục tiêu < 50k
-- CPA mục tiêu: < 500k (với LTV 497k)
+- CPA mục tiêu: < 150k (với LTV 149k)
 
 ---
 

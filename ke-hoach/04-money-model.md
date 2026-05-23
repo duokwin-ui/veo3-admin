@@ -192,7 +192,7 @@ Thu tiền định kỳ:
 
 **Cách làm:**
 
-- Ví dụ: 497k → Chia 2 lần: 250k + 247k (mỗi lần cách nhau 2 tuần)
+- Ví dụ: 149k → Chia 2 lần: 75k + 74k (mỗi lần cách nhau 2 tuần)
 - Không phí trả góp
 - Tự động gửi link thanh toán đợt 2 sau khi đợt 1 xong
 
@@ -216,8 +216,8 @@ Thu tiền định kỳ:
 
 **Cách làm:**
 
-- Bộ đầy đủ: 497k (5 quy trình)
-- Option A: Bộ đầy đủ 497k
+- Bộ đầy đủ: 149k (5 quy trình)
+- Option A: Bộ đầy đủ 149k
 - Option B: Chỉ 1 quy trình 197k
 - Vẫn giữ "sau này muốn lên bộ đầy đủ được"
 

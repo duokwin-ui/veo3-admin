@@ -13,11 +13,11 @@ Sau khi phân tích funnel và offer, tôi nhận định **VSL không phù hợ
 
 ## PHÂN TÍCH CHI TIẾT
 
-### 1. Offer Price — 497k
+### 1. Offer Price — 149k
 
 **Vấn đề:** VSL cần effort đáng kể để sản xuất (quay video, edit, hosting, thumbnail...).
 
-Với offer 497k:
+Với offer 149k:
 - ROI không rõ ràng
 - Cần bán được nhiều mới cover được chi phí
 - Funnel hiện tại chưa validated để justify investment vào VSL
@@ -136,7 +136,7 @@ Nếu quay lại, khuyến nghị:
 **VSL cho AI Starter Kit hiện tại: SKIP**
 
 **Lý do chính:**
-- Offer price (497k) chưa justify effort làm VSL
+- Offer price (149k) chưa justify effort làm VSL
 - Avatar profile không phù hợp với VSL dài
 - Funnel design không có chỗ cho VSL
 - Chưa có testimonials để giữ người xem

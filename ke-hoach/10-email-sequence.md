@@ -114,7 +114,7 @@ gồm:
 - cách tự chỉnh sửa quy trình cho phù hợp
 - cách lưu quy trình để không quên
 
-giá: 497k (hoặc trả góp 2 lần: 250k + 247k)
+giá: 149k (hoặc trả góp 2 lần: 75k + 74k)
 
 ---
 
@@ -140,7 +140,7 @@ chào,
 
 mình biết bạn đã tải checklist 5 bước.
 
-và có thể bạn đang nghĩ: "cái này tạm được, nhưng không biết có đáng 497k không."
+và có thể bạn đang nghĩ: "cái này tạm được, nhưng không biết có đáng 149k không."
 
 mình hiểu. mình cũng từng như vậy.
 
@@ -225,7 +225,7 @@ và nếu bạn thấy nó hữu ích → có thể bạn sẽ thích có thêm:
 
 mình không đe deadline hay nói "giá chỉ hôm nay".
 
-giá này vẫn là 497k. sẽ không tăng.
+giá này vẫn là 149k. sẽ không tăng.
 
 mình chỉ muốn bạn biết là có thêm cái này — nếu bạn muốn.
 

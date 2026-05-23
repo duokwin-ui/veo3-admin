@@ -257,7 +257,7 @@ mình chỉ muốn hỏi: có gì mình giúp được không?
 
 ---
 
-nếu bạn đang suy nghĩ về giá — bạn có thể trả góp 2 lần (250k + 247k).
+nếu bạn đang suy nghĩ về giá — bạn có thể trả góp 2 lần (75k + 74k).
 
 nếu bạn không biết quy trình này phù hợp với bạn không — reply cho mình biết bạn đang muốn làm gì. mình sẽ nói thật.
 
@@ -367,7 +367,7 @@ mình không muốn ép bạn.
 
 ---
 
-p/s: mình có thể trả góp 2 lần (250k + 247k) nếu bạn cần.
+p/s: mình có thể trả góp 2 lần (75k + 74k) nếu bạn cần.
 
 ---
 

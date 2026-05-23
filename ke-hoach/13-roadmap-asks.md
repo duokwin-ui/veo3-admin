@@ -9,7 +9,7 @@
 
 Dựa trên 12 agent outputs đã tạo:
 
-- **Sản phẩm:** AI Starter Kit — 497k, digital product tự phục vụ
+- **Sản phẩm:** AI Starter Kit — 149k, digital product tự phục vụ
 - **Funnel:** HVCO Model — checklist miễn phí → email nurture → sales page
 - **Technical:** Đã có landing page, checkout, thanh toán SePay, email automation
 - **Marketing:** Ad copy đã viết, chưa chạy thử
@@ -230,7 +230,7 @@ Người đã đi qua giai đoạn này rồi — cho tôi biết tôi đang là
 
 **Cụ thể:**
 - Landing page này có bán được không?
-- Offer 497k có hợp lý không?
+- Offer 149k có hợp lý không?
 - Funnel này có vấn đề gì mà tôi không thấy?
 
 ### □ Setup ads/funnel giúp tôi

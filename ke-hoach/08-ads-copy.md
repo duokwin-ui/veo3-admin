@@ -335,7 +335,7 @@ Nếu checklist này hữu ích cho bạn — bạn có thể muốn có thêm:
 - Hướng dẫn 24 giờ (để bạn chạy được trong ngày đầu tiên)
 - 7 quy trình khác (viết email, viết blog, viết kịch bản TikTok...)
 
-→ [XEM AI STARTER KIT — 497k]
+→ [XEM AI STARTER KIT — 149k]
 ```
 
 ### CTA
@@ -394,7 +394,7 @@ Nếu checklist này hữu ích — bạn có thể muốn:
 ✅ Cách tự chỉnh sửa quy trình cho phù hợp
 ✅ Cách lưu quy trình để không quên
 
-→ [XEM AI STARTER KIT — 497k]
+→ [XEM AI STARTER KIT — 149k]
 
 ---
 

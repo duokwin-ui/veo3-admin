@@ -281,7 +281,7 @@ Và nếu bạn thấy nó hữu ích → Có thể bạn sẽ thích có thêm:
 - Video demo (mình chạy thật trên màn hình)
 - Hướng dẫn để tự chỉnh sửa quy trình cho phù hợp
 
-→ [Xem AI Starter Kit — Giá: 497k]
+→ [Xem AI Starter Kit — Giá: 149k]
 
 ---
 
@@ -365,7 +365,7 @@ Offer chính tiết kiệm cho bạn:
 
 **Cách xử lý:**
 
-497k để:
+149k để:
 
 - Tiết kiệm 2-3 tiếng mỗi tuần (viết content nhanh hơn)
 - Có 7 quy trình dùng được ngay
@@ -373,9 +373,9 @@ Offer chính tiết kiệm cho bạn:
 
 → Nếu bạn viết content 2 lần/tuần, mỗi lần tiết kiệm 1 tiếng → 2 tiếng × 4 tuần = 8 tiếng/tháng
 
-497k cho 8 tiếng tiết kiệm mỗi tháng → Tương đương 62k/giờ.
+149k cho 8 tiếng tiết kiệm mỗi tháng → Tương đương 18k/giờ.
 
-**→ Hoặc bạn trả góp: 250k đợt 1 + 247k đợt 2.**
+**→ Hoặc bạn trả góp: 75k đợt 1 + 74k đợt 2.**
 
 ---
 

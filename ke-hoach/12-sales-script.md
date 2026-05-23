@@ -11,13 +11,13 @@
 
 ## PHÂN TÍCH CHI TIẾT
 
-### 1. Offer Price — 497k
+### 1. Offer Price — 149k
 
 **Vấn đề:** Sales call hiệu quả cho offer từ 1 triệu trở lên.
 
-Với 497k:
+Với 149k:
 - Thời gian gọi điện (15-30 phút) không justify được doanh thu
-- Mỗi cuộc gọi = 497k revenue — ROI quá thấp
+- Mỗi cuộc gọi = 149k revenue — ROI quá thấp
 - Nếu gọi 10 cuộc để bán được 1 cái = 5 triệu wasted time
 
 **Khi nào cần sales call:** Offer > 2 triệu, hoặc cần qualify người mua.
@@ -92,7 +92,7 @@ Thực tế:
 
 | Lý do | Giải thích |
 |-------|------------|
-| Giá quá thấp | 497k không justify thời gian gọi điện |
+| Giá quá thấp | 149k không justify thời gian gọi điện |
 | Digital product | Tự phục vụ, không cần tư vấn |
 | Beginner audience | Không muốn gọi điện, muốn tự quyết định |
 | Funnel tự động | Không có chỗ cho sales call |
@@ -126,7 +126,7 @@ mình thấy bạn đã xem AI Starter Kit.
 
 bạn có gì thắc mắc không?
 
-nếu giá là vấn đề → bạn có thể trả góp 2 lần (250k + 247k).
+nếu giá là vấn đề → bạn có thể trả góp 2 lần (75k + 74k).
 
 reply cho mình nếu bạn cần hỏi gì.
 ```
@@ -209,7 +209,7 @@ Tôi sẽ viết script phù hợp với tình huống của bạn.
 
 | Quyết định | Lý do |
 |------------|-------|
-| **SKIP** Sales Call cho main offer (497k) | Giá thấp, digital product, self-service |
+| **SKIP** Sales Call cho main offer (149k) | Giá thấp, digital product, self-service |
 | **Ưu tiên** Email Follow-Up | Đã viết trong 11-follow-up.md |
 | **Có thể thêm** Zalo/Messenger | Nếu có số từ checkout |
 | **Quay lại** khi nào? | Khi có upsell > 1 triệu hoặc 1-1 service |
