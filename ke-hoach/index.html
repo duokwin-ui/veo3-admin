@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kế hoạch kinh doanh — AI Starter Kit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #faf9f7;
+            --bg-alt: #f5f3f0;
+            --text: #2d2a26;
+            --text-muted: #6b6560;
+            --accent: #e07b4c;
+            --accent-dark: #c56a3d;
+            --card: #ffffff;
+            --border: #e8e4df;
+            --success: #5a9a6e;
+            --shadow: rgba(45, 42, 38, 0.08);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Topbar Nav */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(250, 249, 247, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 0 20px;
+        }
+
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .topbar-logo {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .topbar-nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .topbar-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .topbar-nav a {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .topbar-nav a:hover {
+            background: var(--bg-alt);
+            color: var(--text);
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 60px;
+        }
+
+        section {
+            padding: 80px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        section:nth-child(even) {
+            background: var(--bg-alt);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: calc(100vh - 60px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+        }
+
+        .hero-content {
+            max-width: 700px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .hero-tagline {
+            font-size: 20px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 400;
+        }
+
+        .hero-author {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(224, 123, 76, 0.3);
+        }
+
+        .hero-cta:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Section Header */
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-number {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 600px;
+        }
+
+        /* Avatar Section */
+        .avatar-summary {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text);
+            background: var(--card);
+            padding: 32px;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .btn:hover {
+            background: var(--bg-alt);
+            border-color: var(--text-muted);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            border-color: var(--accent-dark);
+        }
+
+        /* Brand Voice */
+        .voice-examples {
+            display: grid;
+            gap: 20px;
+        }
+
+        .voice-quote {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 12px;
+            font-style: italic;
+            color: var(--text);
+            position: relative;
+        }
+
+        .voice-quote::before {
+            content: '"';
+            font-size: 48px;
+            color: var(--accent);
+            font-family: 'Merriweather', serif;
+            position: absolute;
+            top: 8px;
+            left: 16px;
+            opacity: 0.5;
+        }
+
+        .voice-quote p {
+            padding-left: 24px;
+        }
+
+        .voice-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .voice-tag {
+            background: var(--bg-alt);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Money Model */
+        .money-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .money-card {
+            background: var(--card);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+
+        .money-card h4 {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .money-card .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Merriweather', serif;
+        }
+
+        .money-card .price small {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .money-card ul {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .money-card li {
+            font-size: 14px;
+            color: var(--text);
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .money-card li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .offer-box {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .offer-box h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .offer-box p {
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .offer-price {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .offer-price small {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        /* Funnel Visual */
+        .funnel-visual {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+        }
+
+        .funnel-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .funnel-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .funnel-num {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .funnel-content {
+            flex: 1;
+            background: var(--bg-alt);
+            padding: 16px 20px;
+            border-radius: 10px;
+        }
+
+        .funnel-content h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .funnel-content p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .funnel-arrow {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 20px;
+            padding: 8px 0;
+        }
+
+        /* Assets Grid */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .asset-card {
+            background: var(--card);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .asset-card h4 {
+            font-size: 17px;
+            margin-bottom: 8px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .asset-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .asset-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .asset-status.done {
+            background: #e8f5e9;
+            color: var(--success);
+        }
+
+        .asset-status.skip {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        /* Roadmap */
+        .roadmap-months {
+            display: grid;
+            gap: 32px;
+        }
+
+        .roadmap-month {
+            background: var(--card);
+            padding: 32px;
+            border-radius: 16px;
+        }
+
+        .roadmap-month h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .roadmap-month .month-label {
+            font-size: 12px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 500;
+        }
+
+        .roadmap-month > p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .roadmap-milestones {
+            display: grid;
+            gap: 16px;
+        }
+
+        .milestone {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-alt);
+            border-radius: 12px;
+        }
+
+        .milestone-num {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            background: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .milestone h4 {
+            font-size: 15px;
+            margin-bottom: 8px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .milestone p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Asks */
+        .asks-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .ask-card {
+            background: var(--card);
+            padding: 32px;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .ask-card h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ask-card h3 span {
+            font-size: 24px;
+        }
+
+        .ask-card ul {
+            list-style: none;
+        }
+
+        .ask-card li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 15px;
+        }
+
+        .ask-card li:last-child {
+            border-bottom: none;
+        }
+
+        .ask-cta {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            padding: 48px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .ask-cta h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .ask-cta p {
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            background: var(--bg-alt);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero-tagline {
+                font-size: 17px;
+            }
+
+            section {
+                padding: 60px 16px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .topbar-nav {
+                display: none;
+            }
+
+            .topbar-nav.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: var(--bg);
+                padding: 20px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .offer-price {
+                font-size: 36px;
+            }
+
+            .funnel-step {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar -->
+    <nav class="topbar">
+        <div class="topbar-inner">
+            <a href="#hero" class="topbar-logo">AI Starter Kit</a>
+            <div class="topbar-nav">
+                <a href="#avatar">Avatar</a>
+                <a href="#voice">Brand Voice</a>
+                <a href="#mechanism">Hero Mechanism</a>
+                <a href="#money">Money Model</a>
+                <a href="#funnel">Funnel</a>
+                <a href="#assets">Assets</a>
+                <a href="#roadmap">Roadmap</a>
+                <a href="#asks">Asks</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- SECTION 1: HERO -->
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <div class="hero-badge">Bản kế hoạch kinh doanh</div>
+                <h1>AI Starter Kit</h1>
+                <p class="hero-tagline">
+                    TỪ BỊ NGỢP → CÓ QUY TRÌNH RÕ RÀNG<br>
+                    Cách xây quy trình dùng AI từ một việc cụ thể
+                </p>
+                <p class="hero-author">
+                    Tác giả: Minh<br>
+                    Ngày tạo: Day 20
+                </p>
+                <a href="#avatar" class="hero-cta">Bắt đầu xem</a>
+            </div>
+        </section>
+
+        <!-- SECTION 2: AVATAR -->
+        <section id="avatar">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">Avatar — Minh</h2>
+                <p class="section-desc">Người mà mình đang nói chuyện</p>
+            </div>
+
+            <div class="avatar-summary">
+                <p>
+                    Minh, 25-32 tuổi, là nhân viên văn phòng hoặc freelancer viết content ở Việt Nam. 
+                    Minh thấy mình bị "ngợp" vì quá nhiều tool AI — mỗi ngày có một cái mới, 
+                    mỗi người nói một kiểu, và Minh vẫn ngồi đó không biết bắt đầu từ đâu.
+                </p>
+                <p style="margin-top: 16px;">
+                    Minh đã mua bộ prompt đã viết sẵn, xem hàng trăm video về AI, trả tiền ChatGPT Plus — 
+                    nhưng cuối cùng vẫn "bỏ đó" vì không biết áp dụng sao cho đúng. 
+                    Nỗi sợ lớn nhất của Minh là bị "lùa gà" và sợ mất tiền oan.
+                </p>
+            </div>
+
+            <a href="01-avatar.md" target="_blank" class="btn">
+                Xem avatar đầy đủ →
+            </a>
+        </section>
+
+        <!-- SECTION 3: BRAND VOICE -->
+        <section id="voice">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">Brand Voice</h2>
+                <p class="section-desc">Giọng văn mình dùng để nói chuyện</p>
+            </div>
+
+            <div class="voice-examples">
+                <div class="voice-quote">
+                    <p>Tôi cũng từng rối như bạn. Giờ tôi có quy trình làm việc thật để chia sẻ.</p>
+                </div>
+                <div class="voice-quote">
+                    <p>Đây là cách tôi làm. Bạn thích thì lấy, không thích thì bỏ.</p>
+                </div>
+                <div class="voice-quote">
+                    <p>Copy. Paste. Dùng. Đó là tất cả những gì bạn cần làm.</p>
+                </div>
+            </div>
+
+            <div class="voice-tags">
+                <span class="voice-tag">Nói thật</span>
+                <span class="voice-tag">Không phải "người dạy"</span>
+                <span class="voice-tag">Từng bước rõ ràng</span>
+                <span class="voice-tag">Tập trung vào việc xây</span>
+                <span class="voice-tag">Dành cho người mới</span>
+                <span class="voice-tag">Nói thẳng có gì, không có gì</span>
+            </div>
+
+            <a href="02-brand-voice.md" target="_blank" class="btn" style="margin-top: 24px;">
+                Xem brand voice đầy đủ →
+            </a>
+        </section>
+
+        <!-- SECTION 4: HERO MECHANISM -->
+        <section id="mechanism">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2 class="section-title">Hero Mechanism</h2>
+                <p class="section-desc">Điều làm mình khác với những người khác</p>
+            </div>
+
+            <div class="avatar-summary" style="border-left-color: var(--success);">
+                <p>
+                    <strong>Vấn đề không phải ở AI.</strong> Mà là: bạn không có quy trình cố định.
+                </p>
+                <p style="margin-top: 16px;">
+                    Thay vì học thêm tool → bạn bắt đầu xây quy trình cho một việc cụ thể.
+                </p>
+                <p style="margin-top: 16px;">
+                    <strong>Cách này hoạt động:</strong> Chọn 1 việc → Xây quy trình → Chạy thử → Lưu lại → Dùng mỗi ngày.
+                </p>
+            </div>
+
+            <a href="03-hero-mechanism.md" target="_blank" class="btn">
+                Xem hero mechanism đầy đủ →
+            </a>
+        </section>
+
+        <!-- SECTION 5: MONEY MODEL + OFFER -->
+        <section id="money">
+            <div class="section-header">
+                <div class="section-number">04 + 05</div>
+                <h2 class="section-title">Money Model & Offer</h2>
+                <p class="section-desc">Cách kiếm tiền và sản phẩm đang bán</p>
+            </div>
+
+            <div class="money-grid">
+                <div class="money-card">
+                    <h4>Quà tặng miễn phí (cho người mới)</h4>
+                    <div class="price">Miễn phí <small></small></div>
+                    <ul>
+                        <li>Checklist 5 bước viết content</li>
+                        <li>Tải ngay, không cần email</li>
+                        <li>Dùng được trong 10 phút</li>
+                    </ul>
+                </div>
+
+                <div class="money-card">
+                    <h4>AI Starter Kit</h4>
+                    <div class="price">497k <small></small></div>
+                    <ul>
+                        <li>Quy trình 5 bước + Video demo</li>
+                        <li>Hướng dẫn 24 giờ đầu tiên</li>
+                        <li>Cách chỉnh sửa & lưu quy trình</li>
+                        <li>Trả góp 2 lần: 250k + 247k</li>
+                    </ul>
+                </div>
+
+                <div class="money-card">
+                    <h4>Sản phẩm chính (bán thêm sau)</h4>
+                    <div class="price">197k <small>— 297k</small></div>
+                    <ul>
+                        <li>Thêm 7 quy trình khác</li>
+                        <li>Checklist 23 câu viết prompt</li>
+                        <li>Template tự chỉnh được</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="offer-box">
+                <h3>AI Starter Kit</h3>
+                <p>Trong 24 giờ đầu tiên, bạn sẽ chạy được quy trình đầu tiên để viết content với ChatGPT — không cần hiểu thêm gì về AI.</p>
+                <div class="offer-price">497k <small>/ hoặc trả góp 2 lần</small></div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
+                <a href="04-money-model.md" target="_blank" class="btn">
+                    Xem money model →
+                </a>
+                <a href="05-offer.md" target="_blank" class="btn">
+                    Xem offer chi tiết →
+                </a>
+            </div>
+        </section>
+
+        <!-- SECTION 6: FUNNEL -->
+        <section id="funnel">
+            <div class="section-header">
+                <div class="section-number">07</div>
+                <h2 class="section-title">Funnel Blueprint</h2>
+                <p class="section-desc">Hành trình của khách từ lần đầu biết đến khi mua</p>
+            </div>
+
+            <div class="funnel-visual">
+                <div class="funnel-steps">
+                    <div class="funnel-step">
+                        <div class="funnel-num">1</div>
+                        <div class="funnel-content">
+                            <h4>Ad / Content</h4>
+                            <p>Hook về vòng lặp "xem nhiều hơn làm" → Click vào landing</p>
+                        </div>
+                    </div>
+                    <div class="funnel-arrow">↓</div>
+                    <div class="funnel-step">
+                        <div class="funnel-num">2</div>
+                        <div class="funnel-content">
+                            <h4>Landing Page — Checklist</h4>
+                            <p>Tải checklist miễn phí. Không cần email.</p>
+                        </div>
+                    </div>
+                    <div class="funnel-arrow">↓</div>
+                    <div class="funnel-step">
+                        <div class="funnel-num">3</div>
+                        <div class="funnel-content">
+                            <h4>Thank You Page</h4>
+                            <p>Hướng dẫn thử ngay + soft giới thiệu AI Starter Kit</p>
+                        </div>
+                    </div>
+                    <div class="funnel-arrow">↓</div>
+                    <div class="funnel-step">
+                        <div class="funnel-num">4</div>
+                        <div class="funnel-content">
+                            <h4>Email Sequence</h4>
+                            <p>4 emails trong 10 ngày: hỏi thăm → kể chuyện → trả lời thắc mắc → nhắc nhẹ</p>
+                        </div>
+                    </div>
+                    <div class="funnel-arrow">↓</div>
+                    <div class="funnel-step">
+                        <div class="funnel-num">5</div>
+                        <div class="funnel-content">
+                            <h4>Sales Page</h4>
+                            <p>AI Starter Kit — 497k (hoặc trả góp)</p>
+                        </div>
+                    </div>
+                    <div class="funnel-arrow">↓</div>
+                    <div class="funnel-step">
+                        <div class="funnel-num">6</div>
+                        <div class="funnel-content">
+                            <h4>Checkout</h4>
+                            <p>Thanh toán qua SePay. Tự động nhận link tải.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a href="07-funnel-blueprint.md" target="_blank" class="btn">
+                    Xem blueprint chi tiết →
+                </a>
+                <a href="06-hvco-leadmagnet.md" target="_blank" class="btn">
+                    Xem lead magnet →
+                </a>
+            </div>
+        </section>
+
+        <!-- SECTION 7: FULL FUNNEL ASSETS -->
+        <section id="assets">
+            <div class="section-header">
+                <div class="section-number">08 - 12</div>
+                <h2 class="section-title">Full Funnel Assets</h2>
+                <p class="section-desc">Tất cả những thứ đã tạo cho funnel</p>
+            </div>
+
+            <div class="assets-grid">
+                <div class="asset-card">
+                    <span class="asset-status done">Đã xong</span>
+                    <h4>Ad Copy</h4>
+                    <p>5 hooks + 3 ad copies cho Facebook/TikTok. Sẵn sàng chạy thử.</p>
+                    <a href="08-ads-copy.md" target="_blank" class="btn">Xem ads</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="asset-status done">Đã xong</span>
+                    <h4>Landing Page</h4>
+                    <p>Trang checklist 5 bước. Có thể deploy lên internet ngay.</p>
+                    <a href="08-landing.html" target="_blank" class="btn">Xem live</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="asset-status done">Đã xong</span>
+                    <h4>Email Sequence</h4>
+                    <p>4 emails gửi tự động cho người mới tải checklist. Tone tự nhiên, không ép.</p>
+                    <a href="10-email-sequence.md" target="_blank" class="btn">Xem emails</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="asset-status done">Đã xong</span>
+                    <h4>Follow-up Sequences</h4>
+                    <p>3 chuỗi: người lạ, tải-chưa-mua, xem-trang-nhưng-chưa-thanh-toán. Tối đa 3 emails/chuỗi.</p>
+                    <a href="11-follow-up.md" target="_blank" class="btn">Xem follow-up</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="asset-status skip">Skip</span>
+                    <h4>VSL Script</h4>
+                    <p>Skip vì: sản phẩm 497k chưa đáng để làm video dài. Quay lại khi có lời khen từ người mua.</p>
+                    <a href="09-vsl-script.md" target="_blank" class="btn">Xem ghi chú</a>
+                </div>
+
+                <div class="asset-card">
+                    <span class="asset-status skip">Skip</span>
+                    <h4>Sales Call Script</h4>
+                    <p>Skip vì: sản phẩm số tự phục vụ, không cần gọi điện. Ưu tiên gửi email thôi.</p>
+                    <a href="12-sales-script.md" target="_blank" class="btn">Xem ghi chú</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: ROADMAP 90 NGÀY -->
+        <section id="roadmap">
+            <div class="section-header">
+                <div class="section-number">13</div>
+                <h2 class="section-title">Roadmap 90 Ngày</h2>
+                <p class="section-desc">Lộ trình để đi từ ý tưởng đến có doanh thu thật</p>
+            </div>
+
+            <div class="roadmap-months">
+                <div class="roadmap-month">
+                    <h3>
+                        <span class="month-label">THÁNG 1</span>
+                        VALIDATION
+                    </h3>
+                    <p>Mục tiêu: Thật sự bán được sản phẩm cho người thật</p>
+                    
+                    <div class="roadmap-milestones">
+                        <div class="milestone">
+                            <div class="milestone-num">1</div>
+                            <div>
+                                <h4>Deploy và test landing page</h4>
+                                <p>Deploy 08-landing.html lên Netlify. Tạo PDF checklist. Chia sẻ lên group nhỏ. Mục tiêu: 50-100 lượt xem tuần đầu.</p>
+                            </div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-num">2</div>
+                            <div>
+                                <h4>Bán sản phẩm đầu tiên</h4>
+                                <p>Có 1 người mua thật. Không cần nhiều. Chỉ cần 1 để validate. Thử bán trực tiếp cho bạn bè trước.</p>
+                            </div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-num">3</div>
+                            <div>
+                                <h4>Setup email automation</h4>
+                                <p>Kết nối Resend với landing. Tạo sequence 4 emails. Test flow đi từ đầu đến cuối.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="roadmap-month">
+                    <h3>
+                        <span class="month-label">THÁNG 2</span>
+                        HỌC + CẢI THIỆN DẦN
+                    </h3>
+                    <p>Mục tiêu: Hiểu khách hàng thật. Cải thiện dựa trên số liệu thật.</p>
+                    
+                    <div class="roadmap-milestones">
+                        <div class="milestone">
+                            <div class="milestone-num">1</div>
+                            <div>
+                                <h4>Chạy thử ads nhỏ</h4>
+                                <p>Test 1 cách viết ads với ngân sách 100-200k/ngày. Theo dõi số người click, tải, mua.</p>
+                            </div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-num">2</div>
+                            <div>
+                                <h4>Thu thập feedback và testimonials</h4>
+                                <p>Liên hệ người mua sau 3-7 ngày. Xin testimonial. Cập nhật landing + emails với proof thật.</p>
+                            </div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-num">3</div>
+                            <div>
+                                <h4>Tối ưu funnel dựa trên data</h4>
+                                <p>Phân tích: cách viết ads nào click nhiều, email nào mở nhiều, bước nào khách bỏ giữa chừng. Thử 2 version.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="roadmap-month">
+                    <h3>
+                        <span class="month-label">THÁNG 3</span>
+                        SCALE NHẸ
+                    </h3>
+                    <p>Mục tiêu: Tăng doanh thu. Bắt đầu bán thêm. Không cần thuê người.</p>
+                    
+                    <div class="roadmap-milestones">
+                        <div class="milestone">
+                            <div class="milestone-num">1</div>
+                            <div>
+                                <h4>Tăng budget ads nếu profitable</h4>
+                                <p>Tính: tiền bán được / tiền bỏ ra. Nếu ra > 1.5 → tăng ngân sách. Nếu không → dừng, tập trung viết content free.</p>
+                            </div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-num">2</div>
+                            <div>
+                                <h4>Setup upsell nhẹ</h4>
+                                <p>Thêm "7 quy trình khác" vào trang cảm ơn. Ước tính 10-20% người mua sẽ mua thêm.</p>
+                            </div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-num">3</div>
+                            <div>
+                                <h4>Bắt đầu content organic</h4>
+                                <p>Chọn 1 nền tảng (TikTok/Facebook). Chia sẻ mẹo nhỏ. Nhúng link landing. Mục tiêu: 20-30% người vào từ content free.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="13-roadmap-asks.md" target="_blank" class="btn" style="margin-top: 32px;">
+                Xem roadmap đầy đủ →
+            </a>
+        </section>
+
+        <!-- SECTION 9: ASKS -->
+        <section id="asks">
+            <div class="section-header">
+                <div class="section-number">13</div>
+                <h2 class="section-title">Bản kế hoạch — Tôi cần gì để đi nhanh hơn</h2>
+                <p class="section-desc">Nhìn thật vào bản thân</p>
+            </div>
+
+            <div class="asks-grid">
+                <div class="ask-card">
+                    <h3><span>1</span> Điểm yếu lớn nhất</h3>
+                    <ul>
+                        <li><strong>Traffic:</strong> Chưa có ai vào landing page ngoài tôi</li>
+                        <li><strong>Lời khen:</strong> Chưa có ai khen sản phẩm thật</li>
+                        <li><strong>Kỹ thuật:</strong> Đã có landing + checkout + SePay — cái này OK</li>
+                        <li><strong>Tóm:</strong> "Có sản phẩm nhưng không có ai biết"</li>
+                    </ul>
+                </div>
+
+                <div class="ask-card">
+                    <h3><span>2</span> Hỗ trợ mong muốn</h3>
+                    <ul>
+                        <li>Coaching 1-1 về cách làm — xem lại kế hoạch, góp ý thật</li>
+                        <li>Hướng dẫn chạy quảng cáo Facebook/TikTok cho người mới</li>
+                        <li>Tài liệu về cách xin lời khen từ người mua</li>
+                        <li>Cộng đồng để hỏi khi gặp vấn đề cụ thể</li>
+                    </ul>
+                </div>
+
+                <div class="ask-card">
+                    <h3><span>3</span> 3 vấn đề tôi sợ kẹt nhất</h3>
+                    <ul>
+                        <li><strong>1. Bỏ giữa chừng</strong> — 2-3 tuần không bán được ai → nản → chuyển ý tưởng khác → lặp lại</li>
+                        <li><strong>2. Tự kỷ trong content</strong> — không biết quay video, không biết viết hay → sợ content không ai xem</li>
+                        <li><strong>3. Không biết ai thật sự sẽ mua</strong> — đã viết avatar "Minh" nhưng đó là giả định, không biết Minh thật có tồn tại không</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="ask-cta">
+                <h3>Tôi sẵn sàng pitch ở Demo Day Ngày 21</h3>
+                <p>
+                    Cần: 1 đơn hàng đầu tiên — để biết sản phẩm bán được.<br>
+                    Cần: Feedback thật — để biết tôi đang làm đúng hay sai.<br>
+                    Cần: Một người đã đi qua giai đoạn này — để hỏi khi bí.
+                </p>
+                <a href="13-roadmap-asks.md" target="_blank" class="hero-cta">
+                    Xem asks đầy đủ →
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            AI Starter Kit Business Plan<br>
+            Tạo: Day 20 | Tác giả: Minh
+        </p>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80;
+                    const bodyRect = document.body.getBoundingClientRect().top;
+                    const elementRect = target.getBoundingClientRect().top;
+                    const elementPosition = elementRect - bodyRect;
+                    const offsetPosition = elementPosition - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Simple fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section:not(.hero)').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

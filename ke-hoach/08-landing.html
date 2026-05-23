@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải Miễn Phí: 5 Bước Viết Content Nhanh Hơn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            background: #fafafa;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 48px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 0 0 32px 32px;
+            margin-bottom: 32px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span {
+            display: block;
+            font-size: 18px;
+            font-weight: 500;
+            opacity: 0.95;
+            margin-top: 8px;
+        }
+
+        .hero-sub {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 28px;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: #fff;
+            color: #667eea;
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 17px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+        }
+
+        .hero-note {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 14px;
+        }
+
+        /* Section */
+        .section {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .section-title {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a2e;
+        }
+
+        /* Pain Points */
+        .pain-section {
+            background: #fff8f0;
+            border: 2px dashed #e6a23c;
+        }
+
+        .pain-list {
+            list-style: none;
+        }
+
+        .pain-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0e6d3;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .pain-item:last-child {
+            border-bottom: none;
+        }
+
+        .pain-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #e6a23c;
+            border-radius: 5px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .pain-text {
+            font-size: 15px;
+            color: #555;
+        }
+
+        .pain-note {
+            margin-top: 18px;
+            padding: 14px;
+            background: #fff;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 500;
+            color: #c77a11;
+        }
+
+        /* Empathy */
+        .empathy {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .empathy .highlight {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Steps */
+        .steps {
+            list-style: none;
+            counter-reset: step;
+        }
+
+        .step {
+            position: relative;
+            padding-left: 48px;
+            padding-bottom: 24px;
+            border-left: 2px solid #e0e0e0;
+            margin-left: 14px;
+        }
+
+        .step:last-child {
+            border-left: none;
+            padding-bottom: 0;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: -17px;
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: #1a1a2e;
+        }
+
+        .step-desc {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .step-desc p {
+            margin-bottom: 6px;
+        }
+
+        .step-desc p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Question Box */
+        .question-box {
+            background: #1a1a2e;
+            color: #a5f3fc;
+            padding: 18px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .question-box .yellow {
+            color: #fcd34d;
+        }
+
+        /* What You Need */
+        .need-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .need-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f5f9ff;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .need-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* What You DON'T Need */
+        .dont-section {
+            background: #fff5f5;
+            border-left: 4px solid #fc8181;
+        }
+
+        .dont-list {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+        }
+
+        .dont-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .dont-icon {
+            color: #fc8181;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        /* Soft CTA */
+        .soft-cta {
+            background: #f0f4ff;
+        }
+
+        .soft-cta p {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 14px;
+        }
+
+        .soft-cta a {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .soft-cta a:hover {
+            text-decoration: underline;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 44px 28px;
+            border-radius: 20px;
+        }
+
+        .cta-section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .cta-section p {
+            opacity: 0.95;
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 44px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 19px;
+            text-decoration: none;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: scale(1.04);
+        }
+
+        .cta-note {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 22px;
+            }
+
+            .hero h1 span {
+                font-size: 16px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .cta-button {
+                padding: 16px 32px;
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge">Tải Miễn Phí</div>
+        <h1>
+            5 Bước Viết Content Với ChatGPT
+            <span>Dùng được ngay — không cần biết gì về AI</span>
+        </h1>
+        <p class="hero-sub">
+            Mất 10 phút để thử.<br>
+            Từ nay viết content nhanh hơn.
+        </p>
+        <a href="#download" class="hero-cta">Tải Ngay — Miễn Phí</a>
+        <p class="hero-note">Không cần đăng ký gì cả</p>
+    </section>
+
+    <div class="container">
+        <!-- Pain Points -->
+        <section class="section pain-section">
+            <h2 class="section-title">Bạn đang gặp vấn đề này không?</h2>
+            <ul class="pain-list">
+                <li class="pain-item">
+                    <div class="pain-box"></div>
+                    <span class="pain-text">Xem video dạy AI suốt ngày nhưng toàn bỏ đó</span>
+                </li>
+                <li class="pain-item">
+                    <div class="pain-box"></div>
+                    <span class="pain-text">Mua mấy bộ "câu hỏi hay" về rồi không dùng được</span>
+                </li>
+                <li class="pain-item">
+                    <div class="pain-box"></div>
+                    <span class="pain-text">Hỏi ChatGPT nhưng ra toàn nội dung "ba phải"</span>
+                </li>
+                <li class="pain-item">
+                    <div class="pain-box"></div>
+                    <span class="pain-text">Sợ mua thêm thứ gì nữa rồi lại "bỏ đó"</span>
+                </li>
+                <li class="pain-item">
+                    <div class="pain-box"></div>
+                    <span class="pain-text">Cứ "học hoài" mà không làm được gì thật</span>
+                </li>
+            </ul>
+            <div class="pain-note">
+                Đánh dấu được 2 cái trở lên? → Đọc tiếp đi.
+            </div>
+        </section>
+
+        <!-- Empathy -->
+        <section class="section">
+            <h2 class="section-title">Mình hiểu.</h2>
+            <div class="empathy">
+                <p>
+                    Mình cũng từng như vậy. Mua mấy bộ câu hỏi cho ChatGPT. Xem video AI. Thất vọng.
+                </p>
+                <p>
+                    Đến một ngày mình mới "vỡ lẽ":
+                    <span class="highlight">Vấn đề không phải ở AI. Mà là: mình không có cách hỏi đúng.</span>
+                </p>
+                <p>
+                    Checklist này cho bạn một quy trình cụ thể — để hỏi ChatGPT lần nào cũng ra kết quả tốt.
+                </p>
+            </div>
+        </section>
+
+        <!-- 5 Steps -->
+        <section class="section">
+            <h2 class="section-title">5 bước mình dùng:</h2>
+            <ol class="steps">
+                <li class="step">
+                    <div class="step-title">Biết mình muốn viết gì</div>
+                    <div class="step-desc">
+                        <p>Trả lời 3 câu: Viết cái này để làm gì? Ai sẽ đọc? Muốn giọng văn như thế nào?</p>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="step-title">Dán đoạn này vào ChatGPT</div>
+                    <div class="question-box">
+Viết cho tôi một <span class="yellow">[KIỂU BÀI VIẾT]</span> về <span class="yellow">[CHỦ ĐỀ BẠN MUỐN]</span>.
+
+Yêu cầu:
+- Giọng văn: <span class="yellow">[NGHIÊM TÚC / VUI / THÂN THIỆN]</span>
+- Độ dài: <span class="yellow">[NGẮN / VỪA / DÀI]</span>
+- Mục đích: <span class="yellow">[BÁN HÀNG / CHIA SẺ / TƯ VẤN]</span>
+- Đối tượng: <span class="yellow">[AI NÓI CHUYỆN VỚI AI]</span>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="step-title">Xem ChatGPT trả gì</div>
+                    <div class="step-desc">
+                        <p>OK → sang bước 4. Chưa đúng → thêm thông tin vào, hỏi lại.</p>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="step-title">Sửa lại cho ra giọng mình</div>
+                    <div class="step-desc">
+                        <p>Thêm câu bạn hay nói. Bớt chỗ nghe "máy móc" quá. Thêm ví dụ thật của bạn.</p>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="step-title">Xong — đăng hoặc gửi đi</div>
+                    <div class="step-desc">
+                        <p>Đăng bài / Gửi email / Dùng cho việc gì đó. Lần sau: Mở ra → Copy → Dán → Xong.</p>
+                    </div>
+                </li>
+            </ol>
+        </section>
+
+        <!-- Need vs Don't Need -->
+        <section class="section">
+            <h2 class="section-title">Bạn cần gì để thử?</h2>
+            <div class="need-grid">
+                <div class="need-item">
+                    <div class="need-icon">✓</div>
+                    <span>Tài khoản ChatGPT (đăng ký miễn phí là được)</span>
+                </div>
+                <div class="need-item">
+                    <div class="need-icon">✓</div>
+                    <span>10 phút rảnh để thử lần đầu</span>
+                </div>
+                <div class="need-item">
+                    <div class="need-icon">✓</div>
+                    <span>Một bài viết bạn cần làm hôm nay hoặc mai</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section dont-section">
+            <h2 class="section-title">Bạn KHÔNG cần</h2>
+            <ul class="dont-list">
+                <li class="dont-item">
+                    <span class="dont-icon">✗</span>
+                    Trả tiền cho bất kỳ tool nào (ChatGPT miễn phí là đủ)
+                </li>
+                <li class="dont-item">
+                    <span class="dont-icon">✗</span>
+                    Biết lập trình hay "code" gì cả
+                </li>
+                <li class="dont-item">
+                    <span class="dont-icon">✗</span>
+                    Mua thêm tài khoản hay "app" gì nữa
+                </li>
+                <li class="dont-item">
+                    <span class="dont-icon">✗</span>
+                    Hiểu về AI — cứ thử là hiểu
+                </li>
+            </ul>
+        </section>
+
+        <!-- Soft CTA -->
+        <section class="section soft-cta">
+            <h2 class="section-title">Muốn có thêm?</h2>
+            <p>
+                Checklist miễn phí cho bạn 1 quy trình để thử. Nếu hữu ích, mình có thêm:
+            </p>
+            <div class="need-grid">
+                <div class="need-item">
+                    <div class="need-icon">🎬</div>
+                    <span>Video mình chạy quy trình thật trên màn hình</span>
+                </div>
+                <div class="need-item">
+                    <div class="need-icon">📝</div>
+                    <span>Hướng dẫn từng bước để bắt đầu trong ngày đầu tiên</span>
+                </div>
+                <div class="need-item">
+                    <div class="need-icon">📋</div>
+                    <span>7 quy trình khác (viết email, viết bài blog, viết kịch bản TikTok...)</span>
+                </div>
+                <div class="need-item">
+                    <div class="need-icon">🔧</div>
+                    <span>Cách chỉnh quy trình cho phù hợp với việc của bạn</span>
+                </div>
+                <div class="need-item">
+                    <div class="need-icon">📁</div>
+                    <span>Cách lưu lại để không phải nghĩ lại từ đầu</span>
+                </div>
+            </div>
+            <p style="margin-top: 16px;">
+                <a href="#">Xem đầy đủ hơn tại đây →</a>
+            </p>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section" id="download">
+            <h2>Tải Ngay — Miễn Phí</h2>
+            <p>1 trang. 5 bước. 10 phút để thử.</p>
+            <a href="#" class="cta-button">Tải Checklist</a>
+            <p class="cta-note">Không cần đăng ký gì cả</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                Mình tạo checklist này vì mình cũng từng rối như bạn.
+                <br>
+                Giờ mình có cách làm thật — chia sẻ lại cho bạn.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
