@@ -198,91 +198,84 @@ Dựa trên 12 agent outputs đã tạo:
 
 ## 1. ĐIỂM YẾU LỚN NHẤT
 
-**Tôi đang thiếu: Traffic và Proof**
+**Tôi đang thiếu: Traffic, Validation, Kỹ thuật, Tư duy**
 
 Cụ thể:
 
 **Traffic:**
-- Hiện tại chưa có ai vào landing page ngoài tôi và có thể vài người bạn
-- Ad copy đã viết nhưng chưa test với người thật
-- Không biết hook nào sẽ convert
+- Không biết quay, sản xuất video, không biết viết hay → content không ai xem
+- Nên chưa biết cách kéo traffic ổn định vào landing page
 
-**Proof:**
-- Chưa có testimonials từ người mua thật
-- Chưa có case study thật
-- Không biết sản phẩm có giải quyết được vấn đề thật không
+**Validation:**
+- Chưa có khách thật mua nên chưa có feedback/testimonial
 
 **Kỹ thuật:**
-- Đã có landing page + checkout + SePay → cái này OK
-- Nhưng chưa setup email automation hoàn chỉnh
-- Chưa deploy landing page lên internet
+- Đã có landing + checkout + SePay — cái này OK
+- Tuy nhiên làm được theo AI hướng dẫn nhưng chưa hiểu rõ lắm về các công đoạn trong khi làm
+- Ví dụ: Antigravity, Cursor, VS Code, GitHub / Railway / Netlify / GCloud / VPS…
 
-**Tóm:** Tôi đang ở giai đoạn "có sản phẩm nhưng không có ai biết"
+**Tư duy:**
+- Chưa rõ nên build sản phẩm gì phù hợp để bán lâu dài
 
 ---
 
-## 2. NẾU CÓ THỂ NHỜ HỖ TRỢ — TÔI MUỐN ĐƯỢC HỖ TRỢ VỀ:
+## 2. HỖ TRỢ MONG MUỐN
 
-### □ Coaching 1-1 về chiến lược kinh doanh
-
-**Mong muốn:** 
-Người đã đi qua giai đoạn này rồi — cho tôi biết tôi đang làm đúng hay sai. Review funnel, cho feedback thật.
-
-**Cụ thể:**
-- Landing page này có bán được không?
-- Offer 149k có hợp lý không?
-- Funnel này có vấn đề gì mà tôi không thấy?
-
-### □ Setup ads/funnel giúp tôi
+### □ Review funnel + landing theo góc nhìn thực chiến
 
 **Mong muốn:**
-Tôi đã có ad copy trong `08-ads-copy.md` nhưng không biết setup ads Facebook/TikTok sao cho đúng. Cần ai đó:
-- Hướngẫn setup campaign đầu tiên
-- Chỉ cho tôi cách target đúng audience
-- Giúp tôi tránh những sai lầm beginner hay mắc
+Vì vẫn thấy nhiều cái cần tối ưu — cần người nhìn ra vấn đề mình không thấy.
 
-### □ Khoá học hoặc tài liệu về:
+### □ Hướng dẫn chọn hướng AI workflow dễ kiếm tiền cho beginner
 
-**Cụ thể:**
-- Cách chạy ads nhỏ để test (budget 100-300k)
-- Cách thu thập testimonials từ người mua
-- Cách setup email automation với Resend (đã có tài khoản nhưng chưa biết cấu hình)
-- Cách viết content TikTok/Facebook mà không phải quay video
+**Mong muốn:**
+Chưa rõ nên tập trung vào hướng nào — cần ai đó chỉ hướng cụ thể.
 
-### □ Khác:
-- Cộng đồng để hỏi khi gặp vấn đề cụ thể
-- Template/format để theo dõi metrics đơn giản
+### □ Giải thích flow GitHub → Railway → deploy dễ hiểu hơn
+
+**Mong muốn:**
+Biết làm theo hướng dẫn nhưng không hiểu tại sao lại làm vậy — cần hiểu bản chất.
+
+### □ Hướng dẫn làm content đơn giản, phù hợp cho người không giỏi quay video
+
+**Mong muốn:**
+Cần format content cụ thể — không cần quay mặt, có thể bắt đầu với 30 phút/ngày.
+
+### □ Cách làm — xem lại kế hoạch, góp ý thật
+
+**Mong muốn:**
+Coaching 1-1: nhìn lại plan, chỉ ra sai sót, gợi hướng đi.
 
 ---
 
 ## 3. TRONG 90 NGÀY TỚI — 3 VẤN ĐỀ TÔI SỢ KẺT NHẤT
 
-### Vấn đề 1: Bỏ giữa chừng vì không thấy kết quả nhanh
+### Vấn đề 1: Làm được theo AI nhưng không hiểu nền tảng
 
 **Sợ cụ thể:**
-Tôi biết mình hay bỏ. Sau 2-3 tuần không bán được ai → tôi sẽ nản → chuyển qua ý tưởng khác → lặp lại vòng lặp.
+Làm theo hướng dẫn thì OK, nhưng khi lỗi xảy ra — không biết sửa. Không hiểu code, nền tảng lập trình nên bó tay.
 
 **Điều tôi cần:**
-- Cần thấy 1 đơn hàng đầu tiên càng sớm càng tốt — để biết "có thể bán được"
-- Cần ai đó nhắc tôi: "tháng đầu không kỳ vọng lớn, chỉ cần validate"
+- Hiểu rõ hơn về nền tảng (không cần expert, chỉ cần đủ để tự debug được)
+- Hoặc có người hỗ trợ kỹ thuật khi cần
 
-### Vấn đề 2: Tự kỷ trong việc tạo content
+### Vấn đề 2: Học quá nhiều tool AI nhưng không tạo ra thu nhập thật
 
 **Sợ cụ thể:**
-Tôi không phải người content. Tôi không biết quay video, không biết viết bài hay. Sợ content tôi đăng không ai xem → nản → bỏ.
+Cứ thấy tool mới là học, thấy khóa hay là mua — nhưng cuối cùng không có sản phẩm bán được. Mua nhiều nhưng không kiếm được gì.
 
 **Điều tôi cần:**
-- Format content đơn giản, không cần quay mặt (VD: chỉ cần viết caption + hình chụp màn hình)
-- Benchmark: "content nào tôi có thể bắt đầu với 30 phút/ngày"
+- Tập trung vào 1-2 tool đủ dùng, không lan man
+- Có người nhắc: "Dừng học, bắt đầu bán"
 
-### Vấn đề 3: Không biết ai là audience của mình
+### Vấn đề 3: Không biết tập trung build sản phẩm/service nào trước
 
 **Sợ cụ thể:**
-Tôi đã viết avatar "Minh" trong `01-avatar.md` — nhưng đó là giả định. Không biết Minh thật có tồn tại không, có ở Facebook group nào, có dùng TikTok không.
+Không hiểu lập trình, không biết code, không biết nên build cái gì trước. Có nhiều ý tưởng nhưng không biết cái nào sẽ kiếm được tiền.
 
 **Điều tôi cần:**
-- Cách để tìm audience thật (không phải suy đoán)
-- Cách validate avatar trước khi viết thêm copy
+- Hướng dẫn chọn 1 sản phẩm cụ thể để bắt đầu
+- Không phải ý tưởng hoàn hảo — chỉ cần bắt đầu được
 
 ---
 
@@ -290,15 +283,15 @@ Tôi đã viết avatar "Minh" trong `01-avatar.md` — nhưng đó là giả đ
 
 ### 3 điều tôi cần nhất:
 
-1. **AI người đầu tiên mua hàng** — để biết sản phẩm bán được
-2. **Feedback thật** — để biết tôi đang làm đúng hay sai
-3. **Một người đã đi qua giai đoạn này** — để hỏi khi bí
+1. **Hướng đi rõ ràng** — chọn 1 hướng AI workflow cụ thể để tập trung
+2. **Review thực chiến** — xem lại funnel + landing, chỉ ra điểm yếu thật
+3. **Hỗ trợ kỹ thuật** — hiểu rõ hơn về deploy, GitHub, Railway
 
 ### 3 điều tôi KHÔNG cần (nhưng sợ):
 
-1. Không cần biết everything về AI — chỉ cần biết đủ để bán
-2. Không cần team — chỉ cần mình tôi + 1 advisor
-3. Không cần ads budget lớn — chỉ cần đủ để test và validate
+1. Không cần học thêm nhiều tool AI — chỉ cần biết đủ 1 tool để bán
+2. Không cần hiểu hết code — chỉ cần đủ để tự sửa lỗi nhỏ
+3. Không cần ý tưởng hoàn hảo — chỉ cần bắt đầu với cái có thể bán được
 
 ---
 
