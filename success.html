@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký thành công - VEO 3</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --teal: #14b8a6;
+            --purple: #8b5cf6;
+            --glass-bg: rgba(25, 25, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+            background: #050505;
+        }
+        .blob {
+            position: absolute;
+            filter: blur(100px);
+            opacity: 0.4;
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(20, 184, 166, 0.15); animation-delay: 0s; }
+        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: rgba(139, 92, 246, 0.15); animation-delay: -5s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(5%, 5%); }
+        }
+        
+        .success-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 550px;
+            width: 90%;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(139, 92, 246, 0.1);
+            position: relative;
+            animation: fadeUp 0.8s ease-out;
+        }
+        .success-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent, #27c93f, var(--purple), transparent);
+        }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(39, 201, 63, 0.1);
+            color: #27c93f;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            margin: 0 auto 25px;
+            border: 1px solid rgba(39, 201, 63, 0.3);
+            box-shadow: 0 0 30px rgba(39, 201, 63, 0.2);
+            animation: pulseIcon 2s infinite alternate;
+        }
+        @keyframes pulseIcon {
+            0% { box-shadow: 0 0 20px rgba(39, 201, 63, 0.1); transform: scale(1); }
+            100% { box-shadow: 0 0 40px rgba(39, 201, 63, 0.4); transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: 800;
+        }
+        p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            font-weight: 500;
+        }
+        .btn-back {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--teal), var(--purple));
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-back:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.6);
+            filter: brightness(1.1);
+        }
+        .btn-back i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    
+    <div class="success-box">
+        <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h1>Cảm ơn bạn đã đăng ký!</h1>
+        <p>Thông tin của bạn đã được gửi đi thành công. Đội ngũ VEO 3 sẽ liên hệ với bạn trong vòng 24h tới qua Zalo/Email.</p>
+        <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
+    </div>
+</body>
+</html>

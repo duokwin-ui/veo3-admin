@@ -1,0 +1,28 @@
+{
+  "id": "veo3-pro",
+  "name": "VEO 3 — Gói Pro",
+  "slug": "pro",
+  "badge": "Phổ biến / Bán chạy (theo landing)",
+  "price_display_vn": "3.0 Triệu",
+  "billing_note": "Theo landing (i18n vi): tham chiếu 1 năm.",
+  "headline": "Tăng tốc sản xuất + prompt nâng cao + nhóm hỗ trợ",
+  "ideal_for": [
+    "Creator đăng ≥3 video/tuần, cần rút thời gian kịch bản → render",
+    "Người muốn tận dụng GPT cho kịch bản & ý tưởng content"
+  ],
+  "includes_from_lower_tier": "Tất cả tính năng gói Standard",
+  "features": [
+    "Tặng bộ prompt nâng cao (độ chi tiết & biến thể cao hơn)",
+    "Tặng trợ lý GPT viết kịch bản video (hook, CTA, cấu trúc đoạn)",
+    "Tăng tốc quy trình tạo video (template workflow, checklist)",
+    "Hỗ trợ qua nhóm Zalo (peer + team)"
+  ],
+  "bonuses_marketing": [
+    "Landing đề cập bonus: bộ trợ lý ChatGPT cho người dùng PRO trở lên (kịch bản, prompt video, SEO, ý tưởng, automation sáng tạo) — ghi rõ điều kiện khi bán thực tế"
+  ],
+  "limitations": [
+    "Vẫn không thay thế editor chuyên nghiệp cho VFX nặng"
+  ],
+  "activation": "Form → thanh toán → Zalo xác nhận; kích hoạt nhanh theo cam kết trên landing (5–10 phút sau thanh toán — điều chỉnh nếu quy trình thực tế khác).",
+  "support_level": "Nhóm Zalo + tài nguyên prompt/GPT"
+}

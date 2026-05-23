@@ -1,0 +1,53 @@
+{
+  "_note": "Mẫu mở rộng từ 3 FAQ đang có trên landing + thêm câu hỏi thường gặp khi bán tool/license kiểu VEO 3.",
+  "items": [
+    {
+      "id": "faq-edit-skill",
+      "question": "Tôi hoàn toàn không biết edit video, có dùng được không?",
+      "answer": "Được. VEO 3 hướng tới giao diện tối giản; nếu bạn dùng smartphone cơ bản được thì có thể làm quen workflow tạo video nhanh (thông tin, vlog, short-form).",
+      "source": "landing_index_faq1"
+    },
+    {
+      "id": "faq-tiktok-reels",
+      "question": "Video làm ra có phù hợp với TikTok hay Reels không?",
+      "answer": "Có. Mặc định hỗ trợ tỷ lệ 9:16 (video dọc) phù hợp nền tảng video ngắn.",
+      "source": "landing_index_faq2"
+    },
+    {
+      "id": "faq-vs-pro-editor",
+      "question": "VEO 3 có thay thế được editor chuyên nghiệp không?",
+      "answer": "Không. Nếu bạn cần VFX phức tạp hay kỹ xảo điện ảnh, vẫn cần editor. VEO 3 phù hợp video thông tin, vlog, chia sẻ: nhanh, rõ ràng, chuẩn cơ bản.",
+      "source": "landing_index_faq3"
+    },
+    {
+      "id": "faq-device-license",
+      "question": "Cài được mấy máy? Đổi máy có được không?",
+      "answer": "Mẫu gợi ý: ghi rõ trong hợp đồng/điều khoản — ví dụ 1 máy chính + 1 lần đổi máy mỗi 12 tháng (chỉnh theo chính sách thực tế của bạn).",
+      "source": "suggested_sales"
+    },
+    {
+      "id": "faq-ai-output",
+      "question": "Video AI có bị nền tảng đánh bản quyền / hạn chế không?",
+      "answer": "Mẫu gợi ý: khuyến nghị khách tuân thủ điều khoản TikTok/YouTube/Meta; dùng nhạc/asset có bản quyền; tránh clone sát nội dung có bản quyền. Bạn nên thêm disclaimer pháp lý trên landing.",
+      "source": "suggested_compliance"
+    },
+    {
+      "id": "faq-refund",
+      "question": "Thanh toán rồi không dùng được thì sao?",
+      "answer": "Landing có cam kết kiểu 'kích hoạt hoặc hoàn tiền' — mẫu gợi ý: mô tả điều kiện hoàn (trong X ngày, chưa kích hoạt key, v.v.) để tránh hiểu nhầm.",
+      "source": "landing_payment_tone"
+    },
+    {
+      "id": "faq-time-to-first-video",
+      "question": "Bao lâu thì ra video đầu tiên?",
+      "answer": "Mẫu gợi ý: sau khi kích hoạt + onboarding 15–30 phút, video đầu tiên có thể hoàn thành trong vài chục phút tùy độ phức tạp ý tưởng (align với messaging 'rút ngắn thời gian edit').",
+      "source": "suggested_onboarding"
+    },
+    {
+      "id": "faq-zalo-support",
+      "question": "Hỗ trợ qua kênh nào, phản hồi trong bao lâu?",
+      "answer": "Theo landing: xác nhận thanh toán qua Zalo; success page ghi liên hệ trong 24h. Gợi ý: thêm SLA khung giờ làm việc.",
+      "source": "success_html + landing"
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cảm Ơn - AI Content Automation Starter Kit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .thankyou-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .thankyou-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .thankyou-header p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        .product-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .product-card h3 {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+        .waiting-card {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .waiting-card h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+        .waiting-card p {
+            color: #78350f;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .spinner {
+            border: 3px solid #e1e1e1;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .order-info {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 15px;
+        }
+        @media (max-width: 480px) {
+            .thankyou-container {
+                padding: 25px;
+            }
+            .thankyou-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="thankyou-container">
+        <!-- Loading State -->
+        <div id="loading-section">
+            <div class="spinner"></div>
+            <h2>Đang xác minh thanh toán...</h2>
+            <p style="color: #888; margin-top: 10px;">Vui lòng đợi trong giây lát</p>
+        </div>
+
+        <!-- Success State - Show Download -->
+        <div id="success-section" style="display: none;">
+            <div class="success-icon">🎉</div>
+            <div class="thankyou-header">
+                <h1>Cảm Ơn Bạn!</h1>
+                <p>Thanh toán của bạn đã được xác nhận. Sản phẩm của bạn đã sẵn sàng để tải về.</p>
+            </div>
+
+            <div class="product-card">
+                <h3>📦 AI Content Automation Starter Kit</h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">File PDF hướng dẫn + 50+ Prompts</p>
+                <a href="/download-ai-kit" class="download-btn">
+                    📥 Tải Về Ngay
+                </a>
+            </div>
+
+            <p class="order-info">Mã đơn: <span id="display-code"></span></p>
+            <a href="/ai-content-starter-kit" class="back-link">← Quay lại trang chủ</a>
+        </div>
+
+        <!-- Pending State - Waiting for Payment -->
+        <div id="pending-section" style="display: none;">
+            <div class="waiting-card">
+                <h3>⏳ Đơn Hàng Đang Chờ</h3>
+                <p>Thanh toán của bạn chưa được xác nhận. Vui lòng kiểm tra:</p>
+                <ul style="margin-top: 10px; padding-left: 20px; text-align: left;">
+                    <li style="margin-bottom: 5px;">Đã chuyển khoản đúng số tiền (149.000đ)?</li>
+                    <li style="margin-bottom: 5px;">Đã nhập đúng nội dung chuyển khoản?</li>
+                    <li style="margin-bottom: 5px;">Đã chờ 1-3 phút sau khi chuyển khoản?</li>
+                </ul>
+            </div>
+
+            <button onclick="location.reload()" class="download-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                🔄 Kiểm Tra Lại
+            </button>
+
+            <a href="/ai-content-starter-kit/checkout" class="back-link" style="margin-top: 15px;">← Quay lại trang thanh toán</a>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-section" style="display: none;">
+            <div style="font-size: 3rem; margin-bottom: 20px;">❌</div>
+            <h2 style="color: #dc2626; margin-bottom: 15px;">Không Tìm Thấy Đơn Hàng</h2>
+            <p style="color: #666; margin-bottom: 25px;">Vui lòng kiểm tra lại mã đơn hàng hoặc liên hệ admin.</p>
+            <a href="/ai-content-starter-kit/checkout" class="download-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                ← Quay Lại Thanh Toán
+            </a>
+        </div>
+    </div>
+
+    <script>
+        async function checkPayment() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentCode = urlParams.get('code');
+            
+            if (!paymentCode) {
+                showSection('error');
+                return;
+            }
+
+            document.getElementById('display-code').textContent = paymentCode;
+
+            try {
+                const response = await fetch(`/api/digital/check/${paymentCode}`);
+                const data = await response.json();
+
+                if (data.paid) {
+                    showSection('success');
+                } else {
+                    showSection('pending');
+                }
+            } catch (err) {
+                console.error('Check error:', err);
+                showSection('pending');
+            }
+        }
+
+        function showSection(section) {
+            document.getElementById('loading-section').style.display = 'none';
+            document.getElementById('success-section').style.display = 'none';
+            document.getElementById('pending-section').style.display = 'none';
+            document.getElementById('error-section').style.display = 'none';
+            document.getElementById(section + '-section').style.display = 'block';
+        }
+
+        // Check on load
+        checkPayment();
+    </script>
+</body>
+</html>

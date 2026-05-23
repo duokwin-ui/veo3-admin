@@ -1,0 +1,7 @@
+{
+  "_note": "Nội dung mẫu gợi ý, căn cứ theo messaging trên landing (VEO 3: tạo video nhanh, TikTok/Reels/Shorts 9:16, prompt VEO3, Text/Image to Video, thanh toán + Zalo, đăng ký form). Giá/thời hạn có thể khác giữa HTML tĩnh và i18n — khi đưa production hãy đồng bộ một nguồn duy nhất.",
+  "product_line": "VEO 3",
+  "positioning": "Công cụ / workflow hỗ trợ creator làm video thông tin, vlog, short-form nhanh — không thay thế editor VFX chuyên nghiệp.",
+  "channels": ["TikTok", "Instagram Reels", "YouTube Shorts"],
+  "default_aspect": "9:16"
+}

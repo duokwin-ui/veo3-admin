@@ -1,25 +1,2 @@
-# Dependencies
-node_modules/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-*.temp
-~$*
-
-# Backup files
-*.bak
-*.backup
-*.rar
-*.zip
-~*
-
-# Word docs
-*.docx
-*.doc
-
-# Mac OS
-__MACOSX/
+﻿node_modules/
+resend_config.txt

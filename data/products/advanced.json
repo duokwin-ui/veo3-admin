@@ -1,0 +1,25 @@
+{
+  "id": "veo3-advanced",
+  "name": "VEO 3 — Gói Advanced",
+  "slug": "advanced",
+  "price_display_vn": "4.5 Triệu",
+  "billing_note": "Theo landing (i18n vi): tham chiếu 3 năm.",
+  "headline": "Đi cùng dài hạn: cộng đồng + học + tư vấn 1-1",
+  "ideal_for": [
+    "Team nhỏ / creator muốn xây hệ thống nội dung 6–12 tháng",
+    "Người cần mentor ngắn để chốt chiến lược kênh & lịch đăng"
+  ],
+  "includes_from_lower_tier": "Tất cả tính năng gói Pro",
+  "features": [
+    "Tham gia cộng đồng MMO/Creator (networking + case study)",
+    "Tặng khóa học xây kênh video (onboarding chiến lược)",
+    "Hỗ trợ tư vấn 1-1 (theo gói — nên ghi rõ số buổi/phút khi bán thật)",
+    "Đồng hành phát triển nội dung dài hạn (check-in định kỳ — mô tả chi tiết khi chốt offer)"
+  ],
+  "limitations": [
+    "1-1 cần giới hạn lịch & phạm vi (tránh kỳ vọng unlimited)",
+    "Kết quả view/follow phụ thuộc nền tảng & nội dung — không hứa chỉ số cố định trừ khi có bằng chứng audit"
+  ],
+  "activation": "Form → thanh toán → onboarding call (nếu có trong quy trình thực tế).",
+  "support_level": "Cộng đồng + khóa học + tư vấn (theo điều khoản gói)"
+}
