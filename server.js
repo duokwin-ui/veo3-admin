@@ -6,6 +6,59 @@ const sqlite3 = require('sqlite3').verbose();
 const https = require('https');
 const fs = require('fs');
 const { Resend } = require('resend');
+const crypto = require('crypto');
+const cookieParser = require('cookie-parser');
+
+// ==========================================
+// ADMIN AUTH CONFIGURATION
+// ==========================================
+const ADMIN_USER = process.env.ADMIN_USER;
+const ADMIN_PASS = process.env.ADMIN_PASS;
+
+// In-memory session store
+const sessions = new Map();
+
+function generateSessionId() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+function createSession(res, username) {
+  const sessionId = generateSessionId();
+  sessions.set(sessionId, { username, createdAt: Date.now(), lastActivity: Date.now() });
+  res.cookie('admin_session', sessionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'strict'
+  });
+  return sessionId;
+}
+
+function destroySession(req, res) {
+  const sessionId = req.cookies.admin_session;
+  if (sessionId && sessions.has(sessionId)) sessions.delete(sessionId);
+  res.clearCookie('admin_session');
+}
+
+function isAuthenticated(req) {
+  const sessionId = req.cookies.admin_session;
+  if (!sessionId || !sessions.has(sessionId)) return false;
+  const session = sessions.get(sessionId);
+  if (Date.now() - session.lastActivity > 24 * 60 * 60 * 1000) {
+    sessions.delete(sessionId);
+    return false;
+  }
+  session.lastActivity = Date.now();
+  return true;
+}
+
+function requireAuth(req, res, next) {
+  if (!isAuthenticated(req)) {
+    const redirect = encodeURIComponent(req.originalUrl);
+    return res.redirect(`/admin-login?redirect=${redirect}`);
+  }
+  next();
+}
 
 // Initialize Resend
 let resend;
@@ -262,11 +315,34 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
+// Protect static files
+const protectedStaticFiles = ['success.html', 'admin.html'];
+app.use((req, res, next) => {
+  const filename = path.basename(req.path);
+  if (protectedStaticFiles.includes(filename)) {
+    if (!isAuthenticated(req)) {
+      return res.redirect(`/admin-login?redirect=${encodeURIComponent(req.originalUrl)}`);
+    }
+  }
+  next();
+});
+
 app.use(express.static(__dirname));
 app.use('/digital-product', express.static(path.join(__dirname, 'digital-product')));
-app.use('/ke-hoach', express.static(path.join(__dirname, 'ke-hoach')));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Protect /ke-hoach route
+app.get('/ke-hoach', (req, res) => {
+  if (!isAuthenticated(req)) {
+    return res.redirect(`/admin-login?redirect=${encodeURIComponent(req.originalUrl)}`);
+  }
+  res.redirect('/ke-hoach/');
+});
+app.get('/ke-hoach/', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'ke-hoach', 'index.html'));
+});
 
 // Digital product landing page route
 app.get('/ai-content-starter-kit', (req, res) => {
@@ -286,15 +362,43 @@ app.get('/ai-content-starter-kit/cam-on', (req, res) => {
 // Digital product PDF download route
 app.get('/download-ai-kit', (req, res) => {
   const pdfPath = path.join(__dirname, 'digital-product', 'product-assets', 'AI-Content-Automation-Starter-Kit.pdf');
-  const fs = require('fs');
-  
   if (!fs.existsSync(pdfPath)) {
-    console.error('[DOWNLOAD] File not found:', pdfPath);
     return res.status(404).json({ error: 'File not found' });
   }
-  
-  console.log('[DOWNLOAD] Serving PDF:', pdfPath);
   res.download(pdfPath, 'AI-Content-Automation-Starter-Kit.pdf');
+});
+
+// ==========================================
+// ADMIN AUTH ROUTES
+// ==========================================
+
+// Login page
+app.get('/admin-login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin-login.html'));
+});
+
+// Login API
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body;
+  if (!ADMIN_USER || !ADMIN_PASS) {
+    return res.status(500).json({ success: false, error: 'Server configuration error' });
+  }
+  if (username === ADMIN_USER && password === ADMIN_PASS) {
+    createSession(res, username);
+    return res.json({ success: true });
+  }
+  return res.status(401).json({ success: false, error: 'Invalid credentials' });
+});
+
+// Logout API
+app.post('/api/auth/logout', (req, res) => {
+  destroySession(req, res);
+  res.json({ success: true });
+});
+
+// Auth status API
+app.get('/api/auth/status', (req, res) => {
+  res.json({ authenticated: isAuthenticated(req) });
 });
 
 // ==========================================
@@ -633,7 +737,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/admin', (req, res) => {
+app.get('/admin', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
@@ -641,7 +745,7 @@ app.get('/thanh-toan', (req, res) => {
   res.sendFile(path.join(__dirname, 'thanh-toan.html'));
 });
 
-app.get('/success', (req, res) => {
+app.get('/success', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'success.html'));
 });
 
@@ -867,6 +971,29 @@ app.delete('/api/products/:id', (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ changes: this.changes });
   });
+});
+// ==========================================
+// PROTECTED API MIDDLEWARE
+// ==========================================
+
+// Routes that don't require authentication
+const publicApiPrefixes = [
+  '/api/auth/',
+  '/api/thanh-toan/',
+  '/api/digital/',
+  '/api/check-payment',
+  '/api/products/public'
+];
+
+// Protect API routes
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    const isPublic = publicApiPrefixes.some(prefix => req.path.startsWith(prefix));
+    if (!isPublic && !isAuthenticated(req)) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+  }
+  next();
 });
 
 // Customers

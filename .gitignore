@@ -1,2 +1,3 @@
 ﻿node_modules/
 resend_config.txt
+.env
