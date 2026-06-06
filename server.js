@@ -314,8 +314,23 @@ const customFetch = global.fetch || ((url, options = {}) => new Promise((resolve
 const app = express();
 const PORT = 3000;
 
-// Middleware
-// Protect static files
+// Middleware - cookieParser MUST be first to parse cookies
+app.use(cookieParser());
+
+// Block /ke-hoach entirely (must be very early to prevent static middleware conflict)
+app.use('/ke-hoach', (req, res, next) => {
+  if (!isAuthenticated(req)) {
+    const redirect = encodeURIComponent(req.originalUrl);
+    return res.redirect(`/admin-login?redirect=${redirect}`);
+  }
+  // If authenticated and accessing /ke-hoach (no trailing slash), redirect to add slash
+  if (!req.path.endsWith('/')) {
+    return res.redirect(req.originalUrl + '/');
+  }
+  next();
+});
+
+// Protect static files (after cookieParser so cookies are available)
 const protectedStaticFiles = ['success.html', 'admin.html'];
 app.use((req, res, next) => {
   const filename = path.basename(req.path);
@@ -324,25 +339,16 @@ app.use((req, res, next) => {
       return res.redirect(`/admin-login?redirect=${encodeURIComponent(req.originalUrl)}`);
     }
   }
-  next();
+    next();
 });
+
+// Serve /ke-hoach only if authenticated (after auth middleware)
+app.use('/ke-hoach', express.static(path.join(__dirname, 'ke-hoach')));
 
 app.use(express.static(__dirname));
 app.use('/digital-product', express.static(path.join(__dirname, 'digital-product')));
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Protect /ke-hoach route
-app.get('/ke-hoach', (req, res) => {
-  if (!isAuthenticated(req)) {
-    return res.redirect(`/admin-login?redirect=${encodeURIComponent(req.originalUrl)}`);
-  }
-  res.redirect('/ke-hoach/');
-});
-app.get('/ke-hoach/', requireAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, 'ke-hoach', 'index.html'));
-});
 
 // Digital product landing page route
 app.get('/ai-content-starter-kit', (req, res) => {
