@@ -331,7 +331,8 @@ app.use('/ke-hoach', (req, res, next) => {
 });
 
 // Protect static files (after cookieParser so cookies are available)
-const protectedStaticFiles = ['success.html', 'admin.html'];
+// NOTE: success.html and success page are PUBLIC (customer success notification)
+const protectedStaticFiles = ['admin.html'];
 app.use((req, res, next) => {
   const filename = path.basename(req.path);
   if (protectedStaticFiles.includes(filename)) {
@@ -751,7 +752,7 @@ app.get('/thanh-toan', (req, res) => {
   res.sendFile(path.join(__dirname, 'thanh-toan.html'));
 });
 
-app.get('/success', requireAuth, (req, res) => {
+app.get('/success', (req, res) => {
   res.sendFile(path.join(__dirname, 'success.html'));
 });
 
